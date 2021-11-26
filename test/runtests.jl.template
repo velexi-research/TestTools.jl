@@ -11,22 +11,8 @@ the terms contained in the LICENSE file.
 """
 # --- Imports
 
-# External packages
-using Documenter
-using Test
-using TestSetExtensions
+using TestTools
 
-# ExampleModule.jl
-using ExampleModule
+# --- Run tests
 
-# --- Test sets
-
-@testset ExtendedTestSet "All the tests" begin
-    @testset "Doctests" begin
-        doctest(ExampleModule)
-    end
-
-    @testset "Unit tests" begin
-        @includetests ARGS
-    end
-end
+TestTools.jltest(; mod=PKG_NAME)

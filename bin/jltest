@@ -1,0 +1,21 @@
+#!/bin/bash
+# -*- mode: julia -*-
+#=
+exec julia --color=yes --startup-file=no \
+           --project=`dirname "${BASH_SOURCE[0]}"` "${BASH_SOURCE[0]}" "$@"
+=#
+"""
+The jltest.jl module defines types and methods to support testing in Julia.
+
+As a stand-alone script, `jltest.jl` runs tests (1) specifed as command-line arguments
+or found in the current working directory.
+"""
+# --- Imports
+
+using TestTools
+
+# --- Run TestTools.jltest() as a stand-alone script
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    TestTools.jltest()
+end
