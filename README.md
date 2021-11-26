@@ -1,4 +1,4 @@
-PACKAGE NAME (v0.0.0)
+TestTools.jl (v0.1.0)
 =====================
 
 ------------------------------------------------------------------------------
@@ -54,14 +54,6 @@ See the LICENSE file for copyright and license information.
 ## 3. Known Issues
 
 PLACEHOLDER
-
-### TODO
-
-* (2021-11-23) Migrate src-external/jltest to a publicly available Julia package.
-  * Finish documentation.
-  * Find a name that meets common Julia naming conventions. Candidates:
-    * TestTools.jl
-    * TestUtilities.jl
 
 ------------------------------------------------------------------------------
 
