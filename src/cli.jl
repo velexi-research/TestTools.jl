@@ -14,9 +14,6 @@ using Test
 using ArgParse
 using Documenter
 
-# Local modules
-import TestTools
-
 # --- Functions/Methods
 
 """
