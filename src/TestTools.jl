@@ -13,7 +13,7 @@ module TestTools
 # Types
 include("TestSetExtensions.jl")
 
-# Functions/methods
+# Functions/Methods
 include("core.jl")
 include("coverage.jl")
 

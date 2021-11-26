@@ -15,7 +15,7 @@ using Printf
 using ArgParse
 using Coverage
 
-# --- Public functions/methods
+# --- Public Functions/Methods
 
 """
     analyze_coverage(src_dir::String, tmp_dir::String)
@@ -124,7 +124,7 @@ function display_results(coverage::Array)
     return nothing
 end
 
-# --- Private functions
+# --- Private Methods
 
 """
     printf(fmt, args...)
