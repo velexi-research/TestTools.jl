@@ -1,0 +1,18 @@
+#!/bin/bash
+# -*- mode: julia -*-
+#=
+exec julia --color=yes --startup-file=no \
+           --project=`dirname "${BASH_SOURCE[0]}"` "${BASH_SOURCE[0]}" "$@"
+=#
+"""
+TODO
+"""
+# --- Imports
+
+using TestTools
+
+# --- Run TestTools.jlcodestyle() as a stand-alone script
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    TestTools.jlcodestyle()
+end
