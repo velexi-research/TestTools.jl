@@ -10,9 +10,6 @@ except according to the terms contained in the LICENSE file.
 """
 module TestTools
 
-# Types
-include("TestSetExtensions.jl")
-
 # jlcodestyle
 include("jlcodestyle/cli.jl")
 
@@ -21,6 +18,7 @@ include("jlcoverage/utils.jl")
 include("jlcoverage/cli.jl")
 
 # jltest
+include("jltest/TestSetExtensions.jl")
 include("jltest/utils.jl")
 include("jltest/cli.jl")
 
