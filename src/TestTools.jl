@@ -13,11 +13,15 @@ module TestTools
 # Types
 include("TestSetExtensions.jl")
 
-# Functions/Methods
-include("core.jl")
-include("coverage.jl")
+# jlcodestyle
+include("jlcodestyle/cli.jl")
 
-# CLI
-include("cli.jl")
+# jlcoverage
+include("jlcoverage/utils.jl")
+include("jlcoverage/cli.jl")
+
+# jltest
+include("jltest/utils.jl")
+include("jltest/cli.jl")
 
 end  # End of TestTools module
