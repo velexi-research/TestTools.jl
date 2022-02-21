@@ -34,12 +34,13 @@ function jltest(; mod::Union{Module,Nothing}=nothing)
         help = "stop testing at first failure"
         action = :store_true
 
-        # TODO: add support for setting module and enabling doctests
-
         "tests"
         help =
-            "Julia test to run. If omitted, all Julia files in the current directory are " *
-            "run as tests."
+            "Julia test to run. If omitted, all Julia files in the current directory " *
+            "are run as tests."
+
+        # TODO: add support for setting module and enabling doctests
+
         nargs = '*'
     end
 
