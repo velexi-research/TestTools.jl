@@ -1,6 +1,6 @@
 # --- Exports
 
-export ExtendedTestSet
+export TestSetPlus
 
 # --- Imports
 
@@ -15,7 +15,7 @@ using Distributed
 
 # --- Types
 
-struct ExtendedTestSet{T<:AbstractTestSet} <: AbstractTestSet
+struct TestSetPlus{T<:AbstractTestSet} <: AbstractTestSet
     wrapped::T
 
     """
@@ -26,33 +26,33 @@ struct ExtendedTestSet{T<:AbstractTestSet} <: AbstractTestSet
     * one for subtypes of AbstractTestSet that do not possess a constructor with a `desc`
       argument
     """
-    ExtendedTestSet{T}(desc) where {T} = new(T(desc))
+    TestSetPlus{T}(desc) where {T} = new(T(desc))
 
-    ExtendedTestSet{FallbackTestSet}(desc) = new(FallbackTestSet())
+    TestSetPlus{FallbackTestSet}(desc) = new(FallbackTestSet())
 end
 
 struct FailDiff <: Result
     result::Fail
 end
 
-struct ExtendedTestSetException <: Exception
+struct TestSetPlusException <: Exception
     msg::AbstractString
 end
 
 # --- Functions/Methods
 
-function ExtendedTestSet(desc; wrap=DefaultTestSet)
-    return ExtendedTestSet{wrap}(desc)
+function TestSetPlus(desc; wrap=DefaultTestSet)
+    return TestSetPlus{wrap}(desc)
 end
 
-function Test.record(ts::ExtendedTestSet{T}, res::Fail) where {T}
+function Test.record(ts::TestSetPlus{T}, res::Fail) where {T}
     println("\n=====================================================")
     Test.record(ts.wrapped, res)
     println("=====================================================")
     return nothing
 end
 
-function Test.record(ts::ExtendedTestSet{DefaultTestSet}, res::Fail)
+function Test.record(ts::TestSetPlus{DefaultTestSet}, res::Fail)
     if Distributed.myid() == 1
         println("\n=====================================================")
         printstyled(ts.wrapped.description, ": "; color=:white)
@@ -90,7 +90,7 @@ function Test.record(ts::ExtendedTestSet{DefaultTestSet}, res::Fail)
                         display(dd)
                         println()
                     else
-                        # fallback to the default printing if we don't have a pretty diff
+                        # Fallback to the default printing if we don't have a pretty diff
                         print(res)
                     end
                 end
@@ -103,20 +103,19 @@ function Test.record(ts::ExtendedTestSet{DefaultTestSet}, res::Fail)
         end
 
         Base.show_backtrace(stdout, Test.scrub_backtrace(backtrace()))
-        # show_backtrace doesn't print a trailing newline
         println("\n=====================================================")
     end
     push!(ts.wrapped.results, res)
     return res, backtrace()
 end
 
-function Test.record(ts::ExtendedTestSet{T}, res::Error) where {T}
+function Test.record(ts::TestSetPlus{T}, res::Error) where {T}
     # Ignore errors generated from failed FallbackTestSet
     if occursin(r"^Test.FallbackTestSetException", res.value) || (
-        occursin(r"^TestSetExtensions.ExtendedTestSetException", res.value) &&
+        occursin(r"^TestSetExtensions.TestSetPlusException", res.value) &&
         occursin("FallbackTestSetException occurred", res.value)
     )
-        throw(ExtendedTestSetException("FallbackTestSetException occurred"))
+        throw(TestSetPlusException("FallbackTestSetException occurred"))
     end
 
     println("\n=====================================================")
@@ -125,24 +124,24 @@ function Test.record(ts::ExtendedTestSet{T}, res::Error) where {T}
     return nothing
 end
 
-function Test.record(ts::ExtendedTestSet{T}, res::Pass) where {T}
+function Test.record(ts::TestSetPlus{T}, res::Pass) where {T}
     printstyled("."; color=:green)
     Test.record(ts.wrapped, res)
     return res
 end
 
-Test.record(ts::ExtendedTestSet{T}, res) where {T} = Test.record(ts.wrapped, res)
+Test.record(ts::TestSetPlus{T}, res) where {T} = Test.record(ts.wrapped, res)
 
-# When recording DefaultTestSet results to an ExtendedTestSet{FallbackTestSet},
+# When recording DefaultTestSet results to an TestSetPlus{FallbackTestSet},
 # throw an exception if there are any failures or errors in the DefaultTestSet.
 #
 # Note: this method is only needed for backward compatibility with Julia<=1.3
-function Test.record(ts::ExtendedTestSet{FallbackTestSet}, res::DefaultTestSet)
+function Test.record(ts::TestSetPlus{FallbackTestSet}, res::DefaultTestSet)
     # Check for failures and errors
     passes, fails, errors, broken, _, _, _, _ = Test.get_test_counts(res)
     if (fails > 0) || (errors > 0)
         throw(
-            ExtendedTestSetException(
+            TestSetPlusException(
                 "Failure or error occurred in DefaultTestSet nested within FallbackTestSet."
             ),
         )
@@ -151,7 +150,7 @@ function Test.record(ts::ExtendedTestSet{FallbackTestSet}, res::DefaultTestSet)
     return res
 end
 
-function Test.finish(ts::ExtendedTestSet{T}) where {T}
+function Test.finish(ts::TestSetPlus{T}) where {T}
     Test.get_testset_depth() == 0 && print("\n\n")
     Test.finish(ts.wrapped)
     return nothing

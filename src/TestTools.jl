@@ -18,7 +18,7 @@ include("jlcoverage/utils.jl")
 include("jlcoverage/cli.jl")
 
 # jltest
-include("jltest/TestSetExtensions.jl")
+include("jltest/TestSetPlus.jl")
 include("jltest/utils.jl")
 include("jltest/cli.jl")
 
