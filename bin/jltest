@@ -25,7 +25,10 @@ if abspath(PROGRAM_FILE) == @__FILE__
 
     # Handle --version option
     if args["version"]
-        println("jltest $(TestTools.VERSION)")
+        println(
+            "$(basename(PROGRAM_FILE)) $(TestTools.VERSION) " *
+            "(from $(dirname(PROGRAM_FILE)))",
+        )
         exit(0)
     end
 
