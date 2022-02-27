@@ -17,7 +17,7 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 module jltest
 
-# Public API
+# API
 include("TestSetPlus.jl")
 include("utils.jl")
 
