@@ -38,7 +38,7 @@ function parse_args()::Dict
     # Define the command-line interface
     description = "Run unit tests"
     arg_table = ArgParse.ArgParseSettings(; description=description)
-    @add_arg_table! arg_table begin
+    ArgParse.@add_arg_table! arg_table begin
         "--fail-fast", "-x"
         help = "stop testing at first failure"
         action = :store_true
@@ -76,15 +76,15 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 
 * `mod::Union{Module,Nothing}=nothing`: module to run doctests for
 
-* `fail_fast::bool=false`: stop testing at first failure
+* `fail_fast::Bool=false`: stop testing at first failure
 
-* `verbose::bool=false`: print more output to the console
+* `verbose::Bool=false`: print more output to the console
 """
 function run(
     tests::Vector{String};
     mod::Union{Module,Nothing}=nothing,
-    fail_fast=false,
-    verbose=false,
+    fail_fast::Bool=false,
+    verbose::Bool=false,
 )
 
     # --- Preparations
