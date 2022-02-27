@@ -5,17 +5,32 @@ exec julia --color=yes --startup-file=no \
            --project=`dirname "${BASH_SOURCE[0]}"` "${BASH_SOURCE[0]}" "$@"
 =#
 """
-The jltest.jl module defines types and methods to support testing in Julia.
-
-As a stand-alone script, `jltest.jl` runs tests (1) specifed as command-line arguments
-or found in the current working directory.
+-------------------------------------------------------------------------------------------
+COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
+license terms in the LICENSE file found in the root directory of this distribution. No
+part of the TestTools.jl package, including this file, may be copied, modified, propagated,
+or distributed except according to the terms contained in the LICENSE file.
+-------------------------------------------------------------------------------------------
 """
 # --- Imports
 
-using TestTools
+using TestTools: TestTools
 
-# --- Run TestTools.jltest() as a stand-alone script
+# --- Run main script
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    TestTools.jltest()
+
+    # Parse CLI arguments
+    args = TestTools.jltest.parse_args()
+
+    # Handle --version option
+    if args["version"]
+        println("jltest $(TestTools.VERSION)")
+        exit(0)
+    end
+
+    # Run main program
+    TestTools.jltest.run(
+        args["tests"]; fail_fast=args["fail-fast"], verbose=args["verbose"]
+    )
 end

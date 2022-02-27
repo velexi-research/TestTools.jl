@@ -1,5 +1,12 @@
 """
-TODO
+jltest/utils.jl defines utility functions to support unit testing.
+
+-------------------------------------------------------------------------------------------
+COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
+license terms in the LICENSE file found in the root directory of this distribution. No
+part of the TestTools.jl package, including this file, may be copied, modified, propagated,
+or distributed except according to the terms contained in the LICENSE file.
+-------------------------------------------------------------------------------------------
 """
 # --- Exports
 
@@ -17,18 +24,15 @@ using Documenter
 # --- Functions/Methods
 
 """
-    run_tests(files::Vector{String}; mod=Main)
+    run_tests(tests::Vector{String}; <keyword arguments>)
 
-TODO
-Run tests contained in the specified `files`. If no `files` are specified, run all tests
-contained in the current working directory.
+Run unit tests contained in the list of files or modules provided in `tests`. If `tests`
+is empty, run all tests contained in files present in the current working directory. File
+names in `tests` may be specified with or without the `.jl` extension.
 
-Arguments
----------
-`files`: list of files to run tests within. File names may be specified with or without
-the ".jl" extension.
+# Keyword Arguments
 
-`mod`: Julia module that tests should be run within
+* `mod`: Julia module that tests should be run within
 
 Return value
 ------------
@@ -54,23 +58,15 @@ function run_tests(tests::Vector{String}; mod=Main)
 end
 
 """
-    autodetect_tests(files::Vector{String})
+    autodetect_tests(dir::AbstractString=pwd())
 
-TODO
-Run tests contained in the specified `files`. If no `files` are specified, run all tests
-contained in the current working directory.
-
-Arguments
----------
-`files`: list of files to run tests within. File names may be specified with or without
-the ".jl" extension.
-
-Return value
-------------
-nothing
+Return all Julia files in `dir` that contain unit tests.
 """
-function autodetect_tests(tests::Vector{String})::Vector{String}
-    tests = readdir(pwd())
+function autodetect_tests(; dir::AbstractString=pwd())::Vector{String}
+    tests = readdir(dir)
     tests = filter(f -> endswith(f, ".jl") && f != "runtests.jl", tests)
+
+    # TODO: filter `tests` to exclude files that do not contain unit tests
+
     return tests
 end

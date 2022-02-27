@@ -1,5 +1,12 @@
 """
-The TestTools package provides support for testing and code quality CLIs.
+The jltest module provides support for running unit tests.
+
+Acknowledgements
+----------------
+* Much of the core functionality of the `TestSetPlus` type (and associated methods) were
+  taken directly from the TestSetExtensions package developed by Spencer Russell and
+  his collaborators (https://github.com/ssfrr/TestSetExtensions.jl). `TestSetPlus` builds
+  upon the foundation of `ExtendedTestSet`
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
@@ -8,23 +15,13 @@ part of the TestTools.jl package, including this file, may be copied, modified, 
 or distributed except according to the terms contained in the LICENSE file.
 -------------------------------------------------------------------------------------------
 """
-module TestTools
+module jltest
 
-# --- Package Metadata
+# Public API
+include("TestSetPlus.jl")
+include("utils.jl")
 
-using TOML: TOML
-const VERSION = TOML.parsefile(joinpath(pkgdir(@__MODULE__), "Project.toml"))["version"]
+# CLI
+include("cli.jl")
 
-# --- Submodules
-
-# jlcodestyle
-include("jlcodestyle/cli.jl")
-
-# jlcoverage
-include("jlcoverage/utils.jl")
-include("jlcoverage/cli.jl")
-
-# jltest
-include("jltest/jltest.jl")
-
-end  # End of TestTools module
+end  # End of jltest module
