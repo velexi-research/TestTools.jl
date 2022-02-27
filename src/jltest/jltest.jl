@@ -1,5 +1,5 @@
 """
-The jltest module provides support for running unit tests.
+The `jltest` module provides support for running unit tests.
 
 Acknowledgements
 ----------------
