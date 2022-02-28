@@ -48,11 +48,6 @@ struct TestSetPlus{T<:AbstractTestSet} <: AbstractTestSet
     TestSetPlus{FallbackTestSet}(desc) = new(FallbackTestSet())
 end
 
-# TODO: Is this type needed?
-# struct FailDiff <: Result
-#    result::Fail
-#end
-
 struct TestSetPlusException <: Exception
     msg::String
 end
