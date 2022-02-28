@@ -33,10 +33,6 @@ names in `tests` may be specified with or without the `.jl` extension.
 # Keyword Arguments
 
 * `mod`: Julia module that tests should be run within
-
-Return value
-------------
-nothing
 """
 function run_tests(tests::Vector{String}; mod=Main)
     println()
