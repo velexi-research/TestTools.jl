@@ -1,32 +1,40 @@
 """
-TODO
+jlcoverage/cli.jl defines functions for the `jlcoverage` CLI.
+
+Notes
+-----
+* CLI functions are defined in a .jl file so that testing and code quality tools can by
+  applied to the CLI source code.
+
+-------------------------------------------------------------------------------------------
+COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
+license terms in the LICENSE file found in the root directory of this distribution. No
+part of the TestTools.jl package, including this file, may be copied, modified, propagated,
+or distributed except according to the terms contained in the LICENSE file.
+-------------------------------------------------------------------------------------------
 """
 # --- Exports
 
-export jlcoverage
+export parse_args, run
 
 # --- Imports
 
 # External packages
-using ArgParse
+using ArgParse: ArgParse
 
 # --- Functions/Methods
 
 """
-TODO
-"""
-function jlcoverage()
+    parse_args()
 
-    # --- Define CLI
+Parse and return command-line arguments passed to the CLI.
+"""
+function parse_args()::Dict
 
     # Define command-line arguments
     description = "Generate coverage analysis report."
-    arg_table = ArgParseSettings(; description=description)
-    @add_arg_table! arg_table begin
-        "--keep-cov-files", "-k"
-        help = "retain *.cov files"
-        action = :store_true
-
+    arg_table = ArgParse.ArgParseSettings(; description=description)
+    ArgParse.@add_arg_table! arg_table begin
         "--pkg-dir", "-d"
         help = "package directory"
         default = "."
@@ -34,13 +42,28 @@ function jlcoverage()
         "--verbose", "-v"
         help = "enable verbose mode"
         action = :store_true
+
+        "--version", "-V"
+        help = "show version and exit"
+        action = :store_true
     end
 
     # Parse command-line arguments
-    args::Dict = parse_args(ARGS, arg_table)
-    keep_cov_files::Bool = args["keep-cov-files"]
-    pkg_dir::String = args["pkg-dir"]
-    verbose::Bool = args["verbose"]
+    args::Dict = ArgParse.parse_args(ARGS, arg_table)
+
+    return args
+end
+
+"""
+    run(pkg_dir::AbstractString; <keyword arguments>)
+
+Run code coverage analysis for the Julia project in `pkg_dir`.
+
+# Keyword Arguments
+
+* `verbose::Bool=false`: print more output to the console
+"""
+function run(pkg_dir::AbstractString; verbose::Bool=false)
 
     # --- Preparations
 

@@ -1,5 +1,5 @@
 """
-The TestTools package provides support for testing and code quality CLIs.
+The `jlcoverage` module provides support for analyzing code coverage of unit tests.
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
@@ -8,22 +8,12 @@ part of the TestTools.jl package, including this file, may be copied, modified, 
 or distributed except according to the terms contained in the LICENSE file.
 -------------------------------------------------------------------------------------------
 """
-module TestTools
+module jlcoverage
 
-# --- Package Metadata
+# API
+include("utils.jl")
 
-using TOML: TOML
-const VERSION = TOML.parsefile(joinpath(pkgdir(@__MODULE__), "Project.toml"))["version"]
+# CLI
+include("cli.jl")
 
-# --- Submodules
-
-# jlcodestyle
-include("jlcodestyle/jlcodestyle.jl")
-
-# jlcoverage
-include("jlcoverage/jlcoverage.jl")
-
-# jltest
-include("jltest/jltest.jl")
-
-end  # End of TestTools module
+end  # End of jlcoverage module

@@ -1,5 +1,12 @@
 """
-TODO
+jlcoverage/utils.jl defines utility functions to support code coverage analysis.
+
+-------------------------------------------------------------------------------------------
+COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
+license terms in the LICENSE file found in the root directory of this distribution. No
+part of the TestTools.jl package, including this file, may be copied, modified, propagated,
+or distributed except according to the terms contained in the LICENSE file.
+-------------------------------------------------------------------------------------------
 """
 # --- Exports
 
@@ -12,37 +19,28 @@ using Logging
 using Printf
 
 # External packages
-using ArgParse
-using Coverage
+using Coverage: Coverage
 
 # --- Public Functions/Methods
 
 """
-    analyze_coverage(src_dir::String, tmp_dir::String)
+    analyze_coverage(src_dir::AbstractString, test_dir::AbstractString)
 
-Analyze test coverage.
-
-Arguments
----------
-* TODO
-
-Return value
-------------
-* TODO
-
+Analyze coverage of code in `src_dir` by tests in `test_dir`.
 """
-function analyze_coverage(src_dir::String, test_dir::String)
+function analyze_coverage(src_dir::AbstractString, test_dir::AbstractString)
+
     # Process '*.cov' files
-    coverage = process_folder(src_dir)
+    coverage = Coverage.process_folder(src_dir)
 
     # Process '*.info' files
-    coverage = merge_coverage_counts(
+    coverage = Coverage.merge_coverage_counts(
         coverage,
         filter!(
             let prefixes = (src_dir, "")
                 c -> any(p -> startswith(c.filename, p), prefixes)
             end,
-            LCOV.readfolder(test_dir),
+            Coverage.LCOV.readfolder(test_dir),
         ),
     )
 
@@ -50,20 +48,11 @@ function analyze_coverage(src_dir::String, test_dir::String)
 end
 
 """
-    display_results(coverage::Array)
+    display_results(coverage_data::Vector)
 
-Display coverage results.
-
-Arguments
----------
-* TODO
-
-Return value
-------------
-* TODO
-
+Display coverage results provided in `coverage_data`.
 """
-function display_results(coverage::Array)
+function display_results(coverage_data::Vector)
 
     # Line formats
     header_line_format = "%-35s %15s %10s %10s\n"
@@ -80,12 +69,12 @@ function display_results(coverage::Array)
     total_covered_lines_of_code = 0
 
     # Print coverage for individual files
-    for file_coverage in coverage
+    for file_coverage in coverage_data
         filename = file_coverage.filename
         filename = filename[(findlast("src/", filename)[1] + 4):end]
 
-        covered_lines_of_code, lines_of_code = get_summary(
-            process_file(file_coverage.filename)
+        covered_lines_of_code, lines_of_code = Coverage.get_summary(
+            Coverage.process_file(file_coverage.filename)
         )
         missed_lines_of_code = lines_of_code - covered_lines_of_code
         coverage_pct = 100 * covered_lines_of_code / lines_of_code
@@ -129,15 +118,6 @@ end
 """
     printf(fmt, args...)
 
-Print formatted text.
-
-Arguments
----------
-* TODO
-
-Return value
-------------
-* TODO
-
+Print formatted text using format defined by `fmt` and values provided in `args`.
 """
 printf(fmt, args...) = @eval @printf($fmt, $(args...))
