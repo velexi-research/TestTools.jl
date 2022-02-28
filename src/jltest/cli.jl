@@ -13,7 +13,6 @@ part of the TestTools.jl package, including this file, may be copied, modified, 
 or distributed except according to the terms contained in the LICENSE file.
 -------------------------------------------------------------------------------------------
 """
-
 # --- Exports
 
 export parse_args, run
