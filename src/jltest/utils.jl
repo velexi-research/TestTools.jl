@@ -42,7 +42,7 @@ function run_tests(tests::Vector{String}; mod=Main)
             file_name = test
             module_name = splitext(test)[1]
         else
-            file_name = string(f, ".jl")
+            file_name = string(test, ".jl")
             module_name = test
         end
 
