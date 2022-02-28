@@ -55,7 +55,7 @@ end
 #end
 
 struct TestSetPlusException <: Exception
-    msg::AbstractString
+    msg::String
 end
 
 # --- Functions/Methods
