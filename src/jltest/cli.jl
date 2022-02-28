@@ -86,7 +86,6 @@ function run(
     fail_fast::Bool=false,
     verbose::Bool=false,
 )
-
     # --- Preparations
 
     # Set TestSet type
