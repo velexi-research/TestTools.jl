@@ -17,11 +17,10 @@ using TestTools.jltest
              eiusmod tempor incididunt ut
              labore et dolore magna aliqua.
              Ut enim ad minim veniam, quis nostrud
-             exercitation ullamco aboris.""" ==
-          """Lorem ipsum dolor sit amet,
-             consectetur adipiscing elit, sed do
-             eiusmod temper incididunt ut
-             labore et dolore magna aliqua.
-             Ut enim ad minim veniam, quis nostrud
-             exercitation ullamco aboris."""
+             exercitation ullamco aboris.""" == """Lorem ipsum dolor sit amet,
+                                                   consectetur adipiscing elit, sed do
+                                                   eiusmod temper incididunt ut
+                                                   labore et dolore magna aliqua.
+                                                   Ut enim ad minim veniam, quis nostrud
+                                                   exercitation ullamco aboris."""
 end

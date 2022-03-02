@@ -13,5 +13,5 @@ using TestTools.jltest
 
 @testset TestSetPlus "TestSetPlus: Dict diff test" begin
     @test Dict(:foo => "bar", :baz => [1, 4, 5], :biz => nothing) ==
-          Dict(:baz => [1, 7, 5], :biz => 42)
+        Dict(:baz => [1, 7, 5], :biz => 42)
 end

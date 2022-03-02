@@ -16,63 +16,83 @@ using TestTools.jltest
 
 # Array diff test
 output = @capture_out begin
-    TestTools.jltest.run_tests([joinpath(dirname(@__FILE__),
-                                         "TestSetPlus_failing_tests",
-                                         "TestSetPlus_Array_diff_test.jl")])
+    TestTools.jltest.run_tests([
+        joinpath(
+            dirname(@__FILE__),
+            "TestSetPlus_failing_tests",
+            "TestSetPlus_Array_diff_test.jl",
+        ),
+    ])
 end
 
-prefix = join([
-    "=====================================================",
-    "TestSetPlus: Array diff test: Test Failed",
-    "  Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]",
-    "",
-    "  Diff:", "[3, 5, 6, 1, (-)6, (+)9, 8]",
-   ], "\n")
+prefix = join(
+    [
+        "=====================================================",
+        "TestSetPlus: Array diff test: Test Failed",
+        "  Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]",
+        "",
+        "  Diff:",
+        "[3, 5, 6, 1, (-)6, (+)9, 8]",
+    ],
+    "\n",
+)
 
-@test startswith(split(lstrip(output), '\n', limit=2)[2], prefix)
+@test startswith(split(lstrip(output), '\n'; limit=2)[2], prefix)
 
 # Dict diff test
 output = @capture_out begin
-    TestTools.jltest.run_tests([joinpath(dirname(@__FILE__),
-                                         "TestSetPlus_failing_tests",
-                                         "TestSetPlus_Dict_diff_test.jl")])
+    TestTools.jltest.run_tests([
+        joinpath(
+            dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Dict_diff_test.jl"
+        ),
+    ])
 end
 
-prefix = join([
-    "=====================================================",
-    "TestSetPlus: Dict diff test: Test Failed",
-    "  Expression: Dict(:foo => \"bar\", :baz => [1, 4, 5], :biz => nothing) == Dict(:baz => [1, 7, 5], :biz => 42)",
-    "",
-    "  Diff:",
-    "[Dict{Symbol, Any}, (-):biz => nothing, (-):baz => [1, 4, 5], (-):foo => \"bar\", (+):biz => 42, (+):baz => [1, 7, 5]]",
-   ], "\n")
+prefix = join(
+    [
+        "=====================================================",
+        "TestSetPlus: Dict diff test: Test Failed",
+        "  Expression: Dict(:foo => \"bar\", :baz => [1, 4, 5], :biz => nothing) == Dict(:baz => [1, 7, 5], :biz => 42)",
+        "",
+        "  Diff:",
+        "[Dict{Symbol, Any}, (-):biz => nothing, (-):baz => [1, 4, 5], (-):foo => \"bar\", (+):biz => 42, (+):baz => [1, 7, 5]]",
+    ],
+    "\n",
+)
 
-@test startswith(split(lstrip(output), '\n', limit=2)[2], prefix)
+@test startswith(split(lstrip(output), '\n'; limit=2)[2], prefix)
 
 # String diff test
 output = @capture_out begin
-    TestTools.jltest.run_tests([joinpath(dirname(@__FILE__),
-                                         "TestSetPlus_failing_tests",
-                                         "TestSetPlus_String_diff_test.jl")])
+    TestTools.jltest.run_tests([
+        joinpath(
+            dirname(@__FILE__),
+            "TestSetPlus_failing_tests",
+            "TestSetPlus_String_diff_test.jl",
+        ),
+    ])
 end
 
-prefix = join([
-    "=====================================================",
-    "TestSetPlus: String diff test: Test Failed",
-    "  Expression: \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, sed do\\neiusmod tempor incididunt ut\\nlabore et dolore magna aliqua.\\nUt enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\" == \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, sed do\\neiusmod temper incididunt ut\\nlabore et dolore magna aliqua.\\nUt enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\"",
-    "",
-    "  Diff:",
-    "\"\"\"",
-    "  Lorem ipsum dolor sit amet,",
-    "  consectetur adipiscing elit, sed do",
-    "- eiusmod tempor incididunt ut",
-    "+ eiusmod temper incididunt ut",
-    "  labore et dolore magna aliqua.",
-    "  Ut enim ad minim veniam, quis nostrud",
-    "  exercitation ullamco aboris.\"\"\"",
-   ], "\n")
+prefix = join(
+    [
+        "=====================================================",
+        "TestSetPlus: String diff test: Test Failed",
+        "  Expression: \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, sed do\\neiusmod tempor incididunt ut\\nlabore et dolore magna aliqua.\\nUt enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\" == \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, sed do\\neiusmod temper incididunt ut\\nlabore et dolore magna aliqua.\\nUt enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\"",
+        "",
+        "  Diff:",
+        "\"\"\"",
+        "  Lorem ipsum dolor sit amet,",
+        "  consectetur adipiscing elit, sed do",
+        "- eiusmod tempor incididunt ut",
+        "+ eiusmod temper incididunt ut",
+        "  labore et dolore magna aliqua.",
+        "  Ut enim ad minim veniam, quis nostrud",
+        "  exercitation ullamco aboris.\"\"\"",
+    ],
+    "\n",
+)
 
-@test startswith(split(lstrip(output), '\n', limit=2)[2], prefix)
+@test startswith(split(lstrip(output), '\n'; limit=2)[2], prefix)
 
 #=
 try
