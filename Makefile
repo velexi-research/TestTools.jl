@@ -10,10 +10,14 @@
 all: test
 
 test check:
+	@echo Preparations
 	find . -name "*.jl.*.cov" -exec rm -f {} \;  # Remove old coverage files
+	@echo
+	@echo Unit Tests
 	julia --color=yes -e 'import Pkg; Pkg.test(coverage=true)'
 	@echo
-	coverage.jl
+	@echo Code Coverage
+	@jlcoverage
 
 # Maintenance
 clean:
