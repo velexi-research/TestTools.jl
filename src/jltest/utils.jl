@@ -42,25 +42,34 @@ function run_tests(tests::Vector{String}; mod=Main)
             file_name = test
             module_name = splitext(test)[1]
         else
-            file_name = string(test, ".jl")
-            module_name = test
+            if isdir(test)
+                # `test` is a directory
+                subtests = autodetect_tests(test)
+                run_tests(subtests)
+
+                # Skip to next item in `tests`
+                continue
+            else
+                # `test` is a module
+                file_name = string(test, ".jl")
+                module_name = test
+            end
         end
 
         # Run test
         print(module_name, ": ")
         Base.include(mod, abspath(test))
-        println()
     end
 end
 
 """
-    autodetect_tests(; dir::AbstractString=pwd())
+    autodetect_tests(dir::AbstractString)
 
 Return all Julia files in `dir` that contain unit tests.
 """
-function autodetect_tests(; dir::AbstractString=pwd())::Vector{String}
-    tests = readdir(dir)
-    tests = filter(f -> endswith(f, ".jl") && f != "runtests.jl", tests)
+function autodetect_tests(dir::AbstractString)::Vector{String}
+    files = filter(f -> endswith(f, ".jl") && f != "runtests.jl", readdir(dir))
+    tests = [joinpath(dir, file) for file in files]
 
     # TODO: filter `tests` to exclude files that do not contain unit tests
 

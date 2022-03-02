@@ -52,8 +52,9 @@ function parse_args()::Dict
 
         "tests"
         help =
-            "Julia test to run. If omitted, all Julia files in the current directory " *
-            "are run as tests."
+            "tests to run. Any directories present in `tests` are searched " *
+            "(recursively) for tests to run. If `tests` is omitted, the current " *
+            "directory is searched (recursively) for tests to run."
         nargs = '*'
 
         # TODO: add support for setting module and enabling doctests
@@ -73,6 +74,8 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 
 # Keyword Arguments
 
+* `name::AbstractString`: name to use for testset used to group `tests`
+
 * `mod::Union{Module,Nothing}=nothing`: module to run doctests for
 
 * `fail_fast::Bool=false`: stop testing at first failure
@@ -81,6 +84,7 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 """
 function run(
     tests::Vector{String};
+    name::AbstractString="",
     mod::Union{Module,Nothing}=nothing,
     fail_fast::Bool=false,
     verbose::Bool=false,
@@ -110,10 +114,11 @@ function run(
     #    doctest(mod)
     #end
 
-    @testset testset_options test_set_type "Unit tests" begin
-        if length(tests) == 0
-            tests = autodetect_tests()
-        end
+    # Unit tests
+    if length(tests) == 0
+        tests = autodetect_tests(pwd())
+    end
+    @testset test_set_type "$name" begin
         run_tests(tests)
     end
 end
