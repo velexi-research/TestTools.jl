@@ -12,8 +12,6 @@ using Suppressor
 # Local modules
 using TestTools.jltest
 
-using DeepDiffs
-
 # --- Tests
 
 # Array diff test
