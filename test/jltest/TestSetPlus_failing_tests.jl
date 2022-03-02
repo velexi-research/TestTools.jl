@@ -1,5 +1,13 @@
 """
-TODO
+Unit tests for the `jltest` module.
+
+This set of unit tests checks the behavior of `jltest` for failing tests.
+-------------------------------------------------------------------------------------------
+COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
+license terms in the LICENSE file found in the root directory of this distribution. No
+part of the TestTools.jl package, including this file, may be copied, modified, propagated,
+or distributed except according to the terms contained in the LICENSE file.
+-------------------------------------------------------------------------------------------
 """
 # --- Imports
 
@@ -52,10 +60,12 @@ prefix = join(
     [
         "=====================================================",
         "TestSetPlus: Dict diff test: Test Failed",
-        "  Expression: Dict(:foo => \"bar\", :baz => [1, 4, 5], :biz => nothing) == Dict(:baz => [1, 7, 5], :biz => 42)",
+        "  Expression: Dict(:foo => \"bar\", :baz => [1, 4, 5], :biz => nothing) " *
+        "== Dict(:baz => [1, 7, 5], :biz => 42)",
         "",
         "  Diff:",
-        "[Dict{Symbol, Any}, (-):biz => nothing, (-):baz => [1, 4, 5], (-):foo => \"bar\", (+):biz => 42, (+):baz => [1, 7, 5]]",
+        "[Dict{Symbol, Any}, (-):biz => nothing, (-):baz => [1, 4, 5], " *
+        "(-):foo => \"bar\", (+):biz => 42, (+):baz => [1, 7, 5]]",
     ],
     "\n",
 )
@@ -77,7 +87,12 @@ prefix = join(
     [
         "=====================================================",
         "TestSetPlus: String diff test: Test Failed",
-        "  Expression: \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, sed do\\neiusmod tempor incididunt ut\\nlabore et dolore magna aliqua.\\nUt enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\" == \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, sed do\\neiusmod temper incididunt ut\\nlabore et dolore magna aliqua.\\nUt enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\"",
+        "  Expression: \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, " *
+        "sed do\\neiusmod tempor incididunt ut\\nlabore et dolore magna aliqua.\\nUt " *
+        "enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\" " *
+        "== \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, sed do\\n" *
+        "eiusmod temper incididunt ut\\nlabore et dolore magna aliqua.\\nUt enim ad " *
+        "minim veniam, quis nostrud\\nexercitation ullamco aboris.\"",
         "",
         "  Diff:",
         "\"\"\"",
