@@ -24,7 +24,7 @@ using TestTools.jltest
 # --- Private helper functions
 
 function check_expected_prefix(output::AbstractString, prefix::String)
-    return startswith(split(lstrip(output), '\n'; limit=2)[2], prefix)
+    return startswith(lstrip(output), prefix)
 end
 
 # --- Tests
@@ -32,11 +32,10 @@ end
 # ------ Failing tests with diffs
 
 # Array equality test
-test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Array_equality_test.jl"
-)
 output = @capture_out begin
-    TestTools.jltest.run_tests([test_file])
+    @testset TestSetPlus "TestSetPlus: Array equality test" begin
+        @test [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
+    end
 end
 
 prefix = join(
@@ -51,7 +50,6 @@ prefix = join(
     ],
     "\n",
 )
-
 @test check_expected_prefix(output, prefix)
 
 # Dict equality test
@@ -59,7 +57,10 @@ test_file = joinpath(
     dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Dict_equality_test.jl"
 )
 output = @capture_out begin
-    TestTools.jltest.run_tests([test_file])
+    @testset TestSetPlus "TestSetPlus: Dict equality test" begin
+        @test Dict(:foo => "bar", :baz => [1, 4, 5], :biz => nothing) ==
+            Dict(:baz => [1, 7, 5], :biz => 42)
+    end
 end
 
 prefix = join(
@@ -84,7 +85,19 @@ test_file = joinpath(
     dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_String_equality_test.jl"
 )
 output = @capture_out begin
-    TestTools.jltest.run_tests([test_file])
+    @testset TestSetPlus "TestSetPlus: String equality test" begin
+        @test """Lorem ipsum dolor sit amet,
+                 consectetur adipiscing elit, sed do
+                 eiusmod tempor incididunt ut
+                 labore et dolore magna aliqua.
+                 Ut enim ad minim veniam, quis nostrud
+                 exercitation ullamco aboris.""" == """Lorem ipsum dolor sit amet,
+                                                       consectetur adipiscing elit, sed do
+                                                       eiusmod temper incididunt ut
+                                                       labore et dolore magna aliqua.
+                                                       Ut enim ad minim veniam, quis nostrud
+                                                       exercitation ullamco aboris."""
+    end
 end
 
 prefix = join(
@@ -123,13 +136,15 @@ test_file = joinpath(
     "TestSetPlus_Boolean_expression_test.jl",
 )
 output = @capture_out begin
-    TestTools.jltest.run_tests([test_file])
+    @testset TestSetPlus "TestSetPlus: Boolean expression test" begin
+        @test iseven(7)
+    end
 end
 
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: Boolean expression test: Test Failed at $(test_file):22",
+        "TestSetPlus: Boolean expression test: Test Failed at $(@__FILE__):140",
         "  Expression: iseven(7)",
         "",
         "Stacktrace:",
@@ -144,13 +159,15 @@ test_file = joinpath(
     dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Exception_test.jl"
 )
 output = @capture_out begin
-    TestTools.jltest.run_tests([test_file])
+    @testset TestSetPlus "TestSetPlus: Exception test" begin
+        throw(ErrorException("This test is supposed to throw an error"))
+    end
 end
 
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: Exception test: Error During Test at $(test_file):21",
+        "TestSetPlus: Exception test: Error During Test at $(@__FILE__):162",
         "  Got exception outside of a @test",
         "  This test is supposed to throw an error",
         "  Stacktrace:",
@@ -166,13 +183,15 @@ test_file = joinpath(
 )
 
 output = @capture_out begin
-    TestTools.jltest.run_tests([test_file])
+    @testset TestSetPlus "TestSetPlus: inequality test" begin
+        @test 1 > 2
+    end
 end
 
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: inequality test: Test Failed at $(test_file):22",
+        "TestSetPlus: inequality test: Test Failed at $(@__FILE__):187",
         "  Expression: 1 > 2",
         "   Evaluated: 1 > 2",
         "",
@@ -189,7 +208,9 @@ test_file = joinpath(
 )
 
 output = @capture_out begin
-    TestTools.jltest.run_tests([test_file])
+    @testset TestSetPlus "TestSetPlus: Matrix equality test" begin
+        @test [1 2; 3 4] == [1 4; 3 4]
+    end
 end
 
 prefix = join(
