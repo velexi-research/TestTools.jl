@@ -35,11 +35,10 @@ names in `tests` may be specified with or without the `.jl` extension.
 * `mod`: Julia module that tests should be run within
 """
 function run_tests(tests::Vector{String}; mod=Main)
-    println()
     for test in tests
         # Construct test file and test module names
         if endswith(test, ".jl")
-            file_name = test
+            test_file = test
             module_name = splitext(test)[1]
         else
             if isdir(test)
@@ -51,14 +50,15 @@ function run_tests(tests::Vector{String}; mod=Main)
                 continue
             else
                 # `test` is a module
-                file_name = string(test, ".jl")
+                test_file = join([test, ".jl"])
                 module_name = test
             end
         end
 
         # Run test
+        println()
         print(module_name, ": ")
-        Base.include(mod, abspath(test))
+        Base.include(mod, abspath(test_file))
     end
 end
 
