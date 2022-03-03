@@ -3,6 +3,10 @@ Unit tests for the `TestSetPlus` type.
 
 This set of unit tests checks the behavior of `TestSetPlus` for failing tests.
 
+Notes
+-----
+* For the unit tests in this files, failures and errors are expected.
+
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
 license terms in the LICENSE file found in the root directory of this distribution. No
@@ -133,7 +137,7 @@ end
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: Boolean expression test: Test Failed at $(@__FILE__):140",
+        "TestSetPlus: Boolean expression test: Test Failed at $(@__FILE__):133",
         "  Expression: iseven(7)",
         "",
         "Stacktrace:",
@@ -153,7 +157,7 @@ end
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: Exception test: Error During Test at $(@__FILE__):162",
+        "TestSetPlus: Exception test: Error During Test at $(@__FILE__):152",
         "  Got exception outside of a @test",
         "  This test is supposed to throw an error",
         "  Stacktrace:",
@@ -173,7 +177,7 @@ end
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: inequality test: Test Failed at $(@__FILE__):187",
+        "TestSetPlus: inequality test: Test Failed at $(@__FILE__):173",
         "  Expression: 1 > 2",
         "   Evaluated: 1 > 2",
         "",
@@ -204,3 +208,8 @@ prefix = join(
 )
 
 @test check_expected_prefix(output, prefix)
+
+# --- Emit message about expected failures and errors
+
+println()
+@info "For these $(basename(@__FILE__)), 6 failures and 1 error are expected."
