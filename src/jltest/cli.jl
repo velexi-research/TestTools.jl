@@ -89,7 +89,7 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 """
 function run(
     tests::Vector{String};
-    name::AbstractString="",
+    name::AbstractString="All tests",
     mod::Union{Module,Nothing}=nothing,
     fail_fast::Bool=false,
     verbose::Bool=false,
@@ -123,9 +123,9 @@ function run(
     if length(tests) == 0
         tests = autodetect_tests(pwd())
     end
-    @testset test_set_type "$name" begin
-        run_tests(tests)
-    end
+    run_tests(tests; name=name, test_set_type=test_set_type)
+
+    return nothing
 end
 
 end  # End of jltest.cli module
