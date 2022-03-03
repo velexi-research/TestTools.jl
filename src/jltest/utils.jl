@@ -24,7 +24,7 @@ using Documenter
 # --- Functions/Methods
 
 """
-    run_tests(tests::Vector{String}; <keyword arguments>)
+    run_tests(tests::Vector{<:AbstractString}; <keyword arguments>)
 
 Run unit tests contained in the list of files or modules provided in `tests`. If `tests`
 is empty, run all tests contained in files present in the current working directory. File
@@ -32,33 +32,58 @@ names in `tests` may be specified with or without the `.jl` extension.
 
 # Keyword Arguments
 
+* `name`: name to use for test set used to group tests
+
+* `test_set_type`: type of test set to use to group tests
+
 * `mod`: Julia module that tests should be run within
 """
-function run_tests(tests::Vector{String}; mod=Main)
-    for test in tests
-        # Construct test file and test module names
-        if endswith(test, ".jl")
-            test_file = test
-            module_name = splitext(test)[1]
-        else
-            if isdir(test)
-                # `test` is a directory
-                subtests = autodetect_tests(test)
-                run_tests(subtests)
+function run_tests(
+    tests::Vector{<:AbstractString};
+    name::AbstractString="",
+    test_set_type::Type=TestSetPlus,
+    mod=Main,
+)
+    # --- Preparations
 
-                # Skip to next item in `tests`
-                continue
+    # Separate tests into files and directories
+    test_dirs = []
+    test_files = Dict()
+    for test in tests
+        if isdir(test)
+            # `test` is a directory
+            push!(test_dirs, test)
+
+        else
+            # For test files, construct file and module names
+            if endswith(test, ".jl")
+                file_name = test
+                module_name = splitext(test)[1]
             else
                 # `test` is a module
-                test_file = join([test, ".jl"])
+                file_name = join([test, ".jl"])
                 module_name = test
             end
-        end
 
-        # Run test
-        println()
-        print(module_name, ": ")
-        Base.include(mod, abspath(test_file))
+            test_files[module_name] = file_name
+        end
+    end
+
+    # --- Run tests
+
+    # Run tests files
+    @testset test_set_type "$name" begin
+        for (module_name, file_name) in test_files
+            # Run test
+            println()
+            print(module_name, ": ")
+            Base.include(mod, abspath(file_name))
+        end
+    end
+
+    # Run tests in directories
+    for dir in test_dirs
+        run_tests(autodetect_tests(dir))
     end
 end
 
