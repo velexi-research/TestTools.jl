@@ -1,5 +1,5 @@
 """
-Unit tests for the methods in `jltest/utils.jl`. 
+Unit tests for the methods in `jltest/utils.jl`.
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
@@ -13,13 +13,51 @@ or distributed except according to the terms contained in the LICENSE file.
 # Standard library
 using Test
 
+# External packages
+using Suppressor
+
 # Local modules
 using TestTools.jltest
 
 # --- Tests
 
 @testset TestSetPlus "TestSetPlus: run_tests" begin
-    @test 1 == 2 broken = true
+    # --- Preparations
+
+    dir = dirname(@__FILE__)
+
+    # --- test is named with ".jl" extension
+
+    tests = [joinpath(dir, "utils_tests", "some_tests.jl")]
+    output = @capture_out begin
+        run_tests(tests)
+    end
+    expected_output = "$(joinpath(dir, "utils_tests", "some_tests")): .."
+    @test strip(output) == expected_output
+
+    # --- test is named without ".jl" extension
+
+    tests = [joinpath(dir, "utils_tests", "more_tests")]
+    output = @capture_out begin
+        run_tests(tests)
+    end
+    expected_output = "$(joinpath(dir, "utils_tests", "more_tests")): .."
+    @test strip(output) == expected_output
+
+    # --- test is a directory
+
+    tests = [joinpath(dir, "utils_tests")]
+    output = @capture_out begin
+        run_tests(tests)
+    end
+    output_lines = split(strip(output), '\n')
+    expected_output_lines = [
+        "$(joinpath(dir, "utils_tests", "more_tests")): ..",
+        "$(joinpath(dir, "utils_tests", "some_tests")): ..",
+    ]
+    for line in expected_output_lines
+        @test line in output_lines
+    end
 end
 
 @testset TestSetPlus "TestSetPlus: autodetect_tests" begin

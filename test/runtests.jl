@@ -53,7 +53,6 @@ print("jltest/TestSetPlus_failing_tests: ")
     expected_output = """
 jltest/TestSetPlus_failing_tests: .......
 
-
 Test Summary:                            | Pass  Fail  Error  Total
 TestSetPlus                              |    7     6      1     14
   failing tests                          |    7     6      1     14
