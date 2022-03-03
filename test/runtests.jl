@@ -16,14 +16,17 @@ using Suppressor
 # Local package
 using TestTools
 
-# --- Run tests
-
-# ------ Normal unit tests
+# --- Normal unit tests
 
 tests = ["jltest/TestSetPlus_passing_tests.jl"]
 TestTools.jltest.run(tests; name="jltest", verbose=true)
 
-# ------ jltest unit tests that test the behavior of failing tests
+# --- jltest unit tests that test fail fast behavior (i.e., when testset type is
+#     TestSetPlus{FallbackTestSet})
+
+TestTools.jltest.run(["jltest/TestSetPlus_fail_fast_tests.jl"]; name="fail fast tests")
+
+# --- jltest unit tests that test the behavior of failing tests
 
 local error_type, error_message
 output = @capture_out begin
