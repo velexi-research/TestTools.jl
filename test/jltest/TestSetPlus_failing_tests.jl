@@ -53,9 +53,6 @@ prefix = join(
 @test check_expected_prefix(output, prefix)
 
 # Dict equality test
-test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Dict_equality_test.jl"
-)
 output = @capture_out begin
     @testset TestSetPlus "TestSetPlus: Dict equality test" begin
         @test Dict(:foo => "bar", :baz => [1, 4, 5], :biz => nothing) ==
@@ -81,9 +78,6 @@ prefix = join(
 @test check_expected_prefix(output, prefix)
 
 # String equality test
-test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_String_equality_test.jl"
-)
 output = @capture_out begin
     @testset TestSetPlus "TestSetPlus: String equality test" begin
         @test """Lorem ipsum dolor sit amet,
@@ -130,11 +124,6 @@ prefix = join(
 # ------ Failing tests without diffs
 
 # Boolean expression test
-test_file = joinpath(
-    dirname(@__FILE__),
-    "TestSetPlus_failing_tests",
-    "TestSetPlus_Boolean_expression_test.jl",
-)
 output = @capture_out begin
     @testset TestSetPlus "TestSetPlus: Boolean expression test" begin
         @test iseven(7)
@@ -155,9 +144,6 @@ prefix = join(
 @test check_expected_prefix(output, prefix)
 
 # Exception test
-test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Exception_test.jl"
-)
 output = @capture_out begin
     @testset TestSetPlus "TestSetPlus: Exception test" begin
         throw(ErrorException("This test is supposed to throw an error"))
@@ -178,10 +164,6 @@ prefix = join(
 @test check_expected_prefix(output, prefix)
 
 # Inequality test
-test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_inequality_test.jl"
-)
-
 output = @capture_out begin
     @testset TestSetPlus "TestSetPlus: inequality test" begin
         @test 1 > 2
@@ -203,10 +185,6 @@ prefix = join(
 @test check_expected_prefix(output, prefix)
 
 # Matrix equality test
-test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Matrix_equality_test.jl"
-)
-
 output = @capture_out begin
     @testset TestSetPlus "TestSetPlus: Matrix equality test" begin
         @test [1 2; 3 4] == [1 4; 3 4]
