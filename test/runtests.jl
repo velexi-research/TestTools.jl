@@ -45,18 +45,22 @@ print("jltest/TestSetPlus_failing_tests: ")
 @testset TestSetPlus "TestSetPlus: check failed tests" begin
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 3 passed, 3 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 7 passed, 6 failed, 1 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = """
-jltest/TestSetPlus_failing_tests: ...
+jltest/TestSetPlus_failing_tests: .......
 
-Test Summary:                     | Pass  Fail  Total
-TestSetPlus                       |    3     3      6
-  failing tests                   |    3     3      6
-    TestSetPlus: Array diff test  |          1      1
-    TestSetPlus: Dict diff test   |          1      1
-    TestSetPlus: String diff test |          1      1
+Test Summary:                            | Pass  Fail  Error  Total
+TestSetPlus                              |    7     6      1     14
+  failing tests                          |    7     6      1     14
+    TestSetPlus: Array equality test     |          1             1
+    TestSetPlus: Dict equality test      |          1             1
+    TestSetPlus: String equality test    |          1             1
+    TestSetPlus: Boolean expression test |          1             1
+    TestSetPlus: Exception test          |                 1      1
+    TestSetPlus: inequality test         |          1             1
+    TestSetPlus: Matrix equality test    |          1             1
 """
     @test strip(output) == strip(expected_output)
 end

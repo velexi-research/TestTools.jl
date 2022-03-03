@@ -30,9 +30,9 @@ end
 
 # ------ Failing tests with diffs
 
-# Array diff test
+# Array equality test
 test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Array_diff_test.jl"
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Array_equality_test.jl"
 )
 output = @capture_out begin
     TestTools.jltest.run_tests([test_file])
@@ -41,7 +41,7 @@ end
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: Array diff test: Test Failed",
+        "TestSetPlus: Array equality test: Test Failed",
         "  Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]",
         "",
         "  Diff:",
@@ -53,9 +53,9 @@ prefix = join(
 
 @test check_expected_prefix(output, prefix)
 
-# Dict diff test
+# Dict equality test
 test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Dict_diff_test.jl"
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Dict_equality_test.jl"
 )
 output = @capture_out begin
     TestTools.jltest.run_tests([test_file])
@@ -64,7 +64,7 @@ end
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: Dict diff test: Test Failed",
+        "TestSetPlus: Dict equality test: Test Failed",
         "  Expression: Dict(:foo => \"bar\", :baz => [1, 4, 5], :biz => nothing) " *
         "== Dict(:baz => [1, 7, 5], :biz => 42)",
         "",
@@ -78,9 +78,9 @@ prefix = join(
 
 @test check_expected_prefix(output, prefix)
 
-# String diff test
+# String equality test
 test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_String_diff_test.jl"
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_String_equality_test.jl"
 )
 output = @capture_out begin
     TestTools.jltest.run_tests([test_file])
@@ -89,7 +89,7 @@ end
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: String diff test: Test Failed",
+        "TestSetPlus: String equality test: Test Failed",
         "  Expression: \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, " *
         "sed do\\neiusmod tempor incididunt ut\\nlabore et dolore magna aliqua.\\nUt " *
         "enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\" " *
@@ -182,9 +182,9 @@ prefix = join(
 
 @test check_expected_prefix(output, prefix)
 
-# Matrix diff test
+# Matrix equality test
 test_file = joinpath(
-    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Matrix_diff_test.jl"
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Matrix_equality_test.jl"
 )
 
 output = @capture_out begin
@@ -194,7 +194,7 @@ end
 prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: Matrix diff test: Test Failed",
+        "TestSetPlus: Matrix equality test: Test Failed",
         "  Expression: [1 2; 3 4] == [1 4; 3 4]",
         "",
         "  Diff:",
