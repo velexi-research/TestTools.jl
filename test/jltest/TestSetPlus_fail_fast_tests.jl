@@ -14,6 +14,7 @@ or distributed except according to the terms contained in the LICENSE file.
 # --- Imports
 
 # Standard library
+using Test
 using Test: DefaultTestSet, FallbackTestSet, FallbackTestSetException
 
 # External packages
@@ -55,7 +56,7 @@ end
     prefix = join(
         [
             "=====================================================",
-            "Test Failed at $(@__FILE__):42",
+            "Test Failed at $(@__FILE__):43",
             "  Expression: 1 == 2",
             "   Evaluated: 1 == 2",
         ],
@@ -90,7 +91,7 @@ end
     prefix = join(
         [
             "=====================================================",
-            "Test Failed at $(@__FILE__):73",
+            "Test Failed at $(@__FILE__):74",
             "  Expression: 1 == 2",
             "   Evaluated: 1 == 2",
         ],
@@ -132,7 +133,7 @@ end
 
     prefix = join(
         [
-            "Failing test: Test Failed at $(@__FILE__):117",
+            "Failing test: Test Failed at $(@__FILE__):118",
             "  Expression: 1 == 2",
             "   Evaluated: 1 == 2",
         ],
