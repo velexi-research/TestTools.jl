@@ -1,8 +1,9 @@
 """
-Unit tests for the `jltest` module.
+Unit tests for the `TestSetPlus` type.
 
-This set of unit tests checks the behavior of `jltest` when the test set type is
-TestSetPlus{FallbackTestSet} (i.e., fail fast).
+This set of unit tests checks the behavior of `TestSetPlus` when the test set type is
+`TestSetPlus{FallbackTestSet}` (i.e., fail fast).
+
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
 license terms in the LICENSE file found in the root directory of this distribution. No
@@ -54,7 +55,7 @@ end
     prefix = join(
         [
             "=====================================================",
-            "Test Failed at $(@__FILE__):41",
+            "Test Failed at $(@__FILE__):42",
             "  Expression: 1 == 2",
             "   Evaluated: 1 == 2",
         ],
@@ -89,7 +90,7 @@ end
     prefix = join(
         [
             "=====================================================",
-            "Test Failed at $(@__FILE__):72",
+            "Test Failed at $(@__FILE__):73",
             "  Expression: 1 == 2",
             "   Evaluated: 1 == 2",
         ],
@@ -131,7 +132,7 @@ end
 
     prefix = join(
         [
-            "Failing test: Test Failed at $(@__FILE__):116",
+            "Failing test: Test Failed at $(@__FILE__):117",
             "  Expression: 1 == 2",
             "   Evaluated: 1 == 2",
         ],

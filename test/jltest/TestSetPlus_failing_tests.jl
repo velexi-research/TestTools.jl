@@ -1,7 +1,8 @@
 """
-Unit tests for the `jltest` module.
+Unit tests for the `TestSetPlus` type.
 
-This set of unit tests checks the behavior of `jltest` for failing tests.
+This set of unit tests checks the behavior of `TestSetPlus` for failing tests.
+
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
 license terms in the LICENSE file found in the root directory of this distribution. No
