@@ -18,7 +18,11 @@ using TestTools
 
 # --- Normal unit tests
 
-tests = ["jltest/TestSetPlus_passing_tests.jl", "jltest/TestSetPlus_fail_fast_tests.jl"]
+tests = [
+    "jltest/TestSetPlus_passing_tests.jl",
+    "jltest/TestSetPlus_fail_fast_tests.jl",
+    "jltest/utils_tests.jl",
+]
 TestTools.jltest.run(tests; name="jltest")
 
 # --- jltest unit tests that test the behavior of failing tests
