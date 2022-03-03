@@ -18,13 +18,8 @@ using TestTools
 
 # --- Normal unit tests
 
-tests = ["jltest/TestSetPlus_passing_tests.jl"]
-TestTools.jltest.run(tests; name="jltest", verbose=true)
-
-# --- jltest unit tests that test fail fast behavior (i.e., when testset type is
-#     TestSetPlus{FallbackTestSet})
-
-TestTools.jltest.run(["jltest/TestSetPlus_fail_fast_tests.jl"]; name="fail fast tests")
+tests = ["jltest/TestSetPlus_passing_tests.jl", "jltest/TestSetPlus_fail_fast_tests.jl"]
+TestTools.jltest.run(tests; name="jltest")
 
 # --- jltest unit tests that test the behavior of failing tests
 
@@ -53,6 +48,7 @@ print("jltest/TestSetPlus_failing_tests: ")
     # Check output from TestSetPlus
     expected_output = """
 jltest/TestSetPlus_failing_tests: .......
+
 
 Test Summary:                            | Pass  Fail  Error  Total
 TestSetPlus                              |    7     6      1     14
