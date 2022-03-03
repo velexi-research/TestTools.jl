@@ -102,18 +102,20 @@ function Test.record(ts::TestSetPlus{DefaultTestSet}, res::Fail)
                         println("  Expression: ", res.orig_expr)
                         printstyled("\n  Diff:\n"; color=Base.info_color())
                         println(test_expr_diff)
-                        println()
                     else
-                        # Fallback to the default printing if we don't have a pretty diff
-                        print(res)
+                        # Fallback to the default printing if there is no diff.
+                        println(res)
                     end
+                else
+                    # Fallback to the default printing for non-equality comparisons
+                    println(res)
                 end
             catch ex
-                print(res)
+                println(res)
             end
         else
-            # fallback to the default printing for non-comparisons
-            print(res)
+            # Fallback to the default printing if test_type != :test
+            println(res)
         end
 
         Base.show_backtrace(stdout, Test.scrub_backtrace(backtrace()))
