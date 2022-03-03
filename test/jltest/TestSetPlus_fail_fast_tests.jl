@@ -54,7 +54,7 @@ end
     prefix = join(
         [
             "=====================================================",
-            "Test Failed at $(@__FILE__):42",
+            "Test Failed at $(@__FILE__):41",
             "  Expression: 1 == 2",
             "   Evaluated: 1 == 2",
         ],
@@ -131,7 +131,7 @@ end
 
     prefix = join(
         [
-            "Failing test: Test Failed at $(@__FILE__):115",
+            "Failing test: Test Failed at $(@__FILE__):116",
             "  Expression: 1 == 2",
             "   Evaluated: 1 == 2",
         ],
