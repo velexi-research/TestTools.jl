@@ -127,8 +127,8 @@ end
 
 function Test.record(ts::TestSetPlus{T}, res::Error) where {T}
     # Ignore errors generated from failed FallbackTestSet
-    if occursin(r"^Test.FallbackTestSetException", res.value) || (
-        occursin(r"^TestSetExtensions.TestSetPlusException", res.value) &&
+    if occursin(r"^(Test.)*FallbackTestSetException", res.value) || (
+        occursin(r"^(TestTools.jltest.)*TestSetPlusException", res.value) &&
         occursin("FallbackTestSetException occurred", res.value)
     )
         throw(TestSetPlusException("FallbackTestSetException occurred"))
