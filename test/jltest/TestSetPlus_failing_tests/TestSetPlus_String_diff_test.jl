@@ -1,5 +1,5 @@
 """
-Failing TestSetPlus test: check behavior for failed String comparison
+Failing TestSetPlus test: check behavior for failed String equality comparison
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
@@ -18,7 +18,7 @@ using TestTools.jltest
 
 # --- Tests
 
-@testset TestSetPlus "TestSetPlus: String diff test" begin
+@testset TestSetPlus "TestSetPlus: String equality test" begin
     @test """Lorem ipsum dolor sit amet,
              consectetur adipiscing elit, sed do
              eiusmod tempor incididunt ut

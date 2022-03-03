@@ -1,5 +1,5 @@
 """
-Failing TestSetPlus test: check behavior for failed Dict comparison
+Failing TestSetPlus test: check behavior for failed Dict equality comparison
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
@@ -18,7 +18,7 @@ using TestTools.jltest
 
 # --- Tests
 
-@testset TestSetPlus "TestSetPlus: Dict diff test" begin
+@testset TestSetPlus "TestSetPlus: Dict equality test" begin
     @test Dict(:foo => "bar", :baz => [1, 4, 5], :biz => nothing) ==
         Dict(:baz => [1, 7, 5], :biz => 42)
 end

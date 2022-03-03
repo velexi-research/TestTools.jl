@@ -1,5 +1,5 @@
 """
-Failing TestSetPlus test: check behavior for failed Array equality comparison
+Failing TestSetPlus test: check behavior for failed inequality test
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
@@ -18,6 +18,6 @@ using TestTools.jltest
 
 # --- Tests
 
-@testset TestSetPlus "TestSetPlus: Array equality test" begin
-    @test [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
+@testset TestSetPlus "TestSetPlus: inequality test" begin
+    @test 1 > 2
 end

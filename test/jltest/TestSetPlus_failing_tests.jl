@@ -20,17 +20,22 @@ using Suppressor
 # Local modules
 using TestTools.jltest
 
+# --- Private helper functions
+
+function check_expected_prefix(output::AbstractString, prefix::String)
+    return startswith(split(lstrip(output), '\n'; limit=2)[2], prefix)
+end
+
 # --- Tests
 
+# ------ Failing tests with diffs
+
 # Array diff test
+test_file = joinpath(
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Array_diff_test.jl"
+)
 output = @capture_out begin
-    TestTools.jltest.run_tests([
-        joinpath(
-            dirname(@__FILE__),
-            "TestSetPlus_failing_tests",
-            "TestSetPlus_Array_diff_test.jl",
-        ),
-    ])
+    TestTools.jltest.run_tests([test_file])
 end
 
 prefix = join(
@@ -41,19 +46,19 @@ prefix = join(
         "",
         "  Diff:",
         "[3, 5, 6, 1, (-)6, (+)9, 8]",
+        "",
     ],
     "\n",
 )
 
-@test startswith(split(lstrip(output), '\n'; limit=2)[2], prefix)
+@test check_expected_prefix(output, prefix)
 
 # Dict diff test
+test_file = joinpath(
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Dict_diff_test.jl"
+)
 output = @capture_out begin
-    TestTools.jltest.run_tests([
-        joinpath(
-            dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Dict_diff_test.jl"
-        ),
-    ])
+    TestTools.jltest.run_tests([test_file])
 end
 
 prefix = join(
@@ -66,21 +71,19 @@ prefix = join(
         "  Diff:",
         "[Dict{Symbol, Any}, (-):biz => nothing, (-):baz => [1, 4, 5], " *
         "(-):foo => \"bar\", (+):biz => 42, (+):baz => [1, 7, 5]]",
+        "",
     ],
     "\n",
 )
 
-@test startswith(split(lstrip(output), '\n'; limit=2)[2], prefix)
+@test check_expected_prefix(output, prefix)
 
 # String diff test
+test_file = joinpath(
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_String_diff_test.jl"
+)
 output = @capture_out begin
-    TestTools.jltest.run_tests([
-        joinpath(
-            dirname(@__FILE__),
-            "TestSetPlus_failing_tests",
-            "TestSetPlus_String_diff_test.jl",
-        ),
-    ])
+    TestTools.jltest.run_tests([test_file])
 end
 
 prefix = join(
@@ -103,32 +106,106 @@ prefix = join(
         "  labore et dolore magna aliqua.",
         "  Ut enim ad minim veniam, quis nostrud",
         "  exercitation ullamco aboris.\"\"\"",
+        "",
     ],
     "\n",
 )
 
-@test startswith(split(lstrip(output), '\n'; limit=2)[2], prefix)
+@test check_expected_prefix(output, prefix)
 
-#=
-try
-    @info "These 4 failing tests don't have pretty diffs to display"
-    @testset TestSetPlus "not-pretty" begin
-        @testset "No pretty diff for matrices" begin
-            @test [1 2; 3 4] == [1 4; 3 4]
-        end
-        @testset "don't diff non-equality" begin
-            @test 1 > 2
-        end
-        @testset "don't diff non-comparisons" begin
-            @test iseven(7)
-        end
-        @testset "errors don't have diffs either" begin
-            throw(ErrorException("This test is supposed to throw an error"))
-        end
-    end
-catch
+# ------ Failing tests without diffs
+
+# Boolean expression test
+test_file = joinpath(
+    dirname(@__FILE__),
+    "TestSetPlus_failing_tests",
+    "TestSetPlus_Boolean_expression_test.jl",
+)
+output = @capture_out begin
+    TestTools.jltest.run_tests([test_file])
 end
 
+prefix = join(
+    [
+        "=====================================================",
+        "TestSetPlus: Boolean expression test: Test Failed at $(test_file):22",
+        "  Expression: iseven(7)",
+        "",
+        "Stacktrace:",
+    ],
+    "\n",
+)
+
+@test check_expected_prefix(output, prefix)
+
+# Exception test
+test_file = joinpath(
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Exception_test.jl"
+)
+output = @capture_out begin
+    TestTools.jltest.run_tests([test_file])
+end
+
+prefix = join(
+    [
+        "=====================================================",
+        "TestSetPlus: Exception test: Error During Test at $(test_file):21",
+        "  Got exception outside of a @test",
+        "  This test is supposed to throw an error",
+        "  Stacktrace:",
+    ],
+    "\n",
+)
+
+@test check_expected_prefix(output, prefix)
+
+# Inequality test
+test_file = joinpath(
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_inequality_test.jl"
+)
+
+output = @capture_out begin
+    TestTools.jltest.run_tests([test_file])
+end
+
+prefix = join(
+    [
+        "=====================================================",
+        "TestSetPlus: inequality test: Test Failed at $(test_file):22",
+        "  Expression: 1 > 2",
+        "   Evaluated: 1 > 2",
+        "",
+        "Stacktrace:",
+    ],
+    "\n",
+)
+
+@test check_expected_prefix(output, prefix)
+
+# Matrix diff test
+test_file = joinpath(
+    dirname(@__FILE__), "TestSetPlus_failing_tests", "TestSetPlus_Matrix_diff_test.jl"
+)
+
+output = @capture_out begin
+    TestTools.jltest.run_tests([test_file])
+end
+
+prefix = join(
+    [
+        "=====================================================",
+        "TestSetPlus: Matrix diff test: Test Failed",
+        "  Expression: [1 2; 3 4] == [1 4; 3 4]",
+        "",
+        "  Diff:",
+        "nothing",
+    ],
+    "\n",
+)
+
+@test check_expected_prefix(output, prefix)
+
+#=
 @info "TestSetPlus{FallbackTestSet} test sets should exit when the first test fails"
 @testset "TestSetPlus{FallbackTestSet} Tests" begin
     test_set_type = TestSetPlus{Test.FallbackTestSet}
