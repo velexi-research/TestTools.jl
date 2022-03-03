@@ -13,6 +13,8 @@ part of the TestTools.jl package, including this file, may be copied, modified, 
 or distributed except according to the terms contained in the LICENSE file.
 -------------------------------------------------------------------------------------------
 """
+module cli
+
 # --- Exports
 
 export parse_args, run
@@ -24,6 +26,9 @@ using Test
 
 # External packages
 using ArgParse: ArgParse
+
+# Local modules
+using TestTools.jltest
 
 # --- Functions/Methods
 
@@ -122,3 +127,5 @@ function run(
         run_tests(tests)
     end
 end
+
+end  # End of jltest.cli module
