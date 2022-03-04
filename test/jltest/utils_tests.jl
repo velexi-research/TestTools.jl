@@ -1,6 +1,10 @@
 """
 Unit tests for the methods in `jltest/utils.jl`.
 
+Notes
+-----
+* For the unit tests in this files, failures and errors are expected.
+
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
 license terms in the LICENSE file found in the root directory of this distribution. No
@@ -12,6 +16,7 @@ or distributed except according to the terms contained in the LICENSE file.
 
 # Standard library
 using Test
+using Test: DefaultTestSet
 
 # External packages
 using Suppressor
@@ -44,7 +49,7 @@ using TestTools.jltest
     expected_output = "$(joinpath(dir, "utils_tests", "more_tests")): .."
     @test strip(output) == expected_output
 
-    # --- test is a directory
+    # --- test contains only a directory
 
     tests = [joinpath(dir, "utils_tests")]
     output = @capture_out begin
@@ -54,10 +59,55 @@ using TestTools.jltest
     expected_output_lines = [
         "$(joinpath(dir, "utils_tests", "more_tests")): ..",
         "$(joinpath(dir, "utils_tests", "some_tests")): ..",
+        "$(joinpath(dir, "utils_tests", "failing_tests")): .",
+        ": Test Failed at $(joinpath(dir, "utils_tests", "failing_tests.jl")):18",
     ]
     for line in expected_output_lines
         @test line in output_lines
     end
+
+    # --- test contains both directories and files
+
+    tests = [joinpath(dir, "utils_tests"), joinpath(dir, "utils_tests", "some_tests.jl")]
+    output = @capture_out begin
+        run_tests(tests)
+    end
+    output_lines = split(strip(output), '\n')
+    expected_output_lines = [
+        "$(joinpath(dir, "utils_tests", "more_tests")): ..",
+        "$(joinpath(dir, "utils_tests", "failing_tests")): .",
+        ": Test Failed at $(joinpath(dir, "utils_tests", "failing_tests.jl")):18",
+    ]
+    for line in expected_output_lines
+        @test line in output_lines
+    end
+    expected_line = "$(joinpath(dir, "utils_tests", "some_tests")): .."
+    @test count(i -> (i == expected_line), output_lines) == 2
+
+    # --- test keyword arguments
+
+    # name
+    tests = [joinpath(dir, "utils_tests", "failing_tests.jl")]
+    name = "test-name"
+    output = @capture_out begin
+        run_tests(tests; name=name)
+    end
+    output_line_three = split(strip(output), '\n')[3]
+    @test startswith(output_line_three, name)
+
+    # test_set_type
+    test_set_type = DefaultTestSet
+    tests = [joinpath(dir, "utils_tests", "failing_tests.jl")]
+    output = @capture_out begin
+        run_tests(tests; test_set_type=test_set_type)
+    end
+    prefix =
+        "$(joinpath(dir, "utils_tests", "failing_tests")): " *
+        ": Test Failed at $(joinpath(dir, "utils_tests", "failing_tests.jl")):18"
+    @test startswith(strip(output), prefix)
+
+    # mod
+    # TODO
 end
 
 @testset TestSetPlus "TestSetPlus: autodetect_tests()" begin
@@ -79,3 +129,8 @@ end
     tests = autodetect_tests(dir)
     @test tests == []
 end
+
+# --- Emit message about expected failures and errors
+
+println()
+@info "For $(basename(@__FILE__)), 4 failures and 0 errors are expected."
