@@ -72,12 +72,14 @@ function run_tests(
     # --- Run tests
 
     # Run tests files
-    @testset test_set_type "$name" begin
-        for (module_name, file_name) in test_files
-            # Run test
-            println()
-            print(module_name, ": ")
-            Base.include(mod, abspath(file_name))
+    if !isempty(test_files)
+        @testset test_set_type "$name" begin
+            for (module_name, file_name) in test_files
+                # Run test
+                println()
+                print(module_name, ": ")
+                Base.include(mod, abspath(file_name))
+            end
         end
     end
 
