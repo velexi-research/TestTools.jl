@@ -1,5 +1,5 @@
 """
-Unit tests to test `jltest.run_tests()`.
+Unit tests to test methods in `jltest/utils.jl`
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
@@ -8,11 +8,3 @@ part of the TestTools.jl package, including this file, may be copied, modified, 
 or distributed except according to the terms contained in the LICENSE file.
 -------------------------------------------------------------------------------------------
 """
-# --- Imports
-
-using Test
-
-# --- Tests
-
-@test 1 == 1
-@test 2 == 2

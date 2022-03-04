@@ -29,46 +29,48 @@ using TestTools.jltest
 @testset TestSetPlus "jltest.run_tests()" begin
     # --- Preparations
 
-    dir = dirname(@__FILE__)
+    test_dir = joinpath(dirname(@__FILE__), "utils_tests-test_files")
 
-    # --- `tests` is empty
+    # --- `tests` is an empty list
 
     tests = Vector{String}()
-    output = @capture_out begin
-        run_tests(tests)
-    end
-    @test output == ""
+    @test_throws ArgumentError run_tests(tests)
+
+    # --- `tests` is empty string
+
+    tests = ""
+    @test_throws ArgumentError run_tests(tests)
 
     # --- `tests` contains tests named with ".jl" extension
 
-    tests = [joinpath(dir, "utils_tests", "some_tests.jl")]
+    tests = [joinpath(test_dir, "some_tests.jl")]
     output = @capture_out begin
         run_tests(tests)
     end
-    expected_output = "$(joinpath(dir, "utils_tests", "some_tests")): .."
+    expected_output = "$(joinpath(test_dir, "some_tests")): .."
     @test strip(output) == expected_output
 
     # --- `tests` contains tests named without ".jl" extension
 
-    tests = [joinpath(dir, "utils_tests", "more_tests")]
+    tests = [joinpath(test_dir, "more_tests")]
     output = @capture_out begin
         run_tests(tests)
     end
-    expected_output = "$(joinpath(dir, "utils_tests", "more_tests")): .."
+    expected_output = "$(joinpath(test_dir, "more_tests")): .."
     @test strip(output) == expected_output
 
     # --- `tests` contains only a directory
 
-    tests = [joinpath(dir, "utils_tests")]
+    tests = [test_dir]
     output = @capture_out begin
         run_tests(tests)
     end
     output_lines = split(strip(output), '\n')
     expected_output_lines = [
-        "$(joinpath(dir, "utils_tests", "more_tests")): ..",
-        "$(joinpath(dir, "utils_tests", "some_tests")): ..",
-        "$(joinpath(dir, "utils_tests", "failing_tests")): .",
-        ": Test Failed at $(joinpath(dir, "utils_tests", "failing_tests.jl")):18",
+        "$(joinpath(test_dir, "more_tests")): ..",
+        "$(joinpath(test_dir, "some_tests")): ..",
+        "$(joinpath(test_dir, "failing_tests")): .",
+        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):18",
     ]
     for line in expected_output_lines
         @test line in output_lines
@@ -76,26 +78,26 @@ using TestTools.jltest
 
     # --- `tests` contains both directories and files
 
-    tests = [joinpath(dir, "utils_tests"), joinpath(dir, "utils_tests", "some_tests.jl")]
+    tests = [test_dir, joinpath(test_dir, "some_tests.jl")]
     output = @capture_out begin
         run_tests(tests)
     end
     output_lines = split(strip(output), '\n')
     expected_output_lines = [
-        "$(joinpath(dir, "utils_tests", "more_tests")): ..",
-        "$(joinpath(dir, "utils_tests", "failing_tests")): .",
-        ": Test Failed at $(joinpath(dir, "utils_tests", "failing_tests.jl")):18",
+        "$(joinpath(test_dir, "more_tests")): ..",
+        "$(joinpath(test_dir, "failing_tests")): .",
+        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):18",
     ]
     for line in expected_output_lines
         @test line in output_lines
     end
-    expected_line = "$(joinpath(dir, "utils_tests", "some_tests")): .."
+    expected_line = "$(joinpath(test_dir, "some_tests")): .."
     @test count(i -> (i == expected_line), output_lines) == 2
 
     # --- test keyword arguments
 
     # name
-    tests = [joinpath(dir, "utils_tests", "failing_tests.jl")]
+    tests = [joinpath(test_dir, "failing_tests.jl")]
     name = "test-name"
     output = @capture_out begin
         run_tests(tests; name=name)
@@ -105,37 +107,26 @@ using TestTools.jltest
 
     # test_set_type
     test_set_type = DefaultTestSet
-    tests = [joinpath(dir, "utils_tests", "failing_tests.jl")]
+    tests = [joinpath(test_dir, "failing_tests.jl")]
     output = @capture_out begin
         run_tests(tests; test_set_type=test_set_type)
     end
     prefix =
-        "$(joinpath(dir, "utils_tests", "failing_tests")): " *
-        ": Test Failed at $(joinpath(dir, "utils_tests", "failing_tests.jl")):18"
+        "$(joinpath(test_dir, "failing_tests")): " *
+        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):18"
     @test startswith(strip(output), prefix)
-
-    # pkg
-    # TODO
 end
 
 @testset TestSetPlus "jltest.autodetect_tests()" begin
-    # normal operation
-    dir = dirname(@__FILE__)
-    tests = autodetect_tests(dir)
-    expected_tests = [
-        "TestSetPlus_fail_fast_tests.jl",
-        "TestSetPlus_passing_tests.jl",
-        "TestSetPlus_failing_tests.jl",
-        "utils_tests.jl",
-    ]
-    for test_file in expected_tests
-        @test joinpath(dir, test_file) in tests
-    end
 
-    # directory containing "runtests.jl"
-    dir = dirname(dirname(@__FILE__))
-    tests = autodetect_tests(dir)
-    @test tests == []
+    # --- normal operation
+
+    test_dir = joinpath(dirname(@__FILE__), "utils_tests-test_files")
+    tests = autodetect_tests(test_dir)
+    expected_tests = ["failing_tests.jl", "more_tests.jl", "some_tests.jl"]
+    for test_file in expected_tests
+        @test joinpath(test_dir, test_file) in tests
+    end
 end
 
 # --- Emit message about expected failures and errors

@@ -82,8 +82,6 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 
 * `name::AbstractString`: name to use for test set used to group `tests`
 
-* `pkg::Union{Module,Nothing}=nothing`: package to run doctests for
-
 * `fail_fast::Bool=false`: stop testing at first failure
 
 * `verbose::Bool=false`: print more output to the console
@@ -91,7 +89,6 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 function run(
     tests::Vector{String};
     name::AbstractString="All tests",
-    pkg::Union{Module,Nothing}=nothing,
     fail_fast::Bool=false,
     verbose::Bool=false,
 )
@@ -121,7 +118,7 @@ function run(
     if length(tests) == 0
         tests = autodetect_tests(pwd())
     end
-    run_tests(tests; name=name, pkg=pkg, test_set_type=test_set_type)
+    run_tests(tests; name=name, test_set_type=test_set_type)
 
     return nothing
 end

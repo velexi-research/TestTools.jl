@@ -10,20 +10,28 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 # --- Imports
 
+# Standard library
+using Test
+
 # External packages
 using Suppressor
 
 # Local package
-using TestTools
+using TestTools.jltest
+
+# --- Preparations
+
+# Change to test directory
+cd(dirname(@__FILE__))
 
 # --- Normal unit tests
 
 tests = [
-    "jltest/TestSetPlus_passing_tests.jl",
-    "jltest/TestSetPlus_fail_fast_tests.jl",
-    "jltest/cli_tests.jl",
+    joinpath("jltest", "TestSetPlus_passing_tests.jl"),
+    joinpath("jltest", "TestSetPlus_fail_fast_tests.jl"),
+    joinpath("jltest", "cli_tests.jl"),
 ]
-TestTools.jltest.run_tests(tests; name="jltest")
+jltest.run_tests(tests; name="jltest")
 
 # --- jltest unit tests that have expected failures and errors
 
@@ -31,12 +39,11 @@ local error_type, error_message
 
 # TestSetPlus with failing tests
 println()
+test_file = joinpath("jltest", "TestSetPlus_failing_tests.jl")
 output = @capture_out begin
     try
         @testset TestSetPlus "TestSetPlus" begin
-            TestTools.jltest.run_tests(
-                ["jltest/TestSetPlus_failing_tests.jl"]; name="failing tests"
-            )
+            jltest.run_tests(test_file; name="failing tests")
         end
     catch error
         bt = catch_backtrace()
@@ -72,10 +79,11 @@ end
 
 # utils.jl
 println()
+test_file = joinpath("jltest", "utils_tests.jl")
 output = @capture_out begin
     try
         @testset TestSetPlus "jltest" begin
-            TestTools.jltest.run_tests(["jltest/utils_tests.jl"]; name="utils tests")
+            jltest.run_tests(test_file; name="utils tests")
         end
     catch error
         bt = catch_backtrace()

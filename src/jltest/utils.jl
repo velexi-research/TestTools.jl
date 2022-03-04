@@ -20,35 +20,32 @@ using Test: AbstractTestSet
 
 # External packages
 using ArgParse
-using Documenter
 
 # --- Functions/Methods
 
 """
-    run_tests(tests::Vector{<:AbstractString}; <keyword arguments>)
+    run_tests(tests::Union{Vector{<:AbstractString}, AbstractString}; <keyword arguments>)
 
 Run unit tests contained in the list of files or modules provided in `tests`. If `tests`
-is empty, run all tests contained in files present in the current working directory. File
-names in `tests` may be specified with or without the `.jl` extension.
+is an empty list or an empty string, an `ArgumentError` is thrown. File names in `tests`
+may be specified with or without the `.jl` extension.
 
 # Keyword Arguments
 
 * `name::AbstractString`: name to use for test set used to group `tests`
-
-* `pkg::Union{Module,Nothing}=nothing`: package to run doctests for
 
 * `test_set_type::Type`: type of test set to use to group tests
 """
 function run_tests(
     tests::Vector{<:AbstractString};
     name::AbstractString="",
-    pkg::Union{Module,Nothing}=nothing,
     test_set_type::Type{<:AbstractTestSet}=TestSetPlus,
 )
     # --- Handle edge cases
 
+    # No tests to run
     if isempty(tests)
-        return nothing
+        throw(ArgumentError("`tests` may not be empty"))
     end
 
     # --- Preparations
@@ -79,13 +76,6 @@ function run_tests(
     # --- Run tests
 
     @testset test_set_type "$name" begin
-        # Run doctests
-        if !isnothing(pkg)
-            @testset "Doctests" begin
-                doctest(pkg)
-            end
-        end
-
         # Run tests files
         if !isempty(test_files)
             for (module_name, file_name) in test_files
@@ -101,6 +91,28 @@ function run_tests(
             run_tests(autodetect_tests(dir))
         end
     end
+
+    return nothing
+end
+
+# run_tests(tests::AbstractString) method that converts the argument to a Vector{String}
+function run_tests(
+    tests::AbstractString;
+    name::AbstractString="",
+    test_set_type::Type{<:AbstractTestSet}=TestSetPlus,
+)
+    # --- Handle edge cases
+
+    # No tests to run
+    if isempty(tests)
+        throw(ArgumentError("`tests` may not be empty"))
+    end
+
+    # --- Run tests
+
+    run_tests([tests]; name=name, test_set_type=test_set_type)
+
+    return nothing
 end
 
 """
