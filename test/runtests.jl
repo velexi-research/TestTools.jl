@@ -96,17 +96,17 @@ print("jltest/utils_tests: ")
 @testset TestSetPlus "jltest.utils: check for expected test failures" begin
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 36 passed, 4 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 35 passed, 4 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = """
-jltest/utils_tests: ..................
+jltest/utils_tests: .................
 
 
 Test Summary:                 | Pass  Fail  Total
-jltest                        |   36     4     40
-  utils tests                 |   36     4     40
-    jltest.run_tests()        |   31     4     35
+jltest                        |   35     4     39
+  utils tests                 |   35     4     39
+    jltest.run_tests()        |   32     4     36
                               |    2            2
                               |    2            2
                               |    5     1      6
@@ -115,7 +115,7 @@ jltest                        |   36     4     40
                               |    5     1      6
       test-name               |    1     1      2
                               |    1     1      2
-    jltest.autodetect_tests() |    5            5
+    jltest.autodetect_tests() |    3            3
 """
     @test strip(output) == strip(expected_output)
 end
