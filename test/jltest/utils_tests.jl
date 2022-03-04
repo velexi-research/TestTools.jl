@@ -31,7 +31,15 @@ using TestTools.jltest
 
     dir = dirname(@__FILE__)
 
-    # --- test is named with ".jl" extension
+    # --- `tests` is empty
+
+    tests = Vector{String}()
+    output = @capture_out begin
+        run_tests(tests)
+    end
+    @test output == ""
+
+    # --- `tests` contains tests named with ".jl" extension
 
     tests = [joinpath(dir, "utils_tests", "some_tests.jl")]
     output = @capture_out begin
@@ -40,7 +48,7 @@ using TestTools.jltest
     expected_output = "$(joinpath(dir, "utils_tests", "some_tests")): .."
     @test strip(output) == expected_output
 
-    # --- test is named without ".jl" extension
+    # --- `tests` contains tests named without ".jl" extension
 
     tests = [joinpath(dir, "utils_tests", "more_tests")]
     output = @capture_out begin
@@ -49,7 +57,7 @@ using TestTools.jltest
     expected_output = "$(joinpath(dir, "utils_tests", "more_tests")): .."
     @test strip(output) == expected_output
 
-    # --- test contains only a directory
+    # --- `tests` contains only a directory
 
     tests = [joinpath(dir, "utils_tests")]
     output = @capture_out begin
@@ -66,7 +74,7 @@ using TestTools.jltest
         @test line in output_lines
     end
 
-    # --- test contains both directories and files
+    # --- `tests` contains both directories and files
 
     tests = [joinpath(dir, "utils_tests"), joinpath(dir, "utils_tests", "some_tests.jl")]
     output = @capture_out begin
@@ -106,7 +114,7 @@ using TestTools.jltest
         ": Test Failed at $(joinpath(dir, "utils_tests", "failing_tests.jl")):18"
     @test startswith(strip(output), prefix)
 
-    # mod
+    # pkg
     # TODO
 end
 

@@ -16,6 +16,7 @@ export autodetect_tests, run_tests
 
 # Standard library
 using Test
+using Test: AbstractTestSet
 
 # External packages
 using ArgParse
@@ -32,18 +33,24 @@ names in `tests` may be specified with or without the `.jl` extension.
 
 # Keyword Arguments
 
-* `name`: name to use for test set used to group tests
+* `name::AbstractString`: name to use for test set used to group `tests`
 
-* `test_set_type`: type of test set to use to group tests
+* `pkg::Union{Module,Nothing}=nothing`: package to run doctests for
 
-* `mod`: Julia module that tests should be run within
+* `test_set_type::Type`: type of test set to use to group tests
 """
 function run_tests(
     tests::Vector{<:AbstractString};
     name::AbstractString="",
-    test_set_type::Type=TestSetPlus,
-    mod=Main,
+    pkg::Union{Module,Nothing}=nothing,
+    test_set_type::Type{<:AbstractTestSet}=TestSetPlus,
 )
+    # --- Handle edge cases
+
+    if isempty(tests)
+        return nothing
+    end
+
     # --- Preparations
 
     # Separate tests into files and directories
@@ -71,21 +78,28 @@ function run_tests(
 
     # --- Run tests
 
-    # Run tests files
-    if !isempty(test_files)
-        @testset test_set_type "$name" begin
+    @testset test_set_type "$name" begin
+        # Run doctests
+        if !isnothing(pkg)
+            @testset "Doctests" begin
+                doctest(pkg)
+            end
+        end
+
+        # Run tests files
+        if !isempty(test_files)
             for (module_name, file_name) in test_files
                 # Run test
                 println()
                 print(module_name, ": ")
-                Base.include(mod, abspath(file_name))
+                Base.include(Main, abspath(file_name))
             end
         end
-    end
 
-    # Run tests in directories
-    for dir in test_dirs
-        run_tests(autodetect_tests(dir))
+        # Run tests in directories
+        for dir in test_dirs
+            run_tests(autodetect_tests(dir))
+        end
     end
 end
 
