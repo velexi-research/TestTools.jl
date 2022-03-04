@@ -33,11 +33,12 @@ using TestTools.jltest
 # --- Functions/Methods
 
 """
-    parse_args()
+    parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
-Parse and return command-line arguments passed to the CLI.
+Parse and return CLI arguments contained in `raw_args`. By default, `raw_args` is set to
+`ARGS`, the command-line arguments provided to the executable that called `parse_args()`.
 """
-function parse_args()::Dict
+function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
     # Define the command-line interface
     description = "Run unit tests"
@@ -66,7 +67,7 @@ function parse_args()::Dict
     end
 
     # Parse command-line arguments
-    args = ArgParse.parse_args(ARGS, arg_table)
+    args = ArgParse.parse_args(raw_args, arg_table)
     args["tests"] = convert(Vector{String}, args["tests"])
 
     return args
