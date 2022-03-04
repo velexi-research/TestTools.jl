@@ -26,7 +26,7 @@ using TestTools.jltest
 
 # --- Tests
 
-@testset TestSetPlus "TestSetPlus: run_tests()" begin
+@testset TestSetPlus "jltest.run_tests()" begin
     # --- Preparations
 
     dir = dirname(@__FILE__)
@@ -110,7 +110,7 @@ using TestTools.jltest
     # TODO
 end
 
-@testset TestSetPlus "TestSetPlus: autodetect_tests()" begin
+@testset TestSetPlus "jltest.autodetect_tests()" begin
     # normal operation
     dir = dirname(@__FILE__)
     tests = autodetect_tests(dir)

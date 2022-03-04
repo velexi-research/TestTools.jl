@@ -212,4 +212,4 @@ prefix = join(
 # --- Emit message about expected failures and errors
 
 println()
-@info "For these $(basename(@__FILE__)), 6 failures and 1 error are expected."
+@info "For $(basename(@__FILE__)), 6 failures and 1 error are expected."
