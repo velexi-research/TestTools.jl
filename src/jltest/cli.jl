@@ -80,9 +80,9 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 
 # Keyword Arguments
 
-* `name::AbstractString`: name to use for testset used to group `tests`
+* `name::AbstractString`: name to use for test set used to group `tests`
 
-* `mod::Union{Module,Nothing}=nothing`: module to run doctests for
+* `pkg::Union{Module,Nothing}=nothing`: package to run doctests for
 
 * `fail_fast::Bool=false`: stop testing at first failure
 
@@ -91,13 +91,13 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 function run(
     tests::Vector{String};
     name::AbstractString="All tests",
-    mod::Union{Module,Nothing}=nothing,
+    pkg::Union{Module,Nothing}=nothing,
     fail_fast::Bool=false,
     verbose::Bool=false,
 )
     # --- Preparations
 
-    # Set TestSet type
+    # Set test set type
     if !fail_fast
         fail_fast = get(ENV, "JULIA_TEST_FAIL_FAST", "false") == "true"
     end
@@ -108,23 +108,20 @@ function run(
     end
 
     # Set test options
-    testset_options = ""
+    # TODO: figure out how to pass test set options to @testset when explicitly specifying
+    #       the test set type
+    test_set_options = ""
     if verbose
-        testset_options *= "verbose=true"
+        test_set_options *= "verbose=true"
     end
 
     # --- Run tests
-
-    #TODO: figure out how to make this work
-    #@testset "Doctests" begin
-    #    doctest(mod)
-    #end
 
     # Unit tests
     if length(tests) == 0
         tests = autodetect_tests(pwd())
     end
-    run_tests(tests; name=name, test_set_type=test_set_type)
+    run_tests(tests; name=name, pkg=pkg, test_set_type=test_set_type)
 
     return nothing
 end
