@@ -90,7 +90,7 @@ function run_tests(
 end
 
 """
-    autodetect_tests(dir::AbstractString)
+    autodetect_tests(dir::AbstractString)::Vector{String}
 
 Return all Julia files in `dir` that contain unit tests.
 """
