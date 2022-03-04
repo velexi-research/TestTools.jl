@@ -18,20 +18,19 @@ using TestTools
 
 # --- Normal unit tests
 
-tests = [
-    "jltest/TestSetPlus_passing_tests.jl",
-    "jltest/TestSetPlus_fail_fast_tests.jl",
-    "jltest/utils_tests.jl",
-]
-TestTools.jltest.run(tests; name="jltest")
+tests = ["jltest/TestSetPlus_passing_tests.jl", "jltest/TestSetPlus_fail_fast_tests.jl"]
+TestTools.jltest.run_tests(tests; name="jltest")
 
-# --- jltest unit tests that test the behavior of failing tests
+# --- jltest unit tests that have expected failures and errors
 
 local error_type, error_message
+
+# TestSetPlus with failing tests
+println()
 output = @capture_out begin
     try
         @testset TestSetPlus "TestSetPlus" begin
-            TestTools.jltest.run(
+            TestTools.jltest.run_tests(
                 ["jltest/TestSetPlus_failing_tests.jl"]; name="failing tests"
             )
         end
@@ -42,9 +41,8 @@ output = @capture_out begin
     end
 end
 
-println()
 print("jltest/TestSetPlus_failing_tests: ")
-@testset TestSetPlus "TestSetPlus: check failed tests" begin
+@testset TestSetPlus "TestSetPlus: check for expected test failures" begin
     @test error_type == TestSetException
     @test error_message ==
         "Some tests did not pass: 7 passed, 6 failed, 1 errored, 0 broken."
@@ -52,6 +50,7 @@ print("jltest/TestSetPlus_failing_tests: ")
     # Check output from TestSetPlus
     expected_output = """
 jltest/TestSetPlus_failing_tests: .......
+
 
 Test Summary:                            | Pass  Fail  Error  Total
 TestSetPlus                              |    7     6      1     14
@@ -63,6 +62,47 @@ TestSetPlus                              |    7     6      1     14
     TestSetPlus: Exception test          |                 1      1
     TestSetPlus: inequality test         |          1             1
     TestSetPlus: Matrix equality test    |          1             1
+"""
+    @test strip(output) == strip(expected_output)
+end
+
+# utils.jl
+println()
+output = @capture_out begin
+    try
+        @testset TestSetPlus "jltest" begin
+            TestTools.jltest.run_tests(["jltest/utils_tests.jl"]; name="utils tests")
+        end
+    catch error
+        bt = catch_backtrace()
+        global error_type = typeof(error)
+        global error_message = sprint(showerror, error, bt)
+    end
+end
+
+print("jltest/utils_tests: ")
+@testset TestSetPlus "jltest.utils: check for expected test failures" begin
+    @test error_type == TestSetException
+    @test error_message ==
+        "Some tests did not pass: 35 passed, 4 failed, 0 errored, 0 broken."
+
+    # Check output from TestSetPlus
+    expected_output = """
+jltest/utils_tests: .................
+
+
+Test Summary:                 | Pass  Fail  Total
+jltest                        |   35     4     39
+  utils tests                 |   35     4     39
+    jltest.run_tests()        |   30     4     34
+                              |    2            2
+                              |    2            2
+                              |    5     1      6
+                              |    2            2
+                              |    5     1      6
+      test-name               |    1     1      2
+                              |    1     1      2
+    jltest.autodetect_tests() |    5            5
 """
     @test strip(output) == strip(expected_output)
 end
