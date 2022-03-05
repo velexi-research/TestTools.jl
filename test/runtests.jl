@@ -30,6 +30,7 @@ tests = [
     joinpath("jltest", "TestSetPlus_passing_tests.jl"),
     joinpath("jltest", "TestSetPlus_fail_fast_tests.jl"),
     joinpath("jltest", "cli_tests.jl"),
+    joinpath("jlcoverage", "utils_tests.jl"),
 ]
 jltest.run_tests(tests; name="jltest")
 
