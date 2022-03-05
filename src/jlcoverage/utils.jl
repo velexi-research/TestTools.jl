@@ -10,7 +10,7 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 # --- Exports
 
-export analyze_coverage, display_coverage
+export display_coverage
 
 # --- Imports
 
@@ -24,35 +24,11 @@ using Coverage: Coverage
 # --- Public Functions/Methods
 
 """
-    analyze_coverage(src_dir::AbstractString, test_dir::AbstractString)
-
-Analyze coverage of code in `src_dir` by tests in `test_dir`.
-"""
-function analyze_coverage(src_dir::AbstractString, test_dir::AbstractString)
-
-    # Process '*.cov' files
-    coverage = Coverage.process_folder(src_dir)
-
-    # Process '*.info' files
-    coverage = Coverage.merge_coverage_counts(
-        coverage,
-        filter!(
-            let prefixes = (src_dir, "")
-                c -> any(p -> startswith(c.filename, p), prefixes)
-            end,
-            Coverage.LCOV.readfolder(test_dir),
-        ),
-    )
-
-    return coverage
-end
-
-"""
-    display_results(coverage_data::Vector)
+    display_coverage(coverage_data::Vector)
 
 Display coverage results provided in `coverage_data`.
 """
-function display_results(coverage_data::Vector)
+function display_coverage(coverage_data::Vector)
 
     # Line formats
     header_line_format = "%-35s %15s %10s %10s\n"
@@ -73,9 +49,7 @@ function display_results(coverage_data::Vector)
         filename = file_coverage.filename
         filename = filename[(findlast("src/", filename)[1] + 4):end]
 
-        covered_lines_of_code, lines_of_code = Coverage.get_summary(
-            Coverage.process_file(file_coverage.filename)
-        )
+        covered_lines_of_code, lines_of_code = Coverage.get_summary(file_coverage)
         missed_lines_of_code = lines_of_code - covered_lines_of_code
         coverage_pct = 100 * covered_lines_of_code / lines_of_code
         coverage_pct_str = isnan(coverage_pct) ? "N/A" : @sprintf "%9.1f%%" coverage_pct

@@ -74,12 +74,14 @@ function run(pkg_dir::AbstractString; verbose::Bool=false)
 
     # Construct paths to src and test directories
     src_dir = joinpath(pkg_dir, "src")
-    test_dir = joinpath(pkg_dir, "test")
 
-    # --- Analyze code coverage and display results
+    # --- Process coverage data and display results
 
-    coverage = analyze_coverage(src_dir::String, test_dir::String)
-    display_results(coverage)
+    # Process `*.cov` files in `src_dir`
+    coverage = Coverage.process_folder(src_dir::String)
+
+    # Display coverage results
+    display_coverage(coverage)
 
     return nothing
 end
