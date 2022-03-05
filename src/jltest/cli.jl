@@ -1,5 +1,5 @@
 """
-jltest/cli.jl defines functions for the `jltest` CLI.
+cli.jl defines the `jltest.cli` module containing functions for the `jltest` CLI.
 
 Notes
 -----
@@ -62,8 +62,6 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
             "(recursively) for tests to run. If `tests` is omitted, the current " *
             "directory is searched (recursively) for tests to run."
         nargs = '*'
-
-        # TODO: add support for setting module and enabling doctests
     end
 
     # Parse command-line arguments
