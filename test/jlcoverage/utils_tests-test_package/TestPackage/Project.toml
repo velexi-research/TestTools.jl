@@ -1,0 +1,6 @@
+name = "TestPackage"
+uuid = "2474edba-f46f-47d4-968b-3ddd452486df"
+version = "0.1.0"
+
+[deps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
