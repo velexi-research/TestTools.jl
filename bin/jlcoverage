@@ -14,14 +14,14 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 # --- Imports
 
-using TestTools: TestTools
+using TestTools: TestTools, jlcoverage
 
 # --- Run main script
 
 if abspath(PROGRAM_FILE) == @__FILE__
 
     # Parse CLI arguments
-    args = TestTools.jlcoverage.parse_args()
+    args = jlcoverage.parse_args()
 
     # Handle --version option
     if args["version"]
@@ -33,5 +33,5 @@ if abspath(PROGRAM_FILE) == @__FILE__
     end
 
     # Run main program
-    TestTools.jlcoverage.run(args["pkg-dir"]; verbose=args["verbose"])
+    jlcoverage.run(args["pkg-dir"]; verbose=args["verbose"])
 end
