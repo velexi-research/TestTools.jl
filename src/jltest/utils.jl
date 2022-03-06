@@ -82,7 +82,10 @@ function run_tests(
                 # Run test
                 println()
                 print(module_name, ": ")
-                Base.include(Main, abspath(file_name))
+                mod = gensym(module_name)
+                @eval module $mod
+                Base.include($mod, abspath($file_name))
+                end
             end
         end
 
