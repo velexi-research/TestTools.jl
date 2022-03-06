@@ -37,7 +37,7 @@ using TestTools.jltest: cli, TestSetPlus
 
     # --- fail-fast
 
-    # "--fail-fast"
+    # Case: raw_args = "--fail-fast"
     raw_args = ["--fail-fast"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -48,7 +48,7 @@ using TestTools.jltest: cli, TestSetPlus
     )
     @test args == expected_args
 
-    # "-x"
+    # Case: raw_args = "-x"
     raw_args = ["-x"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -61,7 +61,7 @@ using TestTools.jltest: cli, TestSetPlus
 
     # --- verbose
 
-    # "--verbose"
+    # Case: raw_args = "--verbose"
     raw_args = ["--verbose"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -72,7 +72,7 @@ using TestTools.jltest: cli, TestSetPlus
     )
     @test args == expected_args
 
-    # "-v"
+    # Case: raw_args = "-v"
     raw_args = ["-v"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -85,7 +85,7 @@ using TestTools.jltest: cli, TestSetPlus
 
     # --- version
 
-    # "--version"
+    # Case: raw_args = "--version"
     raw_args = ["--version"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -96,7 +96,7 @@ using TestTools.jltest: cli, TestSetPlus
     )
     @test args == expected_args
 
-    # "-V"
+    # Case: raw_args = "-V"
     raw_args = ["-V"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -128,5 +128,6 @@ end
 
     # --- Exercise functionality and check results
 
+    # Case: invalid `tests` arg
     @test_throws MethodError cli.run([1, 2, 3])
 end

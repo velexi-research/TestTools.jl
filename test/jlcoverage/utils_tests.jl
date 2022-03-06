@@ -47,7 +47,7 @@ using TestTools.jltest: TestSetPlus
 
     # --- Exercise functionality and check results
 
-    # Default keyword arguments
+    # Case: default keyword arguments
     cd(test_pkg_dir)
     output = @capture_out begin
         display_coverage(coverage)
@@ -65,7 +65,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # startpath=test/jlcoverage/utils_tests-test_package/TestPackage/src/
+    # Case: startpath = test/jlcoverage/utils_tests-test_package/TestPackage/src/
     cd(test_pkg_dir)
     startpath = "src"
     output = @capture_out begin
@@ -84,7 +84,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # startpath=pwd()/test/jlcoverage/utils_tests-test_package/TestPackage/src/
+    # Case: startpath = pwd()/test/jlcoverage/utils_tests-test_package/TestPackage/src/
     cd(test_pkg_dir)
     startpath = joinpath(pwd(), "src")
     output = @capture_out begin
@@ -103,7 +103,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # Case: startpath=""
+    # Case: startpath = ""
     cd(test_pkg_dir)
     startpath = ""
     output = @capture_out begin

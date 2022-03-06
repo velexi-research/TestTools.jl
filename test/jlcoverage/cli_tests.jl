@@ -35,13 +35,13 @@ using TestTools.jltest: TestSetPlus
 
     # --- verbose
 
-    # "--verbose"
+    # Case: raw_args = "--verbose"
     raw_args = ["--verbose"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict("verbose" => true, "version" => false, "paths" => Vector{String}())
     @test args == expected_args
 
-    # "-v"
+    # Case: raw_args = "-v"
     raw_args = ["-v"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict("verbose" => true, "version" => false, "paths" => Vector{String}())
@@ -49,13 +49,13 @@ using TestTools.jltest: TestSetPlus
 
     # --- version
 
-    # "--version"
+    # Case: raw_args = "--version"
     raw_args = ["--version"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict("verbose" => false, "version" => true, "paths" => Vector{String}())
     @test args == expected_args
 
-    # "-V"
+    # Case: raw_args = "-V"
     raw_args = ["-V"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict("verbose" => false, "version" => true, "paths" => Vector{String}())
@@ -63,13 +63,13 @@ using TestTools.jltest: TestSetPlus
 
     # --- paths
 
-    # Normal usage
+    # Case: normal usage
     raw_args = ["/path/to/file-1.jl", "/path/to/dir"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict("verbose" => false, "version" => false, "paths" => raw_args)
     @test args == expected_args
 
-    # `paths` contains "."
+    # Case: `paths` contains "."
     raw_args = ["."]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict("verbose" => false, "version" => false, "paths" => raw_args)
@@ -77,7 +77,7 @@ using TestTools.jltest: TestSetPlus
 
     # --- Mixed arguments
 
-    # Normal usage
+    # Case: normal usage
     raw_args = ["-v", "/path/to/file-1.jl", "/path/to/dir"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict("verbose" => true, "version" => false, "paths" => raw_args[2:3])
@@ -100,7 +100,7 @@ end
 
     # --- Exercise functionality and check results
 
-    # `paths` contains a single directory, verbose=false
+    # Case: `paths` contains a single directory, verbose=false
     cd(joinpath(test_pkg_dir))
     output = @capture_out begin
         cli.run([test_pkg_dir])
@@ -119,7 +119,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # `paths` contains a single directory, verbose=true
+    # Case: `paths` contains a single directory, verbose=true
     # TODO: add test to check that log messages are generated
     cd(joinpath(test_pkg_dir))
     output = @capture_out begin
@@ -139,7 +139,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # `paths` contains a file
+    # Case: `paths` contains a file
     cd(joinpath(test_pkg_dir))
     src_file = joinpath(test_pkg_dir, "src", "methods.jl")
     output = @capture_out begin
@@ -156,7 +156,7 @@ TOTAL                                             3          1      66.7%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # `paths` is empty and current directory is a Julia package
+    # Case: `paths` is empty and current directory is a Julia package
     cd(test_pkg_dir)
     output = @capture_out begin
         cli.run([])
@@ -174,7 +174,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # `paths` is empty and current directory is not a Julia package
+    # Case: `paths` is empty and current directory is not a Julia package
     cd(joinpath(test_pkg_dir, "src"))
     output = @capture_out begin
         cli.run([])
@@ -197,10 +197,10 @@ end
 
     # --- Exercise functionality and check results
 
-    # Invalid argument
+    # Case: invalid `paths` argument
     @test_throws MethodError cli.run([1, 2, 3])
 
-    # `paths` contains an invalid path
+    # Case: `paths` contains an invalid path
     invalid_file = joinpath("path", "to", "invalid", "file")
     local output
     error = @capture_err begin

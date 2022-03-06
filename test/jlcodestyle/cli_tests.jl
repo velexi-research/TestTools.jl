@@ -39,7 +39,7 @@ using TestTools.jlcodestyle: cli
 
     # --- overwrite
 
-    # "--overwrite"
+    # Case: raw_args = "--overwrite"
     raw_args = ["--overwrite"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -50,7 +50,7 @@ using TestTools.jlcodestyle: cli
     )
     @test args == expected_args
 
-    # "-o"
+    # Case: raw_args = "-o"
     raw_args = ["-o"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -63,7 +63,7 @@ using TestTools.jlcodestyle: cli
 
     # --- style
 
-    # "--style"
+    # Case: raw_args = "--style"
     raw_args = ["--style", "yas"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -74,7 +74,7 @@ using TestTools.jlcodestyle: cli
     )
     @test args == expected_args
 
-    # "-s"
+    # Case: raw_args = "-s"
     raw_args = ["-s", "default"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -85,7 +85,7 @@ using TestTools.jlcodestyle: cli
     )
     @test args == expected_args
 
-    # Invalid style
+    # Case: raw_args = invalid style
     invalid_style = "InvalidStyle"
     raw_args = ["--style", invalid_style]
     output = @capture_err begin
@@ -102,7 +102,7 @@ using TestTools.jlcodestyle: cli
 
     # --- version
 
-    # "--version"
+    # Case: raw_args = "--version"
     raw_args = ["--version"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
@@ -113,7 +113,7 @@ using TestTools.jlcodestyle: cli
     )
     @test args == expected_args
 
-    # "-V"
+    # Case: raw_args = "-V"
     raw_args = ["-V"]
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
