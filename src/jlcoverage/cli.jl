@@ -28,6 +28,9 @@ using Logging
 using ArgParse: ArgParse
 using Coverage
 
+# Local modules
+using ..jlcoverage
+
 # --- Functions/Methods
 
 """

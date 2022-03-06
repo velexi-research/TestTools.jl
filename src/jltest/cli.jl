@@ -28,7 +28,7 @@ using Test
 using ArgParse: ArgParse
 
 # Local modules
-using TestTools.jltest
+using ..jltest
 
 # --- Functions/Methods
 
