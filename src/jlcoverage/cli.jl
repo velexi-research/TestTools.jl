@@ -96,4 +96,4 @@ function run(pkg_dir::AbstractString; verbose::Bool=false)
     return nothing
 end
 
-end  # End of jlcoverage.cli module
+end  # End jlcoverage.cli module
