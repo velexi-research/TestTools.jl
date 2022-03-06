@@ -21,7 +21,7 @@ using TestTools: TestTools, jlcoverage
 if abspath(PROGRAM_FILE) == @__FILE__
 
     # Parse CLI arguments
-    args = jlcoverage.parse_args()
+    args = jlcoverage.cli.parse_args()
 
     # Handle --version option
     if args["version"]
@@ -33,5 +33,5 @@ if abspath(PROGRAM_FILE) == @__FILE__
     end
 
     # Run main program
-    jlcoverage.run(args["pkg-dir"]; verbose=args["verbose"])
+    jlcoverage.cli.run(args["pkg-dir"]; verbose=args["verbose"])
 end
