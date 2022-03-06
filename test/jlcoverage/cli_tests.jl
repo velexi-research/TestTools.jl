@@ -119,7 +119,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # `paths` contains a single directory, verbose=false
+    # `paths` contains a single directory, verbose=true
     # TODO: add test to check that log messages are generated
     cd(joinpath(test_pkg_dir))
     output = @capture_out begin
@@ -139,7 +139,24 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # `paths` is empty and current directory is a Julia package, verbose=false
+    # `paths` contains a file
+    cd(joinpath(test_pkg_dir))
+    src_file = joinpath(test_pkg_dir, "src", "methods.jl")
+    output = @capture_out begin
+        cli.run([src_file])
+    end
+    expected_output = """
+-------------------------------------------------------------------------------
+File                                  Lines of Code     Missed   Coverage
+-------------------------------------------------------------------------------
+src/methods.jl                                    3          1      66.7%
+-------------------------------------------------------------------------------
+TOTAL                                             3          1      66.7%
+"""
+    @test output == expected_output
+    cd(cur_dir)  # Restore current directory
+
+    # `paths` is empty and current directory is a Julia package
     cd(test_pkg_dir)
     output = @capture_out begin
         cli.run([])
@@ -157,7 +174,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
 
-    # `paths` is empty and current directory is not a Julia package, verbose=false
+    # `paths` is empty and current directory is not a Julia package
     cd(joinpath(test_pkg_dir, "src"))
     output = @capture_out begin
         cli.run([])
@@ -180,5 +197,26 @@ end
 
     # --- Exercise functionality and check results
 
+    # Invalid argument
     @test_throws MethodError cli.run([1, 2, 3])
+
+    # `paths` contains an invalid path
+    invalid_file = joinpath("path", "to", "invalid", "file")
+    local output
+    error = @capture_err begin
+        output = @capture_out begin
+            cli.run([invalid_file])
+        end
+    end
+    expected_error = "┌ Warning: $(joinpath(pwd(), invalid_file)) not found. Skipping..."
+    @test startswith(error, expected_error)
+
+    expected_output = """
+-------------------------------------------------------------------------------
+File                                  Lines of Code     Missed   Coverage
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+TOTAL                                             0          0        N/A
+"""
+    @test output == expected_output
 end
