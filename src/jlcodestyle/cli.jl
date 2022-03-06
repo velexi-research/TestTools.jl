@@ -1,5 +1,5 @@
 """
-jlcodestyle/cli.jl defines functions for the `jlcodestyle` CLI.
+cli.jl defines the `jlcodestyle.cli` module containing functions for the `jlcodestyle` CLI.
 
 Notes
 -----
@@ -13,6 +13,8 @@ part of the TestTools.jl package, including this file, may be copied, modified, 
 or distributed except according to the terms contained in the LICENSE file.
 -------------------------------------------------------------------------------------------
 """
+module cli
+
 # --- Exports
 
 export parse_args, run
@@ -23,14 +25,18 @@ export parse_args, run
 using ArgParse: ArgParse
 using JuliaFormatter
 
+# Local modules
+using ..jlcodestyle
+
 # --- Functions/Methods
 
 """
-    parse_args()
+    parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
-Parse and return command-line arguments passed to the CLI.
+Parse and return CLI arguments contained in `raw_args`. By default, `raw_args` is set to
+`ARGS`, the command-line arguments provided to the executable that called `parse_args()`.
 """
-function parse_args()::Dict
+function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
     # Define command-line arguments
     description = "Check source code files against Julia style conventions."
@@ -54,16 +60,22 @@ function parse_args()::Dict
     end
 
     # Parse command-line arguments
-    args::Dict = ArgParse.parse_args(ARGS, arg_table)
+    args::Dict = ArgParse.parse_args(raw_args, arg_table)
     args["paths"] = convert(Vector{String}, args["paths"])
 
     # Set code style
-    style_str = args["style"]
+    style_str = lowercase(args["style"])
     if style_str == "defaultstyle" || style_str == "default"
         args["style"] = DefaultStyle()
     elseif style_str == "yasstyle" || style_str == "yas"
         args["style"] = YASStyle()
     else
+        if !(style_str == "bluestyle" || style_str == "blue")
+            style = args["style"]
+            message = "Invalid style: $(style). Using BlueStyle."
+            @warn message
+        end
+
         args["style"] = BlueStyle()
     end
 
@@ -109,3 +121,5 @@ function run(
 
     return nothing
 end
+
+end  # End of jlcodestyle.cli module

@@ -14,14 +14,14 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 # --- Imports
 
-using TestTools: TestTools
+using TestTools: TestTools, jlcodestyle
 
 # --- Run main script
 
 if abspath(PROGRAM_FILE) == @__FILE__
 
     # Parse CLI arguments
-    args = TestTools.jlcodestyle.parse_args()
+    args = jlcodestyle.cli.parse_args()
 
     # Handle --version option
     if args["version"]
@@ -33,7 +33,5 @@ if abspath(PROGRAM_FILE) == @__FILE__
     end
 
     # Run main program
-    TestTools.jlcodestyle.run(
-        args["paths"]; style=args["style"], overwrite=args["overwrite"]
-    )
+    jlcodestyle.cli.run(args["paths"]; style=args["style"], overwrite=args["overwrite"])
 end
