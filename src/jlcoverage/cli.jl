@@ -25,8 +25,9 @@ export parse_args, run
 using Logging
 
 # External packages
-using ArgParse: ArgParse
+using ArgParse
 using Coverage
+using CoverageTools
 
 # Local modules
 using ..jlcoverage
@@ -45,10 +46,6 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
     description = "Generate coverage analysis report."
     arg_table = ArgParse.ArgParseSettings(; description=description)
     ArgParse.@add_arg_table! arg_table begin
-        "--pkg-dir", "-d"
-        help = "package directory"
-        default = "."
-
         "--verbose", "-v"
         help = "enable verbose mode"
         action = :store_true
@@ -56,39 +53,79 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
         "--version", "-V"
         help = "show version and exit"
         action = :store_true
+
+        "paths"
+        help =
+            "files and directories to include coverage analysis. If `paths` is empty, " *
+            "a coverage report is generated for all Julia source files contained in " *
+            "(1) the `src` directory if the current directory is a Julia package " *
+            "(i.e., the current directory contains `Project.toml` and `src`) or " *
+            "(2) the current directory if it is not a Julia package."
+        nargs = '*'
     end
 
     # Parse command-line arguments
     args::Dict = ArgParse.parse_args(raw_args, arg_table)
+    args["paths"] = convert(Vector{String}, args["paths"])
 
     return args
 end
 
 """
-    run(pkg_dir::AbstractString; <keyword arguments>)
+    run(paths::Vector{<:AbstractString}; <keyword arguments>)
 
-Run code coverage analysis for the Julia project in `pkg_dir`.
+Run code coverage analysis for files and directories in `paths`.
 
 # Keyword Arguments
 
 * `verbose::Bool=false`: print more output to the console
 """
-function run(pkg_dir::AbstractString; verbose::Bool=false)
-
+function run(paths::Vector{<:AbstractString}; verbose::Bool=false)
     # --- Preparations
+
+    # Handle edge case
+    if isempty(paths)
+        if isfile("Project.toml") && isdir("src")
+            @info("Detected Julia package. Generating report for files in `src` directory.")
+            paths = ["src"]
+        else
+            message =
+                "Julia package not detected. Generating report for files in current " *
+                "directory."
+            @info(message)
+            paths = ["."]
+        end
+    end
 
     # Set log level
     if !verbose
         disable_logging(Logging.Info)
     end
 
-    # Construct paths to src and test directories
-    src_dir = joinpath(pkg_dir, "src")
-
     # --- Process coverage data and display results
 
-    # Process `*.cov` files in `src_dir`
-    coverage = Coverage.process_folder(src_dir::String)
+    # Process `*.cov` files
+    coverage = Vector{CoverageTools.FileCoverage}()
+    for path in paths
+        # Ensure paths are absolute paths
+        if !isabspath(path)
+            path = abspath(path)
+        end
+
+        # Process coverage files
+        if isdir(path)
+            coverage = CoverageTools.merge_coverage_counts(
+                coverage, Coverage.process_folder(path::String)
+            )
+        elseif isfile(path)
+            coverage = CoverageTools.merge_coverage_counts(
+                coverage, [Coverage.process_file(path)]
+            )
+        else
+            @warn "$path not found. Skipping..."
+            continue
+        end
+    end
 
     # Display coverage results
     display_coverage(coverage)

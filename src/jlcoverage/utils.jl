@@ -24,11 +24,12 @@ using Coverage: Coverage
 # --- Public Functions/Methods
 
 """
-    display_coverage(coverage_data::Vector)
+    display_coverage(coverage_data::Vector; startpath::AbstractString)
 
-Display coverage results provided in `coverage_data`.
+Display coverage results provided in `coverage_data`. File names are displayed relative
+to `startpath`. To display absolute paths, set `startpath` to an empty string.
 """
-function display_coverage(coverage_data::Vector)
+function display_coverage(coverage_data::Vector; startpath::AbstractString=pwd())
 
     # Line formats
     header_line_format = "%-35s %15s %10s %10s\n"
@@ -46,8 +47,11 @@ function display_coverage(coverage_data::Vector)
 
     # Print coverage for individual files
     for file_coverage in coverage_data
-        filename = file_coverage.filename
-        filename = filename[(findlast("src/", filename)[1] + 4):end]
+        if !isempty(startpath)
+            filename = relpath(file_coverage.filename, startpath)
+        else
+            filename = file_coverage.filename
+        end
 
         covered_lines_of_code, lines_of_code = Coverage.get_summary(file_coverage)
         missed_lines_of_code = lines_of_code - covered_lines_of_code
