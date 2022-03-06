@@ -84,7 +84,7 @@ using TestTools.jltest: TestSetPlus
     @test args == expected_args
 end
 
-@testset TestSetPlus "jlcoverage.cli.run()" begin
+@testset TestSetPlus "jlcoverage.cli.run(): normal operation" begin
 
     # --- Preparations
 
@@ -174,4 +174,11 @@ TOTAL                                             6          3      50.0%
 """
     @test output == expected_output
     cd(cur_dir)  # Restore current directory
+end
+
+@testset TestSetPlus "jlcoverage.cli.run(): error cases" begin
+
+    # --- Exercise functionality and check results
+
+    @test_throws MethodError cli.run([1, 2, 3])
 end
