@@ -28,6 +28,9 @@ using TestTools.jltest: TestSetPlus
 
     # --- Preparations
 
+    # Get current directory
+    cur_dir = pwd()
+
     # Generate coverage data for TestPackage
     test_pkg_dir = joinpath(dirname(@__FILE__), "utils_tests-test_package", "TestPackage")
     cmd = `julia --startup-file=no --project=@. -e 'import Pkg; Pkg.test(coverage=true)'`
@@ -42,10 +45,31 @@ using TestTools.jltest: TestSetPlus
         coverage = Coverage.process_folder(test_pkg_src_dir)
     end
 
-    # --- Capture and check output
+    # --- Exercise functionality and check results
 
+    # Default keyword arguments
+    cd(test_pkg_dir)
     output = @capture_out begin
         display_coverage(coverage)
+    end
+    expected_output = """
+-------------------------------------------------------------------------------
+File                                  Lines of Code     Missed   Coverage
+-------------------------------------------------------------------------------
+src/TestPackage.jl                                1          0     100.0%
+src/methods.jl                                    3          1      66.7%
+src/more_methods.jl                               2          2       0.0%
+-------------------------------------------------------------------------------
+TOTAL                                             6          3      50.0%
+"""
+    @test output == expected_output
+    cd(cur_dir)  # Restore current directory
+
+    # startpath=test/jlcoverage/utils_tests-test_package/TestPackage/src/
+    cd(test_pkg_dir)
+    startpath = "src"
+    output = @capture_out begin
+        display_coverage(coverage; startpath=startpath)
     end
     expected_output = """
 -------------------------------------------------------------------------------
@@ -58,4 +82,24 @@ more_methods.jl                                   2          2       0.0%
 TOTAL                                             6          3      50.0%
 """
     @test output == expected_output
+    cd(cur_dir)  # Restore current directory
+
+    # startpath=pwd()/test/jlcoverage/utils_tests-test_package/TestPackage/src/
+    cd(test_pkg_dir)
+    startpath = joinpath(pwd(), "src")
+    output = @capture_out begin
+        display_coverage(coverage; startpath=startpath)
+    end
+    expected_output = """
+-------------------------------------------------------------------------------
+File                                  Lines of Code     Missed   Coverage
+-------------------------------------------------------------------------------
+TestPackage.jl                                    1          0     100.0%
+methods.jl                                        3          1      66.7%
+more_methods.jl                                   2          2       0.0%
+-------------------------------------------------------------------------------
+TOTAL                                             6          3      50.0%
+"""
+    @test output == expected_output
+    cd(cur_dir)  # Restore current directory
 end

@@ -30,6 +30,14 @@ Display coverage results provided in `coverage_data`. File names are displayed r
 to `startpath`. To display absolute paths, set `startpath` to an empty string.
 """
 function display_coverage(coverage_data::Vector; startpath::AbstractString=pwd())
+    # --- Check arguments
+
+    # Ensure that `startpath` is an absolute path
+    if !isempty(startpath)
+        startpath = abspath(startpath)
+    end
+
+    # --- Generate coverage report
 
     # Line formats
     header_line_format = "%-35s %15s %10s %10s\n"

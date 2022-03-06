@@ -72,7 +72,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 end
 
 """
-    run(paths::Vector{<:AbstractString}; <keyword arguments>)
+    run(paths::Vector; <keyword arguments>)
 
 Run code coverage analysis for files and directories in `paths`.
 
@@ -80,7 +80,12 @@ Run code coverage analysis for files and directories in `paths`.
 
 * `verbose::Bool=false`: print more output to the console
 """
-function run(paths::Vector{<:AbstractString}; verbose::Bool=false)
+function run(paths::Vector; verbose::Bool=false)
+    # --- Check arguments
+
+    # Ensure that `paths` contains strings
+    paths = convert(Vector{String}, paths)
+
     # --- Preparations
 
     # Handle edge case
