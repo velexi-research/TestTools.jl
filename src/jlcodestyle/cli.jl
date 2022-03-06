@@ -83,7 +83,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 end
 
 """
-    run(paths::Vector{String}; <keyword arguments>)
+    run(paths::Vector; <keyword arguments>)
 
 Run code style checks for files contained in `paths`.
 
@@ -94,10 +94,12 @@ Run code style checks for files contained in `paths`.
 * `overwrite::Bool=false`: overwrite existing files with style-corrected versions
 """
 function run(
-    paths::Vector{String};
-    style::JuliaFormatter.AbstractStyle=BlueStyle(),
-    overwrite::Bool=false,
+    paths::Vector; style::JuliaFormatter.AbstractStyle=BlueStyle(), overwrite::Bool=false
 )
+    # --- Check arguments
+
+    # Ensure that `paths` contains strings
+    paths = convert(Vector{String}, paths)
 
     # --- Preparations
 

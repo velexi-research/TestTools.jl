@@ -138,5 +138,8 @@ using TestTools.jlcodestyle: cli
 end
 
 @testset TestSetPlus "jlcodestyle.cli.run()" begin
-    # TODO
+    # --- Exercise functionality and check results
+
+    # Case: invalid `paths` arg
+    @test_throws MethodError cli.run([1, 2, 3])
 end
