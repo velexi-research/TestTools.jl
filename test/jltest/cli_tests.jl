@@ -123,3 +123,10 @@ end
 @testset TestSetPlus "jltest.cli.run()" begin
     # TODO
 end
+
+@testset TestSetPlus "jltest.cli.run(): error cases" begin
+
+    # --- Exercise functionality and check results
+
+    @test_throws MethodError cli.run([1, 2, 3])
+end

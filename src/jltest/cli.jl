@@ -72,7 +72,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 end
 
 """
-    run(tests::Vector{String}; <keyword arguments>)
+    run(tests::Vector; <keyword arguments>)
 
 Run unit tests defined in the list of files or modules provided in `tests`.
 
@@ -85,11 +85,16 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 * `verbose::Bool=false`: print more output to the console
 """
 function run(
-    tests::Vector{String};
+    tests::Vector;
     name::AbstractString="All tests",
     fail_fast::Bool=false,
     verbose::Bool=false,
 )
+    # --- Check arguments
+
+    # Ensure that `tests` contains strings
+    tests = convert(Vector{String}, tests)
+
     # --- Preparations
 
     # Set test set type
