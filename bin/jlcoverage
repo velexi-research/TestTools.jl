@@ -33,5 +33,5 @@ if abspath(PROGRAM_FILE) == @__FILE__
     end
 
     # Run main program
-    jlcoverage.cli.run(args["pkg-dir"]; verbose=args["verbose"])
+    jlcoverage.cli.run(args["paths"]; verbose=args["verbose"])
 end

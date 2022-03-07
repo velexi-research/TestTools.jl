@@ -33,5 +33,10 @@ if abspath(PROGRAM_FILE) == @__FILE__
     end
 
     # Run main program
-    jlcodestyle.cli.run(args["paths"]; style=args["style"], overwrite=args["overwrite"])
+    jlcodestyle.cli.run(
+        args["paths"];
+        style=args["style"],
+        overwrite=args["overwrite"],
+        verbose=args["verbose"],
+    )
 end
