@@ -50,6 +50,9 @@ function run_tests(
 
     # --- Preparations
 
+    # Get current directory
+    cwd = pwd()
+
     # Separate tests into files and directories
     test_dirs = []
     test_files = Dict()
@@ -79,6 +82,9 @@ function run_tests(
         # Run tests files
         if !isempty(test_files)
             for (module_name, file_name) in test_files
+                # Restore current directory before each test file is run
+                cd(cwd)
+
                 # Run test
                 println()
                 print(module_name, ": ")
