@@ -17,13 +17,13 @@ export add_four, add_five
 """
     add_four(x)
 
-Return `x + 4`.
+Return ``x + 4``.
 """
 add_four(x) = x + 4
 
 """
     add_five(x)
 
-Return `x + 5`.
+Return ``x + 5``.
 """
 add_five(x) = x + 5
