@@ -89,10 +89,10 @@ end
     # --- Preparations
 
     # Get current directory
-    cur_dir = pwd()
+    cwd = pwd()
 
     # Generate coverage data for TestPackage
-    test_pkg_dir = joinpath(dirname(@__FILE__), "utils_tests-test_package", "TestPackage")
+    test_pkg_dir = joinpath(dirname(@__FILE__), "utils_tests-data", "TestPackage")
     cmd = `julia --startup-file=no --project=@. -e 'import Pkg; Pkg.test(coverage=true)'`
     @suppress begin
         Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
@@ -117,7 +117,7 @@ test/runtests.jl                                  0          0        N/A
 TOTAL                                             6          3      50.0%
 """
     @test output == expected_output
-    cd(cur_dir)  # Restore current directory
+    cd(cwd)  # Restore current directory
 
     # Case: `paths` contains a single directory, verbose=true
     # TODO: add test to check that log messages are generated
@@ -137,7 +137,7 @@ test/runtests.jl                                  0          0        N/A
 TOTAL                                             6          3      50.0%
 """
     @test output == expected_output
-    cd(cur_dir)  # Restore current directory
+    cd(cwd)  # Restore current directory
 
     # Case: `paths` contains a file
     cd(joinpath(test_pkg_dir))
@@ -154,7 +154,7 @@ src/methods.jl                                    3          1      66.7%
 TOTAL                                             3          1      66.7%
 """
     @test output == expected_output
-    cd(cur_dir)  # Restore current directory
+    cd(cwd)  # Restore current directory
 
     # Case: `paths` is empty and current directory is a Julia package
     cd(test_pkg_dir)
@@ -172,7 +172,7 @@ src/more_methods.jl                               2          2       0.0%
 TOTAL                                             6          3      50.0%
 """
     @test output == expected_output
-    cd(cur_dir)  # Restore current directory
+    cd(cwd)  # Restore current directory
 
     # Case: `paths` is empty and current directory is not a Julia package
     cd(joinpath(test_pkg_dir, "src"))
@@ -190,7 +190,7 @@ more_methods.jl                                   2          2       0.0%
 TOTAL                                             6          3      50.0%
 """
     @test output == expected_output
-    cd(cur_dir)  # Restore current directory
+    cd(cwd)  # Restore current directory
 end
 
 @testset TestSetPlus "jlcoverage.cli.run(): error cases" begin
