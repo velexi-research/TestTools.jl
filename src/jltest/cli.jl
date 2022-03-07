@@ -99,7 +99,7 @@ function run(
 
     # Set test set type
     if !fail_fast
-        fail_fast = get(ENV, "JULIA_TEST_FAIL_FAST", "false") == "true"
+        fail_fast = get(ENV, "JLTEST_FAIL_FAST", "false") == "true"
     end
     if fail_fast
         test_set_type = TestSetPlus{Test.FallbackTestSet}
