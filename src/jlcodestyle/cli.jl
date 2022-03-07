@@ -47,8 +47,12 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
         action = :store_true
 
         "--style", "-s"
-        help = "Julia style convention to apply"
-        default = "BlueStyle"
+        help = "Julia style convention to apply. Supported styles: blue, yas, default"
+        default = "blue"
+
+        "--verbose", "-v"
+        help = "display more output to the console"
+        action = :store_true
 
         "--version", "-V"
         help = "show version and exit"
@@ -65,12 +69,12 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
     # Set code style
     style_str = lowercase(args["style"])
-    if style_str == "defaultstyle" || style_str == "default"
+    if style_str == "default" || style_str == "defaultstyle"
         args["style"] = DefaultStyle()
-    elseif style_str == "yasstyle" || style_str == "yas"
+    elseif style_str == "yas" || style_str == "yasstyle"
         args["style"] = YASStyle()
     else
-        if !(style_str == "bluestyle" || style_str == "blue")
+        if !(style_str == "blue" || style_str == "bluestyle")
             style = args["style"]
             message = "Invalid style: $(style). Using BlueStyle."
             @warn message
@@ -92,9 +96,14 @@ Run code style checks for files contained in `paths`.
 * `style::JuliaFormatter.AbstractStyle=BlueStyle()`: code style to apply
 
 * `overwrite::Bool=false`: overwrite existing files with style-corrected versions
+
+* `verbose::Bool=false`: print more output to the console
 """
 function run(
-    paths::Vector; style::JuliaFormatter.AbstractStyle=BlueStyle(), overwrite::Bool=false
+    paths::Vector;
+    style::JuliaFormatter.AbstractStyle=BlueStyle(),
+    overwrite::Bool=false,
+    verbose::Bool=false,
 )
     # --- Check arguments
 
@@ -108,16 +117,30 @@ function run(
         paths = ["."]
     end
 
+    # --- Emit messages
+
+    if verbose
+        style_name = split("$(typeof(style))", '.')[2]
+        @info("Style = $(style_name)")
+
+        @info("Overwrite = $(overwrite)")
+    end
+
     # --- Check code style
 
-    check_passed = format(paths; style=style, overwrite=overwrite, verbose=true)
+    check_passed = format(paths; style=style, overwrite=overwrite, verbose=verbose)
+
+    if verbose
+        println()
+    end
+
     if check_passed
-        println("\nNo style errors found.")
+        println("No style errors found.")
     else
         if overwrite
-            println("\nStyle errors found. Files modified to correct errors.")
+            println("Style errors found. Files modified to correct errors.")
         else
-            println("\nStyle errors found. Files not modified.")
+            println("Style errors found. Files not modified.")
         end
     end
 
