@@ -31,16 +31,6 @@ using TestTools.jltest
 
     test_dir = joinpath(dirname(@__FILE__), "utils_tests-data")
 
-    # --- `tests` is an empty list
-
-    tests = Vector{String}()
-    @test_throws ArgumentError run_tests(tests)
-
-    # --- `tests` is empty string
-
-    tests = ""
-    @test_throws ArgumentError run_tests(tests)
-
     # --- `tests` contains tests named with ".jl" extension
 
     tests = [joinpath(test_dir, "some_tests.jl")]
@@ -127,6 +117,16 @@ end
     for test_file in expected_tests
         @test joinpath(test_dir, test_file) in tests
     end
+end
+
+@testset TestSetPlus "jltest.run_tests(): invalid arguments" begin
+    tests = Vector{String}()
+    @test_throws ArgumentError run_tests(tests)
+
+    # --- `tests` is empty string
+
+    tests = ""
+    @test_throws ArgumentError run_tests(tests)
 end
 
 # --- Emit message about expected failures and errors
