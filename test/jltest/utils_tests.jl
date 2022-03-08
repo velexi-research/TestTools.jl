@@ -29,7 +29,7 @@ using TestTools.jltest
 @testset TestSetPlus "jltest.run_tests()" begin
     # --- Preparations
 
-    test_dir = joinpath(dirname(@__FILE__), "utils_tests-data")
+    test_dir = joinpath(dirname(@__FILE__), "data")
 
     # --- `tests` contains tests named with ".jl" extension
 
@@ -111,7 +111,7 @@ end
 
     # --- normal operation
 
-    test_dir = joinpath(dirname(@__FILE__), "utils_tests-data")
+    test_dir = joinpath(dirname(@__FILE__), "data")
     tests = autodetect_tests(test_dir)
     expected_tests = ["failing_tests.jl", "more_tests.jl", "some_tests.jl"]
     for test_file in expected_tests
