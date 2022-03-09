@@ -32,7 +32,7 @@ using TestTools.jltest: TestSetPlus
     cwd = pwd()
 
     # Generate coverage data for TestPackage
-    test_pkg_dir = joinpath(dirname(@__FILE__), "utils_tests-data", "TestPackage")
+    test_pkg_dir = joinpath(dirname(@__FILE__), "data", "TestPackage")
     cmd = `julia --startup-file=no --project=@. -e 'import Pkg; Pkg.test(coverage=true)'`
     @suppress begin
         Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
@@ -65,7 +65,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cwd)  # Restore current directory
 
-    # Case: startpath = test/jlcoverage/utils_tests-data/TestPackage/src/
+    # Case: startpath = test/jlcoverage/data/TestPackage/src/
     cd(test_pkg_dir)
     startpath = "src"
     output = @capture_out begin
@@ -84,7 +84,7 @@ TOTAL                                             6          3      50.0%
     @test output == expected_output
     cd(cwd)  # Restore current directory
 
-    # Case: startpath = pwd()/test/jlcoverage/utils_tests-data/TestPackage/src/
+    # Case: startpath = pwd()/test/jlcoverage/data/TestPackage/src/
     cd(test_pkg_dir)
     startpath = joinpath(pwd(), "src")
     output = @capture_out begin

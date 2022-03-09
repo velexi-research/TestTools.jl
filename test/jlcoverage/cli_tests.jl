@@ -92,7 +92,7 @@ end
     cwd = pwd()
 
     # Generate coverage data for TestPackage
-    test_pkg_dir = joinpath(dirname(@__FILE__), "utils_tests-data", "TestPackage")
+    test_pkg_dir = joinpath(dirname(@__FILE__), "data", "TestPackage")
     cmd = `julia --startup-file=no --project=@. -e 'import Pkg; Pkg.test(coverage=true)'`
     @suppress begin
         Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
