@@ -179,7 +179,7 @@ end
     cwd = pwd()
 
     # Construct path to test data directory
-    test_file_dir = abspath(joinpath(dirname(@__FILE__), "cli_tests-data"))
+    test_file_dir = abspath(joinpath(dirname(@__FILE__), "data"))
 
     # --- Exercise functionality and check results
 
