@@ -108,12 +108,12 @@ function run(
     end
 
     # Set test options
-    # TODO: figure out how to pass test set options to @testset when explicitly specifying
-    #       the test set type
-    test_set_options = ""
-    if verbose
-        test_set_options *= "verbose=true"
-    end
+    # TODO: figure out how to pass verbose option to @testset when the test set type
+    #       is explicitly specified
+    #test_set_options = ""
+    #if verbose
+    #    test_set_options *= "verbose=true"
+    #end
 
     # --- Run tests
 
