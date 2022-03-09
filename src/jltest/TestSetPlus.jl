@@ -61,7 +61,7 @@ end
 function Test.record(ts::TestSetPlus{T}, res::Fail) where {T}
     println("\n=====================================================")
     Test.record(ts.wrapped, res)
-    println("=====================================================")
+
     return nothing
 end
 
