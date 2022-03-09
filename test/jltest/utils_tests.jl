@@ -31,80 +31,99 @@ using TestTools.jltest
 
     test_dir = joinpath(dirname(@__FILE__), "data")
 
+    some_tests_file = joinpath(test_dir, "some_tests.jl")
+    expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
+
+    more_tests_file = joinpath(test_dir, "more_tests.jl")
+    expected_output_more_tests = "$(joinpath(test_dir, "more_tests")): .."
+
+    failing_tests_file = joinpath(test_dir, "failing_tests.jl")
+    expected_output_failing_tests = strip(
+        """
+        $(joinpath(test_dir, "failing_tests")): .
+        =====================================================
+        : Test Failed at $(failing_tests_file):18
+          Expression: 2 == 1
+           Evaluated: 2 == 1
+
+        Stacktrace:
+         [1]
+        """
+    )
+
     # --- `tests` contains tests named with ".jl" extension
 
-    tests = [joinpath(test_dir, "some_tests.jl")]
-    output = @capture_out begin
+    tests = [some_tests_file]
+    output = strip(@capture_out begin
         run_tests(tests)
-    end
-    expected_output = "$(joinpath(test_dir, "some_tests")): .."
-    @test strip(output) == expected_output
+    end)
+    @test output == expected_output_some_tests
 
     # --- `tests` contains tests named without ".jl" extension
 
-    tests = [joinpath(test_dir, "more_tests")]
-    output = @capture_out begin
+    tests = [more_tests_file]
+    output = strip(@capture_out begin
         run_tests(tests)
-    end
-    expected_output = "$(joinpath(test_dir, "more_tests")): .."
-    @test strip(output) == expected_output
+    end)
+    @test output == expected_output_more_tests
 
     # --- `tests` contains only a directory
 
     tests = [test_dir]
-    output = @capture_out begin
+    output = strip(@capture_out begin
         run_tests(tests)
-    end
-    output_lines = split(strip(output), '\n')
+    end)
+
     expected_output_lines = [
-        "$(joinpath(test_dir, "more_tests")): ..",
-        "$(joinpath(test_dir, "some_tests")): ..",
-        "$(joinpath(test_dir, "failing_tests")): .",
-        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):18",
+        expected_output_some_tests,
+        expected_output_more_tests,
+        expected_output_failing_tests,
+        ": Test Failed at $(failing_tests_file):18",
     ]
     for line in expected_output_lines
-        @test line in output_lines
+        @test occursin(line, output)
     end
 
     # --- `tests` contains both directories and files
 
-    tests = [test_dir, joinpath(test_dir, "some_tests.jl")]
-    output = @capture_out begin
+    tests = [test_dir, some_tests_file]
+    output = strip(@capture_out begin
         run_tests(tests)
-    end
-    output_lines = split(strip(output), '\n')
+    end)
+
     expected_output_lines = [
-        "$(joinpath(test_dir, "more_tests")): ..",
-        "$(joinpath(test_dir, "failing_tests")): .",
-        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):18",
+        expected_output_more_tests,
+        expected_output_failing_tests,
+        ": Test Failed at $(failing_tests_file):18\n",
     ]
     for line in expected_output_lines
-        @test line in output_lines
+        @test occursin(line, output)
     end
-    expected_line = "$(joinpath(test_dir, "some_tests")): .."
-    @test count(i -> (i == expected_line), output_lines) == 2
+
+    output_lines = split(output, '\n')
+    @test count(i -> (i == expected_output_some_tests), output_lines) == 2
 
     # --- test keyword arguments
 
     # name
-    tests = [joinpath(test_dir, "failing_tests.jl")]
+    tests = [failing_tests_file]
     name = "test-name"
-    output = @capture_out begin
+    output = strip(@capture_out begin
         run_tests(tests; name=name)
-    end
+    end)
     output_line_three = split(strip(output), '\n')[3]
     @test startswith(output_line_three, name)
 
     # test_set_type
     test_set_type = DefaultTestSet
-    tests = [joinpath(test_dir, "failing_tests.jl")]
-    output = @capture_out begin
+    tests = [failing_tests_file]
+    output = strip(@capture_out begin
         run_tests(tests; test_set_type=test_set_type)
-    end
-    prefix =
+    end)
+    expected_prefix =
         "$(joinpath(test_dir, "failing_tests")): " *
         ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):18"
-    @test startswith(strip(output), prefix)
+    @test startswith(output, expected_prefix)
 end
 
 @testset TestSetPlus "jltest.autodetect_tests()" begin
