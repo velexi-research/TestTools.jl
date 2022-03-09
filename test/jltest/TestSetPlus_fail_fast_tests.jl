@@ -23,12 +23,6 @@ using Suppressor
 # Local modules
 using TestTools.jltest
 
-# --- Private helper functions
-
-function check_expected_prefix(output::AbstractString, prefix::String)
-    return startswith(lstrip(output), prefix)
-end
-
 # --- Tests
 
 @testset "TestSetPlus{FallbackTestSet} Tests" begin
@@ -37,7 +31,7 @@ end
     # Single-level test set with a failing test
     error_type = Nothing
     error_message = ""
-    output = @capture_out begin
+    output = strip(@capture_out begin
         try
             @testset test_set_type "top-level tests" begin
                 @test 1 == 2
@@ -48,26 +42,23 @@ end
             error_message = error.msg
             println(error)
         end
-    end
+    end)
 
     @test error_type == TestSetPlusException
     @test error_message == "FallbackTestSetException occurred"
 
-    prefix = join(
-        [
-            "=====================================================",
-            "Test Failed at $(@__FILE__):43",
-            "  Expression: 1 == 2",
-            "   Evaluated: 1 == 2",
-        ],
-        '\n',
-    )
-    @test check_expected_prefix(output, prefix)
+    expected_prefix = strip("""
+                            =====================================================
+                            Test Failed at $(@__FILE__):37
+                              Expression: 1 == 2
+                               Evaluated: 1 == 2
+                            """)
+    @test startswith(output, expected_prefix)
 
     # Nested test sets with a failing test
     error_type = Nothing
     error_message = ""
-    output = @capture_out begin
+    output = strip(@capture_out begin
         try
             @testset test_set_type "top-level tests" begin
                 @testset "Test set with failing test" begin
@@ -83,21 +74,18 @@ end
             error_type = typeof(error)
             error_message = error.msg
         end
-    end
+    end)
 
     @test error_type == TestSetPlusException
     @test error_message == "FallbackTestSetException occurred"
 
-    prefix = join(
-        [
-            "=====================================================",
-            "Test Failed at $(@__FILE__):74",
-            "  Expression: 1 == 2",
-            "   Evaluated: 1 == 2",
-        ],
-        '\n',
-    )
-    @test check_expected_prefix(output, prefix)
+    expected_prefix = strip("""
+                            =====================================================
+                            Test Failed at $(@__FILE__):65
+                              Expression: 1 == 2
+                               Evaluated: 1 == 2
+                            """)
+    @test startswith(output, expected_prefix)
 
     # --- Nested DefaultTestSet tests
     #
@@ -111,7 +99,7 @@ end
     # With failing tests
     error_type = Nothing
     error_message = ""
-    output = @capture_out begin
+    output = (@capture_out begin
         try
             @testset test_set_type "top-level tests" begin
                 @testset default_test_set "Failing test" begin
@@ -127,19 +115,16 @@ end
             error_type = typeof(error)
             error_message = error.msg
         end
-    end
+    end)
 
     @test error_type == FallbackTestSetException
 
-    prefix = join(
-        [
-            "Failing test: Test Failed at $(@__FILE__):118",
-            "  Expression: 1 == 2",
-            "   Evaluated: 1 == 2",
-        ],
-        '\n',
-    )
-    @test check_expected_prefix(output, prefix)
+    expected_prefix = strip("""
+                            Failing test: Test Failed at $(@__FILE__):106
+                              Expression: 1 == 2
+                               Evaluated: 1 == 2
+                            """)
+    @test startswith(output, expected_prefix)
 
     # With no failing tests
     error = nothing
