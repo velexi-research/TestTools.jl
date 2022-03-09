@@ -61,7 +61,8 @@ using TestTools.jltest
 
     # --- `tests` contains tests named without ".jl" extension
 
-    tests = [more_tests_file]
+    more_tests_file_without_extension = more_tests_file[1:(end - 3)]
+    tests = [more_tests_file_without_extension]
     output = strip(@capture_out begin
         run_tests(tests)
     end)
