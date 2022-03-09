@@ -1,6 +1,10 @@
 """
 Unit tests for the methods in `jltest/cli.jl`.
 
+Notes
+-----
+* For the unit tests in this files, failures and errors are expected.
+
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
 license terms in the LICENSE file found in the root directory of this distribution. No
@@ -8,10 +12,12 @@ part of the TestTools.jl package, including this file, may be copied, modified, 
 or distributed except according to the terms contained in the LICENSE file.
 -------------------------------------------------------------------------------------------
 """
+
 # --- Imports
 
 # Standard library
 using Test
+#using Test: FallbackTestSetException
 
 # External packages
 using Suppressor
@@ -121,7 +127,131 @@ using TestTools.jltest: cli, TestSetPlus
 end
 
 @testset TestSetPlus "jltest.cli.run()" begin
-    # TODO
+    # --- Preparations
+
+    # Precompute commonly used values
+    test_dir = joinpath(dirname(@__FILE__), "data")
+
+    some_tests_file = joinpath(test_dir, "some_tests.jl")
+    expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
+
+    more_tests_file = joinpath(test_dir, "more_tests.jl")
+    expected_output_more_tests = "$(joinpath(test_dir, "more_tests")): .."
+
+    failing_tests_file = joinpath(test_dir, "failing_tests.jl")
+    expected_output_failing_tests = strip(
+        """
+        $(joinpath(test_dir, "failing_tests")): .
+        =====================================================
+        All tests: Test Failed at $(failing_tests_file):18
+          Expression: 2 == 1
+           Evaluated: 2 == 1
+
+        Stacktrace:
+         [1]
+        """
+    )
+
+    expected_output_failing_tests_fail_fast = strip(
+        """
+        $(joinpath(test_dir, "failing_tests")): .
+        =====================================================
+        Test Failed at $(failing_tests_file):18
+          Expression: 2 == 1
+           Evaluated: 2 == 1
+
+        =====================================================
+        Error During Test at
+        """
+    )
+
+    # --- Tests
+
+    # Case: normal operation
+    tests = [some_tests_file, more_tests_file]
+    output = strip(@capture_out begin
+        cli.run(tests)
+    end)
+
+    @test occursin(expected_output_some_tests, output)
+    @test occursin(expected_output_more_tests, output)
+
+    # Case: fail_fast = true
+    tests = [failing_tests_file, more_tests_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=true)
+        catch error
+        end
+    end)
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin(expected_output_more_tests, output)
+    @test error isa Test.FallbackTestSetException
+    @test error.msg == "There was an error during testing"
+
+    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] = true
+    ENV["JLTEST_FAIL_FAST"] = "true"
+    tests = [failing_tests_file, more_tests_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=false)
+        catch error
+        end
+    end)
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin(expected_output_more_tests, output)
+    @test error isa Test.FallbackTestSetException
+    @test error.msg == "There was an error during testing"
+
+    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] = false
+    ENV["JLTEST_FAIL_FAST"] = false
+    tests = [failing_tests_file, more_tests_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=false)
+        catch error
+        end
+    end)
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_more_tests, output)
+    @test isnothing(error)
+
+    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] undefined
+    delete!(ENV, "JLTEST_FAIL_FAST")
+    tests = [failing_tests_file, more_tests_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=false)
+        catch error
+        end
+    end)
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_more_tests, output)
+    @test isnothing(error)
+
+    # Case: `tests` is empty
+    cd(test_dir)
+    tests = []
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests)
+        catch error
+        end
+    end)
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_some_tests, output)
+    @test occursin(expected_output_more_tests, output)
+    @test isnothing(error)
 end
 
 @testset TestSetPlus "jltest.cli.run(): error cases" begin
@@ -131,3 +261,8 @@ end
     # Case: invalid `tests` arg
     @test_throws MethodError cli.run([1, 2, 3])
 end
+
+# --- Emit message about expected failures and errors
+
+println()
+@info "For $(basename(@__FILE__)), 3 failures and 0 errors are expected."
