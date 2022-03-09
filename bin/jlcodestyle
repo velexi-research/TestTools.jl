@@ -1,8 +1,7 @@
 #!/bin/bash
 # -*- mode: julia -*-
 #=
-exec julia --color=yes --startup-file=no \
-           --project=`dirname "${BASH_SOURCE[0]}"` "${BASH_SOURCE[0]}" "$@"
+exec julia --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}" "$@"
 =#
 """
 -------------------------------------------------------------------------------------------
