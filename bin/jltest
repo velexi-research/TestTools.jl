@@ -11,26 +11,7 @@ part of the TestTools.jl package, including this file, may be copied, modified, 
 or distributed except according to the terms contained in the LICENSE file.
 -------------------------------------------------------------------------------------------
 """
-# --- Imports
-
-using TestTools: TestTools, jltest
-
-# --- Run main script
 
 if abspath(PROGRAM_FILE) == @__FILE__
-
-    # Parse CLI arguments
-    args = jltest.cli.parse_args()
-
-    # Handle --version option
-    if args["version"]
-        println(
-            "$(basename(PROGRAM_FILE)) $(TestTools.VERSION) " *
-            "(from $(dirname(PROGRAM_FILE)))",
-        )
-        exit(0)
-    end
-
-    # Run main program
-    jltest.cli.run(args["tests"]; fail_fast=args["fail-fast"], verbose=args["verbose"])
+    include(joinpath(dirname(dirname(@__FILE__)), "src", "jltest", "cli", "script.jl"))
 end

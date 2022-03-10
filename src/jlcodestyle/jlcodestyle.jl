@@ -11,6 +11,6 @@ or distributed except according to the terms contained in the LICENSE file.
 module jlcodestyle
 
 # CLI
-include("cli.jl")
+include("cli/cli.jl")
 
 end  # End of jlcodestyle module

@@ -15,6 +15,6 @@ include("TestSetPlus.jl")
 include("utils.jl")
 
 # CLI
-include("cli.jl")
+include("cli/cli.jl")
 
 end  # End of jltest module
