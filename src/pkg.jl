@@ -152,7 +152,13 @@ or distributed except according to the terms contained in the LICENSE file.
 """,
             )
             open(abspath(@__DIR__, cli, "cli", "main.jl"), "r") do main
-                write(io, main)
+                line_count = 1
+                for line in eachline(main)
+                    if line_count > 10
+                        println(io, line)
+                    end
+                    line_count += 1
+                end
             end
         end
     end
