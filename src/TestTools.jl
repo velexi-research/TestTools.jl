@@ -57,11 +57,20 @@ function install(;
     julia_flags::Vector{String}=default_julia_flags,
     force::Bool=false,
 )
+    # --- Install CLI utilities
+
     for cli in cli_tools
         install_cli(
             cli; julia=julia, install_dir=install_dir, julia_flags=julia_flags, force=force
         )
     end
+
+    # --- Emit informational message
+
+    @info """
+          Make sure that `$(install_dir)` is in PATH, or manually add a
+          symlink from a directory in PATH to the installed program file.
+          """
 end
 
 """
@@ -131,6 +140,12 @@ function install_cli(
             print(
                 io,
                 """
+:: -----------------------------------------------------------------------------------------
+:: COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
+:: license terms in the LICENSE file found in the root directory of this distribution. No
+:: part of the TestTools.jl package, including this file, may be copied, modified, propagated,
+:: or distributed except according to the terms contained in the LICENSE file.
+:: -----------------------------------------------------------------------------------------
 @ECHO OFF
 $(julia) $(join(julia_flags, ' ')) $(abspath(@__DIR__, cli, "cli", "main.jl")) %*
 """,
@@ -163,16 +178,9 @@ or distributed except according to the terms contained in the LICENSE file.
     # Set permissions on executable
     chmod(exec_path, 0o0100755) # equivalent to -rwxrwxr-x (chmod +x exec_path)
 
-    # --- Emit informational messages
+    # --- Emit informational message
 
     @info "Installed $(cli) to `$(Base.contractuser(exec_path))`."
-    @info """
-          Make sure that `$(install_dir)` is in PATH, or manually add a
-          symlink from a directory in PATH to the installed program file.
-
-          Path to installed program:
-              $(exec_path)
-          """
 
     return nothing
 end
