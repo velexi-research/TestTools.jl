@@ -121,4 +121,11 @@ TOTAL                                             6          3      50.0%
 """
     @test output == expected_output
     cd(cwd)  # Restore current directory
+
+    # --- Clean up
+
+    @suppress begin
+        clean_folder(test_pkg_dir)
+        rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
+    end
 end
