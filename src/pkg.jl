@@ -139,7 +139,7 @@ $(julia) $(join(julia_flags, ' ')) $(abspath(@__DIR__, cli, "cli", "main.jl")) %
                 """
 #!/usr/bin/env bash
 #=
-exec_path $(julia) $(join(julia_flags, ' ')) "\${BASH_SOURCE[0]}" "\$@"
+exec $(julia) $(join(julia_flags, ' ')) "\${BASH_SOURCE[0]}" "\$@"
 =#
 \"\"\"
 -------------------------------------------------------------------------------------------
