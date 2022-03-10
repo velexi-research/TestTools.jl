@@ -1,5 +1,5 @@
 """
-script.jl contains the main program for the `jltest` CLI.
+main.jl contains the main program for the `jlcoverage` CLI.
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
@@ -10,12 +10,12 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 # --- Imports
 
-using TestTools: TestTools, jltest
+using TestTools: TestTools, jlcoverage
 
 # --- Main program
 
 # Parse CLI arguments
-args = jltest.cli.parse_args()
+args = jlcoverage.cli.parse_args()
 
 # Handle --version option
 if args["version"]
@@ -27,4 +27,4 @@ if args["version"]
 end
 
 # Run main program
-jltest.cli.run(args["tests"]; fail_fast=args["fail-fast"], verbose=args["verbose"])
+jlcoverage.cli.run(args["paths"]; verbose=args["verbose"])
