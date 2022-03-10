@@ -13,5 +13,5 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    include(joinpath(dirname(dirname(@__FILE__)), "src", "jlcodestyle", "cli", "script.jl"))
+    include(joinpath(dirname(@__DIR__), "src", "jlcodestyle", "cli", "script.jl"))
 end

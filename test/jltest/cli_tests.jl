@@ -130,7 +130,7 @@ end
     # --- Preparations
 
     # Precompute commonly used values
-    test_dir = joinpath(dirname(@__FILE__), "data")
+    test_dir = joinpath(@__DIR__, "data")
 
     some_tests_file = joinpath(test_dir, "some_tests.jl")
     expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."

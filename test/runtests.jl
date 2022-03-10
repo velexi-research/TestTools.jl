@@ -22,7 +22,7 @@ using TestTools.jltest
 # --- Preparations
 
 # Change to test directory
-cd(dirname(@__FILE__))
+cd(@__DIR__)
 
 # --- Normal unit tests
 

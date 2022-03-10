@@ -14,7 +14,7 @@ or distributed except according to the terms contained in the LICENSE file.
 using Test
 
 # Local package
-include(joinpath(dirname(@__FILE__), "..", "src", "TestPackage.jl"))
+include(joinpath(@__DIR__, "..", "src", "TestPackage.jl"))
 using .TestPackage
 
 @testset "TestPackage tests" begin

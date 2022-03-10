@@ -179,7 +179,7 @@ end
     cwd = pwd()
 
     # Construct path to test data directory
-    test_file_dir = abspath(joinpath(dirname(@__FILE__), "data"))
+    test_file_dir = abspath(joinpath(@__DIR__, "data"))
 
     # --- Exercise functionality and check results
 
