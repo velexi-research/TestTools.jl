@@ -27,6 +27,7 @@ cd(@__DIR__)
 # --- Normal unit tests
 
 tests = [
+    "pkg_tests.jl",
     joinpath("jltest", "TestSetPlus_passing_tests.jl"),
     joinpath("jltest", "TestSetPlus_fail_fast_tests.jl"),
     joinpath("jlcodestyle", "cli_tests.jl"),
