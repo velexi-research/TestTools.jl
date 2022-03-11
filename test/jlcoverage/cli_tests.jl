@@ -15,6 +15,7 @@ using Logging
 using Test
 
 # External packages
+using Coverage: Coverage
 using Suppressor
 
 # Local modules
@@ -94,7 +95,8 @@ end
 
     # Generate coverage data for TestPackage
     test_pkg_dir = joinpath(@__DIR__, "data", "TestPackage")
-    cmd = `julia --startup-file=no --project=@. -e 'import Pkg; Pkg.test(coverage=true)'`
+    cmd_options = `--startup-file=no --project=@. -O0`
+    cmd = `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`
     @suppress begin
         Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
     end
@@ -192,6 +194,16 @@ TOTAL                                             6          3      50.0%
 """
     @test output == expected_output
     cd(cwd)  # Restore current directory
+
+    # --- Clean up
+
+    # Delete coverage data files
+    @suppress begin
+        Coverage.clean_folder(test_pkg_dir)
+    end
+
+    # Remove Manifest.toml
+    rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
 
 @testset TestSetPlus "jlcoverage.cli.run(): error cases" begin

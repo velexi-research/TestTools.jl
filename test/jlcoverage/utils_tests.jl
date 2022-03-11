@@ -15,7 +15,7 @@ using Test
 using Test: DefaultTestSet
 
 # External packages
-using Coverage
+using Coverage: Coverage
 using Suppressor
 
 # Local modules
@@ -127,7 +127,7 @@ TOTAL                                             6          3      50.0%
 
     # Delete coverage data files
     @suppress begin
-        clean_folder(test_pkg_dir)
+        Coverage.clean_folder(test_pkg_dir)
     end
 
     # Remove Manifest.toml
