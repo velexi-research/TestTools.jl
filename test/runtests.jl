@@ -127,7 +127,7 @@ print("jltest/utils_tests: ")
                             Test Summary:                             | Pass  Fail  Total
                             jltest                                    |   35     4     39
                               utils tests                             |   35     4     39
-                                jltest.run_tests()                    |   30     4     34
+                                jltest.run_tests()                    |   32     4     36
                                                                       |    2            2
                                                                       |    2            2
                                                                       |    5     1      6
@@ -136,7 +136,7 @@ print("jltest/utils_tests: ")
                                                                       |    5     1      6
                                   test-name                           |    1     1      2
                                                                       |    1     1      2
-                                jltest.autodetect_tests()             |    3            3
+                                jltest.autodetect_tests()             |    1            1
                                 jltest.run_tests(): invalid arguments |    2            2
 
                                 """)
