@@ -104,8 +104,10 @@ using TestTools.jltest
     # --- `tests` contains both directories and files
 
     tests = [test_dir, some_tests_file]
-    output = strip(@capture_out begin
-        run_tests(tests)
+    log_msg = strip(@capture_err begin
+        output = strip(@capture_out begin
+            run_tests(tests)
+        end)
     end)
 
     expected_output_lines = [

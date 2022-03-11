@@ -16,8 +16,8 @@ or distributed except according to the terms contained in the LICENSE file.
 # --- Imports
 
 # Standard library
+using Pkg: Pkg
 using Test
-#using Test: FallbackTestSetException
 
 # External packages
 using Suppressor
@@ -129,9 +129,17 @@ end
 @testset TestSetPlus "jltest.cli.run()" begin
     # --- Preparations
 
-    # Precompute commonly used values
+    # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data")
 
+    # Set up Julia environment
+    cwd = pwd()
+    cd(test_dir)
+    Pkg.instantiate()
+    push!(LOAD_PATH, test_dir)
+    cd(cwd)
+
+    # Precompute commonly used values
     some_tests_file = joinpath(test_dir, "some_tests.jl")
     expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
 
@@ -241,17 +249,31 @@ end
     cd(test_dir)
     tests = []
     local error = nothing
-    output = strip(@capture_out begin
-        try
-            cli.run(tests)
-        catch error
-        end
+    log_msg = strip(@capture_err begin
+        output = strip(@capture_out begin
+            try
+                cli.run(tests)
+            catch error
+            end
+        end)
     end)
 
     @test startswith(output, expected_output_failing_tests)
     @test occursin(expected_output_some_tests, output)
     @test occursin(expected_output_more_tests, output)
     @test isnothing(error)
+
+    # Check that the "Package TestTools does not have ... in its dependencies" warning
+    # has been suppressed
+    @test isempty(log_msg)
+
+    # --- Clean up
+
+    # Restore LOAD_PATH
+    filter!(x -> x != test_dir, LOAD_PATH)
+
+    # Remove Manifest.toml
+    rm(joinpath(test_dir, "Manifest.toml"); force=true)
 end
 
 @testset TestSetPlus "jltest.cli.run(): error cases" begin
