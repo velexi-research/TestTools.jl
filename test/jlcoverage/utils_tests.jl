@@ -33,7 +33,8 @@ using TestTools.jltest: TestSetPlus
 
     # Generate coverage data for TestPackage
     test_pkg_dir = joinpath(@__DIR__, "data", "TestPackage")
-    cmd = `julia --startup-file=no --project=@. -e 'import Pkg; Pkg.test(coverage=true)'`
+    cmd_options = `--startup-file=no --project=@. -O0`
+    cmd = `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`
     @suppress begin
         Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
     end
@@ -124,8 +125,11 @@ TOTAL                                             6          3      50.0%
 
     # --- Clean up
 
+    # Delete coverage data files
     @suppress begin
         clean_folder(test_pkg_dir)
-        rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
     end
+
+    # Remove Manifest.toml
+    rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
