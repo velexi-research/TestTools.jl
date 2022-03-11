@@ -38,25 +38,35 @@ jltest.run_tests(tests; name="jltest")
 
 # --- jltest unit tests that have expected failures and errors
 
+local log_message
 local error_type, error_message
 
 # TestSetPlus with failing tests
 println()
 test_file = joinpath("jltest", "TestSetPlus_failing_tests.jl")
-output = strip(@capture_out begin
-    try
-        @testset TestSetPlus "TestSetPlus" begin
-            jltest.run_tests(test_file; name="failing tests")
+output = strip(
+    @capture_out begin
+        try
+            @testset TestSetPlus "TestSetPlus" begin
+                global log_message = strip(
+                    @capture_err begin
+                        jltest.run_tests(test_file; name="failing tests")
+                    end
+                )
+            end
+        catch error
+            bt = catch_backtrace()
+            global error_type = typeof(error)
+            global error_message = sprint(showerror, error, bt)
         end
-    catch error
-        bt = catch_backtrace()
-        global error_type = typeof(error)
-        global error_message = sprint(showerror, error, bt)
     end
-end)
+)
 
 print("jltest/TestSetPlus_failing_tests: ")
 @testset TestSetPlus "TestSetPlus: check for expected test failures" begin
+    @test log_message ==
+        "[ Info: For TestSetPlus_failing_tests.jl, 6 failures and 1 error are expected."
+
     @test error_type == TestSetException
     @test error_message ==
         "Some tests did not pass: 7 passed, 6 failed, 1 errored, 0 broken."
@@ -83,20 +93,28 @@ end
 # utils.jl
 println()
 test_file = joinpath("jltest", "utils_tests.jl")
-output = strip(@capture_out begin
-    try
-        @testset TestSetPlus "jltest" begin
-            jltest.run_tests(test_file; name="utils tests")
+output = strip(
+    @capture_out begin
+        try
+            @testset TestSetPlus "jltest" begin
+                global log_message = strip(
+                    @capture_err begin
+                        jltest.run_tests(test_file; name="utils tests")
+                    end
+                )
+            end
+        catch error
+            bt = catch_backtrace()
+            global error_type = typeof(error)
+            global error_message = sprint(showerror, error, bt)
         end
-    catch error
-        bt = catch_backtrace()
-        global error_type = typeof(error)
-        global error_message = sprint(showerror, error, bt)
     end
-end)
+)
 
 print("jltest/utils_tests: ")
 @testset TestSetPlus "jltest.utils: check for expected test failures" begin
+    @test log_message == "[ Info: For utils_tests.jl, 4 failures and 0 errors are expected."
+
     @test error_type == TestSetException
     @test error_message ==
         "Some tests did not pass: 35 passed, 4 failed, 0 errored, 0 broken."
@@ -128,20 +146,28 @@ end
 # cli.jl
 println()
 test_file = joinpath("jltest", "cli_tests.jl")
-output = strip(@capture_out begin
-    try
-        @testset TestSetPlus "jltest" begin
-            jltest.run_tests(test_file; name="cli tests")
+output = strip(
+    @capture_out begin
+        try
+            @testset TestSetPlus "jltest" begin
+                global log_message = strip(
+                    @capture_err begin
+                        jltest.run_tests(test_file; name="cli tests")
+                    end
+                )
+            end
+        catch error
+            bt = catch_backtrace()
+            global error_type = typeof(error)
+            global error_message = sprint(showerror, error, bt)
         end
-    catch error
-        bt = catch_backtrace()
-        global error_type = typeof(error)
-        global error_message = sprint(showerror, error, bt)
     end
-end)
+)
 
 print("jltest/cli_tests: ")
 @testset TestSetPlus "jltest.cli: check for expected test failures" begin
+    @test log_message == "[ Info: For cli_tests.jl, 3 failures and 0 errors are expected."
+
     @test error_type == TestSetException
     @test error_message ==
         "Some tests did not pass: 44 passed, 3 failed, 0 errored, 0 broken."
