@@ -91,13 +91,13 @@ function run(paths::Vector; verbose::Bool=false)
     # Handle edge case
     if isempty(paths)
         if isfile("Project.toml") && isdir("src")
-            @info("Detected Julia package. Generating report for files in `src` directory.")
+            @info "Detected Julia package. Generating report for files in `src` directory."
             paths = ["src"]
         else
             message =
                 "Julia package not detected. Generating report for files in current " *
                 "directory."
-            @info(message)
+            @info message
             paths = ["."]
         end
     end

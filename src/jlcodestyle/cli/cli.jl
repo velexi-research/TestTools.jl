@@ -121,9 +121,9 @@ function run(
 
     if verbose
         style_name = split("$(typeof(style))", '.')[2]
-        @info("Style = $(style_name)")
+        @info "Style = $(style_name)"
 
-        @info("Overwrite = $(overwrite)")
+        @info "Overwrite = $(overwrite)"
     end
 
     # --- Check code style

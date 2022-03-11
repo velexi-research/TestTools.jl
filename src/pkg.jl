@@ -49,10 +49,10 @@ function install(;
 
     # --- Emit informational message
 
-    @info("""
+    @info """
           Make sure that `$(install_dir)` is in PATH, or manually add a
           symlink from a directory in PATH to the installed program file.
-          """)
+          """
 end
 
 """
@@ -168,7 +168,7 @@ or distributed except according to the terms contained in the LICENSE file.
 
     # --- Emit informational message
 
-    @info("Installed $(cli) to `$(Base.contractuser(exec_path))`.")
+    @info "Installed $(cli) to `$(Base.contractuser(exec_path))`."
 
     return nothing
 end
@@ -234,7 +234,7 @@ function uninstall_cli(
 
     # --- Emit informational message
 
-    @info("Uninstalled `$(Base.contractuser(exec_path))`.")
+    @info "Uninstalled `$(Base.contractuser(exec_path))`."
 
     return nothing
 end
