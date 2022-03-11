@@ -31,16 +31,16 @@ using TestTools.jltest
     # --- Preparations
 
     # Construct path to test directory
-    cwd = pwd()
     test_dir = joinpath(@__DIR__, "data")
 
     # Set up Julia environment
+    cwd = pwd()
     cd(test_dir)
     Pkg.instantiate()
     push!(LOAD_PATH, test_dir)
     cd(cwd)
 
-    # Cache common variables
+    # Precompute commonly used values
     some_tests_file = joinpath(test_dir, "some_tests.jl")
     expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
 
