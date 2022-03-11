@@ -15,6 +15,7 @@ or distributed except according to the terms contained in the LICENSE file.
 # --- Imports
 
 # Standard library
+using Pkg: Pkg
 using Test
 using Test: DefaultTestSet
 
@@ -29,8 +30,17 @@ using TestTools.jltest
 @testset TestSetPlus "jltest.run_tests()" begin
     # --- Preparations
 
+    # Construct path to test directory
+    cwd = pwd()
     test_dir = joinpath(@__DIR__, "data")
 
+    # Set up Julia environment
+    cd(test_dir)
+    Pkg.instantiate()
+    push!(LOAD_PATH, test_dir)
+    cd(cwd)
+
+    # Cache common variables
     some_tests_file = joinpath(test_dir, "some_tests.jl")
     expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
 
@@ -71,8 +81,10 @@ using TestTools.jltest
     # --- `tests` contains only a directory
 
     tests = [test_dir]
-    output = strip(@capture_out begin
-        run_tests(tests)
+    log_msg = strip(@capture_err begin
+        output = strip(@capture_out begin
+            run_tests(tests)
+        end)
     end)
 
     expected_output_lines = [
@@ -84,6 +96,10 @@ using TestTools.jltest
     for line in expected_output_lines
         @test occursin(line, output)
     end
+
+    # Check that the "Package TestTools does not have ... in its dependencies" warning
+    # has been suppressed
+    @test isempty(log_msg)
 
     # --- `tests` contains both directories and files
 
@@ -103,6 +119,10 @@ using TestTools.jltest
 
     output_lines = split(output, '\n')
     @test count(i -> (i == expected_output_some_tests), output_lines) == 2
+
+    # Check that the "Package TestTools does not have ... in its dependencies" warning
+    # has been suppressed
+    @test isempty(log_msg)
 
     # --- test keyword arguments
 
@@ -125,6 +145,14 @@ using TestTools.jltest
         "$(joinpath(test_dir, "failing_tests")): " *
         ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):18"
     @test startswith(output, expected_prefix)
+
+    # --- Clean up
+
+    # Restore LOAD_PATH
+    filter!(x -> x != test_dir, LOAD_PATH)
+
+    # Remove Manifest.toml
+    rm(joinpath(test_dir, "Manifest.toml"); force=true)
 end
 
 @testset TestSetPlus "jltest.autodetect_tests()" begin
@@ -132,11 +160,12 @@ end
     # --- normal operation
 
     test_dir = joinpath(@__DIR__, "data")
-    tests = autodetect_tests(test_dir)
-    expected_tests = ["failing_tests.jl", "more_tests.jl", "some_tests.jl"]
-    for test_file in expected_tests
-        @test joinpath(test_dir, test_file) in tests
-    end
+    tests = Set(autodetect_tests(test_dir))
+    expected_tests = Set([
+        joinpath(test_dir, file) for file in
+        ["failing_tests.jl", "missing_deps_tests.jl", "more_tests.jl", "some_tests.jl"]
+    ])
+    @test tests == expected_tests
 end
 
 @testset TestSetPlus "jltest.run_tests(): invalid arguments" begin
