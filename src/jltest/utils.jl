@@ -145,11 +145,12 @@ function run_tests(
                 end)
 
                 # Suppress warnings about missing TestTools dependencies
-                regex_missing_deps =
-                    r"^┌ Warning: Package TestTools does not have " *
-                    r"[^\s]+ in its dependencies:"
                 if !isempty(log_msg)
-                    if !occursin(regex_missing_deps, log_msg)
+                    if !occursin(
+                        r"^┌ Warning: Package TestTools does not have " *
+                        r"[^\s]+ in its dependencies:",
+                        log_msg,
+                    )
                         reemit_log_msg(log_msg)
                     end
                 end
