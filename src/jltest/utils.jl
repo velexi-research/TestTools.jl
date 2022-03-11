@@ -15,11 +15,60 @@ export autodetect_tests, run_tests
 # --- Imports
 
 # Standard library
+using Logging
 using Test
 using Test: AbstractTestSet
 
 # External packages
-using ArgParse
+using Suppressor: @capture_err
+
+# --- Private utility functions
+
+function reemit_log_msg(message::AbstractString)
+
+    # --- Preparations
+
+    # Get lines of message
+    lines = split(message, '\n')
+
+    # Get log level
+    log_level = Logging.Warn
+    if occursin("Info", lines[1])
+        log_level = Logging.Info
+    elseif occursin("Debug", lines[1])
+        log_level = Logging.Debug
+    end
+
+    # --- Reformat message
+
+    # Reformat first line and get log level
+    if startswith(lines[1], "┌ Warning: ")
+        lines[1] = replace(lines[1], "┌ Warning: " => "")
+    elseif startswith(lines[1], "[ Warning: ")
+        lines[1] = replace(lines[1], "[ Warning: " => "")
+    elseif startswith(lines[1], "┌ Info: ")
+        lines[1] = replace(lines[1], "┌ Info: " => "")
+    elseif startswith(lines[1], "[ Info: ")
+        lines[1] = replace(lines[1], "[ Info: " => "")
+    elseif startswith(lines[1], "┌ Debug: ")
+        lines[1] = replace(lines[1], "┌ Debug: " => "")
+    elseif startswith(lines[1], "[ Debug: ")
+        lines[1] = replace(lines[1], "[ Debug: " => "")
+    end
+
+    # Reformat middle lines
+    for i in 2:(length(lines) - 1)
+        lines[i] = replace(lines[i], "│ " => "")
+    end
+
+    # Reformat last line of message
+    lines[end] = replace(lines[end], "└ " => "")
+
+    # --- Re-emit message
+
+    message = join(lines, '\n')
+    @logmsg log_level message _module = nothing _file = nothing _group = nothing
+end
 
 # --- Functions/Methods
 
@@ -85,12 +134,24 @@ function run_tests(
                 # Restore current directory before each test file is run
                 cd(cwd)
 
-                # Run test
+                # Run test, capturing log messages
                 println()
                 print(module_name, ": ")
                 mod = gensym(module_name)
-                @eval module $mod
-                Base.include($mod, abspath($file_name))
+                log_msg = strip(@capture_err begin
+                    @eval module $mod
+                    Base.include($mod, abspath($file_name))
+                    end
+                end)
+
+                # Suppress warnings about missing TestTools dependencies
+                regex_missing_deps =
+                    r"^┌ Warning: Package TestTools does not have " *
+                    r"[^\s]+ in its dependencies:"
+                if !isempty(log_msg)
+                    if !occursin(regex_missing_deps, log_msg)
+                        reemit_log_msg(log_msg)
+                    end
                 end
             end
         end
