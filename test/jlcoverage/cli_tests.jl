@@ -11,7 +11,7 @@ or distributed except according to the terms contained in the LICENSE file.
 # --- Imports
 
 # Standard library
-using Logging
+using Logging: Logging
 using Test
 
 # External packages
@@ -234,5 +234,8 @@ TOTAL                                             0          0        N/A
     @test output == expected_output
 end
 
-# Re-enable info-level logging to avoid interfering with other unit tests
-disable_logging(Logging.Debug)
+# Re-enable logging to avoid interfering with other unit tests.
+#
+# Note: setting the log level less than the log level for Logging.Debug ensures that
+#       log messages at all levels are displayed
+Logging.disable_logging(Logging.LogLevel(Logging.Debug.level - 1))
