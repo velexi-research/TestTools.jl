@@ -117,17 +117,17 @@ print("jltest/utils_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 45 passed, 6 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 49 passed, 6 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = strip(
         """
-        jltest/utils_tests: .........................
+        jltest/utils_tests: ...........................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |   45     6     51
-          utils tests                                    |   45     6     51
+        jltest                                           |   49     6     55
+          utils tests                                    |   49     6     55
             jltest.run_tests(): basic tests              |   35     6     41
                                                          |    2            2
                                                          |    2            2
@@ -144,7 +144,7 @@ print("jltest/utils_tests: ")
                                                          |    1     1      2
                 failing tests                            |    1     1      2
             jltest.run_tests(): log message tests        |    9            9
-            jltest.run_tests(): current directory checks |             No tests
+            jltest.run_tests(): current directory checks |    4            4
             jltest.autodetect_tests()                    |    1            1
             """
     )
