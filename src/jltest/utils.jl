@@ -24,50 +24,79 @@ using Suppressor: @capture_err
 
 # --- Private utility functions
 
-function reemit_log_msg(message::AbstractString)
+function reemit_log_msg(messages::AbstractString)
 
     # --- Preparations
 
     # Get lines of message
-    lines = split(message, '\n')
+    lines = split(messages, '\n')
 
-    # Get log level
-    log_level = Logging.Warn
-    if occursin("Info", lines[1])
-        log_level = Logging.Info
-    elseif occursin("Debug", lines[1])
-        log_level = Logging.Debug
+    # --- Extract, reformat, and re-emit messages
+
+    message_finished = true
+    message_lines = nothing
+    for i in 1:length(lines)
+
+        # --- Extract next log message
+
+        if message_finished
+            message_lines = [lines[i]]
+
+            # Check for multi-line message
+            if startswith(lines[i], "┌ ")
+                message_finished = false
+            end
+
+        else
+            push!(message_lines, lines[i])
+
+            # Check for end of multi-line message
+            if startswith(lines[i], "└ ")
+                message_finished = true
+            end
+        end
+
+        if message_finished
+
+            # Get log level
+            log_level = Logging.Warn
+            if occursin("Info", message_lines[1])
+                log_level = Logging.Info
+            elseif occursin("Debug", message_lines[1])
+                log_level = Logging.Debug
+            end
+
+            # --- Reformat message
+
+            # Reformat first line
+            if startswith(message_lines[1], "┌ Warning: ")
+                message_lines[1] = replace(message_lines[1], "┌ Warning: " => "")
+            elseif startswith(message_lines[1], "[ Warning: ")
+                message_lines[1] = replace(message_lines[1], "[ Warning: " => "")
+            elseif startswith(message_lines[1], "┌ Info: ")
+                message_lines[1] = replace(message_lines[1], "┌ Info: " => "")
+            elseif startswith(message_lines[1], "[ Info: ")
+                message_lines[1] = replace(message_lines[1], "[ Info: " => "")
+            elseif startswith(message_lines[1], "┌ Debug: ")
+                message_lines[1] = replace(message_lines[1], "┌ Debug: " => "")
+            elseif startswith(message_lines[1], "[ Debug: ")
+                message_lines[1] = replace(message_lines[1], "[ Debug: " => "")
+            end
+
+            # Reformat middle lines
+            for i in 2:(length(message_lines) - 1)
+                message_lines[i] = replace(message_lines[i], "│ " => "")
+            end
+
+            # Reformat last line of message
+            message_lines[end] = replace(message_lines[end], "└ " => "")
+
+            # --- Emit message
+
+            message = join(message_lines, '\n')
+            @logmsg log_level message _module = nothing _file = nothing _group = nothing
+        end
     end
-
-    # --- Reformat message
-
-    # Reformat first line and get log level
-    if startswith(lines[1], "┌ Warning: ")
-        lines[1] = replace(lines[1], "┌ Warning: " => "")
-    elseif startswith(lines[1], "[ Warning: ")
-        lines[1] = replace(lines[1], "[ Warning: " => "")
-    elseif startswith(lines[1], "┌ Info: ")
-        lines[1] = replace(lines[1], "┌ Info: " => "")
-    elseif startswith(lines[1], "[ Info: ")
-        lines[1] = replace(lines[1], "[ Info: " => "")
-    elseif startswith(lines[1], "┌ Debug: ")
-        lines[1] = replace(lines[1], "┌ Debug: " => "")
-    elseif startswith(lines[1], "[ Debug: ")
-        lines[1] = replace(lines[1], "[ Debug: " => "")
-    end
-
-    # Reformat middle lines
-    for i in 2:(length(lines) - 1)
-        lines[i] = replace(lines[i], "│ " => "")
-    end
-
-    # Reformat last line of message
-    lines[end] = replace(lines[end], "└ " => "")
-
-    # --- Re-emit message
-
-    message = join(lines, '\n')
-    @logmsg log_level message _module = nothing _file = nothing _group = nothing
 end
 
 # --- Functions/Methods
