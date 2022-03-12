@@ -125,18 +125,11 @@ using TestTools.jltest: cli, TestSetPlus
     @test args == expected_args
 end
 
-@testset TestSetPlus "jltest.cli.run()" begin
+@testset TestSetPlus "jltest.cli.run(): basic tests" begin
     # --- Preparations
 
     # Construct path to test directory
-    test_dir = joinpath(@__DIR__, "data")
-
-    # Set up Julia environment
-    push!(LOAD_PATH, test_dir)
-
-    # Temporarily enable logging at all levels
-    env_julia_debug_save = get(ENV, "JULIA_DEBUG", nothing)
-    ENV["JULIA_DEBUG"] = "all"
+    test_dir = joinpath(@__DIR__, "data-basic-tests")
 
     # Precompute commonly used values
     some_tests_file = joinpath(test_dir, "some_tests.jl")
@@ -171,39 +164,6 @@ end
         Error During Test at
         """
     )
-
-    log_message_tests_file = joinpath(test_dir, "log_message_tests.jl")
-    expected_output_log_message_tests = "$(joinpath(test_dir, "log_message_tests")):"
-
-    location_prefix =
-        "TestTools.jltest.##$(joinpath(test_dir, "log_message_tests"))#[0-9]+ " *
-        "$(Base.contractuser(log_message_tests_file))"
-    expected_log_messages_log_message_tests = [
-        "[ Warning: Single line @warn message test",
-        Regex(strip("""
-                    ┌ Warning: Multi-line @warn message test.
-                    │ Second line.
-                    │ Third line.
-                    └ @ $(location_prefix):[0-9]+
-                    """)),
-        "[ Info: Single line @info message test",
-        strip("""
-              ┌ Info: Multi-line @info message test.
-              │ Second line.
-              └ Third line.
-              """),
-        "[ Debug: Single line @debug message test",
-        Regex(strip("""
-                    ┌ Debug: Multi-line @debug message test.
-                    │ Second line.
-                    │ Third line.
-                    └ @ $(location_prefix):[0-9]+
-                    """)),
-    ]
-
-    missing_deps_tests_file = joinpath(test_dir, "missing_deps_tests.jl")
-    expected_output_missing_deps_tests = "$(joinpath(test_dir, "missing_deps_tests")):"
-    expected_log_messages_missing_deps_tests = "[ Info: Non-missing dependency log message"
 
     # --- Tests
 
@@ -294,27 +254,6 @@ end
     @test occursin(expected_output_some_tests, output)
     @test occursin(expected_output_some_tests_no_testset, output)
     @test isnothing(error)
-
-    # Check log messages
-    for message in expected_log_messages_log_message_tests
-        @test occursin(message, log_msg)
-    end
-    @test occursin(expected_log_messages_missing_deps_tests, log_msg)
-
-    # --- Clean up
-
-    # Remove Manifest.toml
-    rm(joinpath(test_dir, "Manifest.toml"); force=true)
-
-    # Restore LOAD_PATH
-    filter!(x -> x != test_dir, LOAD_PATH)
-
-    # Restore state of ENV
-    if isnothing(env_julia_debug_save)
-        delete!(ENV, "JULIA_DEBUG")
-    else
-        ENV["JULIA_DEBUG"] = env_julia_debug_save
-    end
 end
 
 @testset TestSetPlus "jltest.cli.run(): error cases" begin
