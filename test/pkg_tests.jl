@@ -30,22 +30,25 @@ using TestTools.jltest: TestSetPlus
     install_dir = abspath(joinpath(@__DIR__, "testing-dir"))
 
     # Cache common variables
-    jltest_exec_path = Base.contractuser(joinpath(install_dir, "jltest"))
-    jlcoverage_exec_path = Base.contractuser(joinpath(install_dir, "jlcoverage"))
-    jlcodestyle_exec_path = Base.contractuser(joinpath(install_dir, "jlcodestyle"))
-
+    jltest_cmd = "jltest"
+    jlcoverage_cmd = "jlcoverage"
+    jlcodestyle_cmd = "jlcodestyle"
     if Sys.iswindows()
-        jltest_exec_path = "$jltest_exec_path.cmd"
-        jlcoverage_exec_path = "$jlcoverage_exec_path.cmd"
-        jlcodestyle_exec_path = "$jlcodestyle_exec_path.cmd"
+        jltest_cmd = "$jltest_cmd.cmd"
+        jlcoverage_cmd = "$jlcoverage_cmd.cmd"
+        jlcodestyle_cmd = "$jlcodestyle_cmd.cmd"
     end
 
     # --- install() tests
 
+    jltest_exec_path = Base.contractuser(joinpath(install_dir, jltest_cmd))
+    jlcoverage_exec_path = Base.contractuser(joinpath(install_dir, jlcoverage_cmd))
+    jlcodestyle_exec_path = Base.contractuser(joinpath(install_dir, jlcodestyle_cmd))
+
     expected_output_install = """
-        [ Info: Installed jltest to `$jltest_exec_path`.
-        [ Info: Installed jlcoverage to `$jlcoverage_exec_path`.
-        [ Info: Installed jlcodestyle to `$jlcodestyle_exec_path`.
+        [ Info: Installed $jltest_cmd to `$jltest_exec_path`.
+        [ Info: Installed $jlcoverage_cmd to `$jlcoverage_exec_path`.
+        [ Info: Installed $jlcodestyle_cmd to `$jlcodestyle_exec_path`.
         ┌ Info: Make sure that `$install_dir` is in PATH, or manually add a
         └ symlink from a directory in PATH to the installed program file.
         """
