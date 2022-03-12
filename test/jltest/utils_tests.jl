@@ -251,6 +251,9 @@ end
 @testset TestSetPlus "jltest.run_tests(): current directory checks" begin
     # --- Preparations
 
+    # Get current directory
+    cwd = pwd()
+
     # Change to test directory
     test_dir = joinpath(@__DIR__, "data-directory-change-tests")
     cd(test_dir)
@@ -284,6 +287,11 @@ end
         '\n',
     )
     @test output == expected_output
+
+    # --- Clean up
+
+    # Restore current directory
+    cd(cwd)
 end
 
 @testset TestSetPlus "jltest.autodetect_tests()" begin
