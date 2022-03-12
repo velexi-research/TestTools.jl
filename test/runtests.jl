@@ -113,33 +113,47 @@ output = strip(
 
 print("jltest/utils_tests: ")
 @testset TestSetPlus "jltest.utils: check for expected test failures" begin
-    @test log_message == "[ Info: For utils_tests.jl, 4 failures and 0 errors are expected."
+    @test log_message == "[ Info: For utils_tests.jl, 6 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 35 passed, 4 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 60 passed, 6 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = strip("""
-                            jltest/utils_tests: .................
+                            jltest/utils_tests: ........................................
 
 
                             Test Summary:                             | Pass  Fail  Total
-                            jltest                                    |   35     4     39
-                              utils tests                             |   35     4     39
-                                jltest.run_tests()                    |   32     4     36
+                            jltest                                    |   60     6     66
+                              utils tests                             |   60     6     66
+                                jltest.run_tests()                    |   57     6     63
                                                                       |    2            2
                                                                       |    2            2
-                                                                      |    5     1      6
-                                                                      |    5     1      6
-                                                                      |    7     1      8
-                                                                      |    5     1      6
+                                                                      |    6     2      8
+                                                                      |    6     2      8
+                                      failing tests                   |    1     1      2
+                                      some tests                      |    2            2
+                                      @warn message tests             |             No tests
+                                      @info message tests             |             No tests
+                                      @debug message tests            |             No tests
+                                                                      |    8     2     10
+                                    some tests                        |    2            2
+                                                                      |    6     2      8
+                                      failing tests                   |    1     1      2
+                                      some tests                      |    2            2
+                                      @warn message tests             |             No tests
+                                      @info message tests             |             No tests
+                                      @debug message tests            |             No tests
+                                                                      |             No tests
+                                                                      |             No tests
                                   test-name                           |    1     1      2
                                                                       |    1     1      2
+                                    failing tests                     |    1     1      2
                                 jltest.autodetect_tests()             |    1            1
                                 jltest.run_tests(): invalid arguments |    2            2
-
                                 """)
+
     @test output == expected_output
 end
 
@@ -166,26 +180,33 @@ output = strip(
 
 print("jltest/cli_tests: ")
 @testset TestSetPlus "jltest.cli: check for expected test failures" begin
-    @test log_message == "[ Info: For cli_tests.jl, 3 failures and 0 errors are expected."
+    @test log_message == "[ Info: For cli_tests.jl, 4 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 44 passed, 3 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 51 passed, 4 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = strip("""
-                            jltest/cli_tests: .............................
+                            jltest/cli_tests: ...................................
 
 
                             Test Summary:                     | Pass  Fail  Total
-                            jltest                            |   44     3     47
-                              cli tests                       |   44     3     47
+                            jltest                            |   51     4     55
+                              cli tests                       |   51     4     55
                                 jltest.cli.parse_args()       |    8            8
-                                jltest.cli.run()              |   35     3     38
+                                jltest.cli.run()              |   42     4     46
                                   All tests                   |    4            4
                                   All tests                   |    3     1      4
+                                    failing tests             |    1     1      2
                                   All tests                   |    3     1      4
-                                  All tests                   |    5     1      6
+                                    failing tests             |    1     1      2
+                                  All tests                   |    6     2      8
+                                    failing tests             |    1     1      2
+                                    some tests                |    2            2
+                                    @warn message tests       |             No tests
+                                    @info message tests       |             No tests
+                                    @debug message tests      |             No tests
                                 jltest.cli.run(): error cases |    1            1
                             """)
     @test output == expected_output
