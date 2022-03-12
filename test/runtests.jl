@@ -117,42 +117,44 @@ print("jltest/utils_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 60 passed, 6 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 63 passed, 6 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
-    expected_output = strip("""
-                            jltest/utils_tests: ........................................
+    expected_output = strip(
+        """
+        jltest/utils_tests: ...........................................
 
 
-                            Test Summary:                             | Pass  Fail  Total
-                            jltest                                    |   60     6     66
-                              utils tests                             |   60     6     66
-                                jltest.run_tests()                    |   57     6     63
-                                                                      |    2            2
-                                                                      |    2            2
-                                                                      |    6     2      8
-                                                                      |    6     2      8
-                                      failing tests                   |    1     1      2
-                                      some tests                      |    2            2
-                                      @warn message tests             |             No tests
-                                      @info message tests             |             No tests
-                                      @debug message tests            |             No tests
-                                                                      |    8     2     10
-                                    some tests                        |    2            2
-                                                                      |    6     2      8
-                                      failing tests                   |    1     1      2
-                                      some tests                      |    2            2
-                                      @warn message tests             |             No tests
-                                      @info message tests             |             No tests
-                                      @debug message tests            |             No tests
-                                                                      |             No tests
-                                                                      |             No tests
-                                  test-name                           |    1     1      2
-                                                                      |    1     1      2
-                                    failing tests                     |    1     1      2
-                                jltest.autodetect_tests()             |    1            1
-                                jltest.run_tests(): invalid arguments |    2            2
-                                """)
+        Test Summary:                             | Pass  Fail  Total
+        jltest                                    |   63     6     69
+          utils tests                             |   63     6     69
+            jltest.run_tests()                    |   60     6     66
+                                                  |    2            2
+                                                  |    2            2
+                                                  |    6     2      8
+                                                  |    6     2      8
+                  failing tests                   |    1     1      2
+                  some tests                      |    2            2
+                  @warn message tests             |             No tests
+                  @info message tests             |             No tests
+                  @debug message tests            |             No tests
+                                                  |    8     2     10
+                some tests                        |    2            2
+                                                  |    6     2      8
+                  failing tests                   |    1     1      2
+                  some tests                      |    2            2
+                  @warn message tests             |             No tests
+                  @info message tests             |             No tests
+                  @debug message tests            |             No tests
+                                                  |             No tests
+                                                  |             No tests
+              test-name                           |    1     1      2
+                                                  |    1     1      2
+                failing tests                     |    1     1      2
+            jltest.autodetect_tests()             |    1            1
+            jltest.run_tests(): invalid arguments |    2            2
+            """
+    )
 
     @test output == expected_output
 end
@@ -184,18 +186,18 @@ print("jltest/cli_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 51 passed, 4 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 52 passed, 4 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = strip("""
-                            jltest/cli_tests: ...................................
+                            jltest/cli_tests: ....................................
 
 
                             Test Summary:                     | Pass  Fail  Total
-                            jltest                            |   51     4     55
-                              cli tests                       |   51     4     55
+                            jltest                            |   52     4     56
+                              cli tests                       |   52     4     56
                                 jltest.cli.parse_args()       |    8            8
-                                jltest.cli.run()              |   42     4     46
+                                jltest.cli.run()              |   43     4     47
                                   All tests                   |    4            4
                                   All tests                   |    3     1      4
                                     failing tests             |    1     1      2

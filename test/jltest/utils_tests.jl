@@ -82,31 +82,25 @@ using TestTools.jltest
         "TestTools.jltest.##$(joinpath(test_dir, "log_message_tests"))#[0-9]+ " *
         "$(Base.contractuser(log_message_tests_file))"
     expected_log_messages_log_message_tests = [
-        Regex(strip("""
-                    ┌ Warning: Single line @warn message test
-                    └ @ $(location_prefix):19
-                    """)),
+        "[ Warning: Single line @warn message test",
         Regex(strip("""
                     ┌ Warning: Multi-line @warn message test.
                     │ Second line.
                     │ Third line.
-                    └ @ $(location_prefix):20
+                    └ @ $(location_prefix):[0-9]+
                     """)),
+        "[ Info: Single line @info message test",
         strip("""
-              [ Info: Single line @info message test
               ┌ Info: Multi-line @info message test.
               │ Second line.
               └ Third line.
               """),
-        Regex(strip("""
-                    ┌ Debug: Single line @debug message test
-                    └ @ $(location_prefix):36
-                    """)),
+        "[ Debug: Single line @debug message test",
         Regex(strip("""
                     ┌ Debug: Multi-line @debug message test.
                     │ Second line.
                     │ Third line.
-                    └ @ $(location_prefix):37
+                    └ @ $(location_prefix):[0-9]+
                     """)),
     ]
 

@@ -16,7 +16,13 @@ using Test
 # --- Tests
 
 @testset "@warn message tests" begin
-    @warn "Single line @warn message test"
+    @warn(
+        "Single line @warn message test",
+        _module = nothing,
+        _file = nothing,
+        _group = nothing
+    )
+
     @warn """
           Multi-line @warn message test.
           Second line.
@@ -24,7 +30,13 @@ using Test
           """
 end
 @testset "@info message tests" begin
-    @info "Single line @info message test"
+    @info(
+        "Single line @info message test",
+        _module = nothing,
+        _file = nothing,
+        _group = nothing
+    )
+
     @info """
           Multi-line @info message test.
           Second line.
@@ -33,7 +45,13 @@ end
 end
 
 @testset "@debug message tests" begin
-    @debug "Single line @debug message test"
+    @debug(
+        "Single line @debug message test",
+        _module = nothing,
+        _file = nothing,
+        _group = nothing
+    )
+
     @debug """
            Multi-line @debug message test.
            Second line.
