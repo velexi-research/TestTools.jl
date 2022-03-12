@@ -58,6 +58,17 @@ function reemit_log_msg(messages::AbstractString)
 
         if message_finished
 
+            # --- Skip missing dependency warning
+
+            if occursin(
+                r"^┌ Warning: Package TestTools does not have [^\s]+ in its dependencies:",
+                message_lines[1],
+            )
+                continue
+            end
+
+            # --- Preparations
+
             # Get log level
             log_level = Logging.Warn
             if occursin("Info", message_lines[1])
@@ -175,13 +186,7 @@ function run_tests(
 
                 # Suppress warnings about missing TestTools dependencies
                 if !isempty(log_msg)
-                    if !occursin(
-                        r"^┌ Warning: Package TestTools does not have " *
-                        r"[^\s]+ in its dependencies:",
-                        log_msg,
-                    )
-                        reemit_log_msg(log_msg)
-                    end
+                    reemit_log_msg(log_msg)
                 end
             end
         end
