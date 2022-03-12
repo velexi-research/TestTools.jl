@@ -20,6 +20,7 @@ using Test
 using Test: AbstractTestSet
 
 # External packages
+using OrderedCollections: OrderedDict
 using Suppressor: @capture_err
 
 # --- Private utility functions
@@ -144,7 +145,7 @@ function run_tests(
 
     # Separate tests into files and directories
     test_dirs = []
-    test_files = Dict()
+    test_files = OrderedDict()
     for test in tests
         if isdir(test)
             # `test` is a directory
