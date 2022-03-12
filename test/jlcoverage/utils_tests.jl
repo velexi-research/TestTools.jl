@@ -53,13 +53,14 @@ using TestTools.jltest: TestSetPlus
     output = @capture_out begin
         display_coverage(coverage)
     end
+
     expected_output = """
 -------------------------------------------------------------------------------
 File                                  Lines of Code     Missed   Coverage
 -------------------------------------------------------------------------------
-src/TestPackage.jl                                1          0     100.0%
-src/methods.jl                                    3          1      66.7%
-src/more_methods.jl                               2          2       0.0%
+$(joinpath("src", "TestPackage.jl"))                                1          0     100.0%
+$(joinpath("src", "methods.jl"))                                    3          1      66.7%
+$(joinpath("src", "more_methods.jl"))                               2          2       0.0%
 -------------------------------------------------------------------------------
 TOTAL                                             6          3      50.0%
 """
@@ -72,6 +73,7 @@ TOTAL                                             6          3      50.0%
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)
     end
+
     expected_output = """
 -------------------------------------------------------------------------------
 File                                  Lines of Code     Missed   Coverage
@@ -91,6 +93,7 @@ TOTAL                                             6          3      50.0%
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)
     end
+
     expected_output = """
 -------------------------------------------------------------------------------
 File                                  Lines of Code     Missed   Coverage
@@ -110,6 +113,7 @@ TOTAL                                             6          3      50.0%
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)
     end
+
     expected_output = """
 -------------------------------------------------------------------------------
 File                                  Lines of Code     Missed   Coverage
