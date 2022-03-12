@@ -108,14 +108,15 @@ end
     output = @capture_out begin
         cli.run([test_pkg_dir])
     end
+
     expected_output = """
 -------------------------------------------------------------------------------
 File                                  Lines of Code     Missed   Coverage
 -------------------------------------------------------------------------------
-src/TestPackage.jl                                1          0     100.0%
-src/methods.jl                                    3          1      66.7%
-src/more_methods.jl                               2          2       0.0%
-test/runtests.jl                                  0          0        N/A
+$(joinpath("src", "TestPackage.jl"))                                1          0     100.0%
+$(joinpath("src", "methods.jl"))                                    3          1      66.7%
+$(joinpath("src", "more_methods.jl"))                               2          2       0.0%
+$(joinpath("test", "runtests.jl"))                                  0          0        N/A
 -------------------------------------------------------------------------------
 TOTAL                                             6          3      50.0%
 """
@@ -128,14 +129,15 @@ TOTAL                                             6          3      50.0%
     output = @capture_out begin
         cli.run([test_pkg_dir]; verbose=true)
     end
+
     expected_output = """
 -------------------------------------------------------------------------------
 File                                  Lines of Code     Missed   Coverage
 -------------------------------------------------------------------------------
-src/TestPackage.jl                                1          0     100.0%
-src/methods.jl                                    3          1      66.7%
-src/more_methods.jl                               2          2       0.0%
-test/runtests.jl                                  0          0        N/A
+$(joinpath("src", "TestPackage.jl"))                                1          0     100.0%
+$(joinpath("src", "methods.jl"))                                    3          1      66.7%
+$(joinpath("src", "more_methods.jl"))                               2          2       0.0%
+$(joinpath("test", "runtests.jl"))                                  0          0        N/A
 -------------------------------------------------------------------------------
 TOTAL                                             6          3      50.0%
 """
@@ -148,11 +150,12 @@ TOTAL                                             6          3      50.0%
     output = @capture_out begin
         cli.run([src_file])
     end
+
     expected_output = """
 -------------------------------------------------------------------------------
 File                                  Lines of Code     Missed   Coverage
 -------------------------------------------------------------------------------
-src/methods.jl                                    3          1      66.7%
+$(joinpath("src", "methods.jl"))                                    3          1      66.7%
 -------------------------------------------------------------------------------
 TOTAL                                             3          1      66.7%
 """
@@ -164,13 +167,14 @@ TOTAL                                             3          1      66.7%
     output = @capture_out begin
         cli.run([])
     end
+
     expected_output = """
 -------------------------------------------------------------------------------
 File                                  Lines of Code     Missed   Coverage
 -------------------------------------------------------------------------------
-src/TestPackage.jl                                1          0     100.0%
-src/methods.jl                                    3          1      66.7%
-src/more_methods.jl                               2          2       0.0%
+$(joinpath("src", "TestPackage.jl"))                                1          0     100.0%
+$(joinpath("src", "methods.jl"))                                    3          1      66.7%
+$(joinpath("src", "more_methods.jl"))                               2          2       0.0%
 -------------------------------------------------------------------------------
 TOTAL                                             6          3      50.0%
 """

@@ -119,8 +119,8 @@ TOTAL                                             6          3      50.0%
 File                                  Lines of Code     Missed   Coverage
 -------------------------------------------------------------------------------
 $(joinpath(test_pkg_src_dir, "TestPackage.jl"))               1          0     100.0%
-$(joinpath(test_pkg_src_dir, "methods.jl"))               3          1      66.7%
-$(joinpath(test_pkg_src_dir, "more_methods.jl"))               2          2       0.0%
+$(joinpath(test_pkg_src_dir, "methods.jl"))                   3          1      66.7%
+$(joinpath(test_pkg_src_dir, "more_methods.jl"))              2          2       0.0%
 -------------------------------------------------------------------------------
 TOTAL                                             6          3      50.0%
 """
