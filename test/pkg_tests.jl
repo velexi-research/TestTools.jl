@@ -34,21 +34,21 @@ using TestTools.jltest: TestSetPlus
     jlcoverage_exec_path = Base.contractuser(joinpath(install_dir, "jlcoverage"))
     jlcodestyle_exec_path = Base.contractuser(joinpath(install_dir, "jlcodestyle"))
 
-    expected_output_install = """
-        [ Info: Installed jltest to `$(jltest_exec_path)`.
-        [ Info: Installed jlcoverage to `$(jlcoverage_exec_path)`.
-        [ Info: Installed jlcodestyle to `$(jlcodestyle_exec_path)`.
-        ┌ Info: Make sure that `$(install_dir)` is in PATH, or manually add a
-        └ symlink from a directory in PATH to the installed program file.
-        """
-
-    expected_output_uninstall = """
-        [ Info: Uninstalled `$(jltest_exec_path)`.
-        [ Info: Uninstalled `$(jlcoverage_exec_path)`.
-        [ Info: Uninstalled `$(jlcodestyle_exec_path)`.
-        """
+    if Sys.iswindows()
+        jltest_exec_path = "$jltest_exec_path.cmd"
+        jlcoverage_exec_path = "$jlcoverage_exec_path.cmd"
+        jlcodestyle_exec_path = "$jlcodestyle_exec_path.cmd"
+    end
 
     # --- install() tests
+
+    expected_output_install = """
+        [ Info: Installed jltest to `$jltest_exec_path`.
+        [ Info: Installed jlcoverage to `$jlcoverage_exec_path`.
+        [ Info: Installed jlcodestyle to `$jlcodestyle_exec_path`.
+        ┌ Info: Make sure that `$install_dir` is in PATH, or manually add a
+        └ symlink from a directory in PATH to the installed program file.
+        """
 
     # Remove existing install directory
     if isdir(install_dir)
@@ -70,7 +70,7 @@ using TestTools.jltest: TestSetPlus
     end
 
     expected_error =
-        "File `$(jltest_exec_path)` already exists. " *
+        "File `$jltest_exec_path` already exists. " *
         "Use `TestTools.install(force=true)` to overwrite."
     @test error.msg == expected_error
 
@@ -88,7 +88,12 @@ using TestTools.jltest: TestSetPlus
         TestTools.uninstall(; install_dir=install_dir)
     end
 
-    @test output == expected_output_uninstall
+    expected_output = """
+        [ Info: Uninstalled `$jltest_exec_path`.
+        [ Info: Uninstalled `$jlcoverage_exec_path`.
+        [ Info: Uninstalled `$jlcodestyle_exec_path`.
+        """
+    @test output == expected_output
 
     # --- Clean up
 
