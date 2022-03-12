@@ -249,7 +249,41 @@ end
 end
 
 @testset TestSetPlus "jltest.run_tests(): current directory checks" begin
-    # TODO
+    # --- Preparations
+
+    # Change to test directory
+    test_dir = joinpath(@__DIR__, "data-directory-change-tests")
+    cd(test_dir)
+
+    # Precompute commonly used values
+    change_dir_file = joinpath(test_dir, "change_dir.jl")
+    expected_output_change_dir = "$(joinpath(test_dir, "change_dir")): "
+
+    # --- Tests
+
+    # Case: change directory before running test file
+    check_dir_file = joinpath(test_dir, "check_dir.jl")
+    tests = [change_dir_file, check_dir_file]
+    output = strip(@capture_out begin
+        run_tests(tests)
+    end)
+
+    expected_output = join(
+        [expected_output_change_dir, "$(joinpath(test_dir, "check_dir")): ."], '\n'
+    )
+    @test output == expected_output
+
+    # Case: change directory before running tests in a directory
+    tests = [change_dir_file, joinpath(test_dir, "subdir")]
+    output = strip(@capture_out begin
+        run_tests(tests)
+    end)
+
+    expected_output = join(
+        [expected_output_change_dir, "$(joinpath(test_dir, "subdir", "check_dir")): ."],
+        '\n',
+    )
+    @test output == expected_output
 end
 
 @testset TestSetPlus "jltest.autodetect_tests()" begin
