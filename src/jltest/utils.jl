@@ -193,6 +193,10 @@ function run_tests(
 
         # Run tests in directories
         for dir in test_dirs
+            # Restore current directory before tests are run
+            cd(cwd)
+
+            # Run tests
             run_tests(autodetect_tests(dir))
         end
     end
