@@ -10,4 +10,7 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 # --- Imports
 
-using JSON
+using Logging
+using Pkg: Pkg
+
+@info "Non-missing dependency log message"

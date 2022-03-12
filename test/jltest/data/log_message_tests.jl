@@ -10,11 +10,33 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 # --- Imports
 
+using Logging
 using Test
 
 # --- Tests
 
-@testset "failing tests" begin
-    @test 1 == 1
-    @test 2 == 1
+@testset "@warn message tests" begin
+    @warn "Single line @warn message test"
+    @warn """
+          Multi-line @warn message test.
+          Second line.
+          Third line.
+          """
+end
+@testset "@info message tests" begin
+    @info "Single line @info message test"
+    @info """
+          Multi-line @info message test.
+          Second line.
+          Third line.
+          """
+end
+
+@testset "@debug message tests" begin
+    @debug "Single line @debug message test"
+    @debug """
+           Multi-line @debug message test.
+           Second line.
+           Third line.
+           """
 end

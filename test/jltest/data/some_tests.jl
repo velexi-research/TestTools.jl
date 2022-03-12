@@ -14,5 +14,7 @@ using Test
 
 # --- Tests
 
-@test 1 == 1
-@test 2 == 2
+@testset "some tests" begin
+    @test 1 == 1
+    @test 2 == 2
+end

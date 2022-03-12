@@ -14,7 +14,5 @@ using Test
 
 # --- Tests
 
-@testset "failing tests" begin
-    @test 1 == 1
-    @test 2 == 1
-end
+@test 1 == 1
+@test 2 == 1
