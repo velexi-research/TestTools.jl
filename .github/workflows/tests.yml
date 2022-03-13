@@ -10,9 +10,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: ["1.7"]
-        julia-arch: [x64]
         os: [ubuntu-latest]
+        arch: [x64]
+        julia-version: ["1.7"]
 
     steps:
       - name: Check out code
@@ -24,7 +24,7 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.julia-version }}
-          arch: ${{ matrix.julia-arch }}
+          arch: ${{ matrix.arch }}
 
       - name: Set up cache
         uses: actions/cache@v2
@@ -32,10 +32,11 @@ jobs:
           cache-name: cache-artifacts
         with:
           path: ~/.julia/artifacts
-          key: ${{ runner.os }}-${{ matrix.arch }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          key: ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.arch }}-test-${{ env.cache-name }}-
-            ${{ runner.os }}-${{ matrix.arch }}-test-
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-
             ${{ runner.os }}-${{ matrix.arch }}-
             ${{ runner.os }}-
 
