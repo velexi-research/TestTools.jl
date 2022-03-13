@@ -1,7 +1,7 @@
-name: tests
+name: pull-request
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
@@ -44,16 +44,3 @@ jobs:
 
       - name: Run tests
         uses: julia-actions/julia-runtest@latest
-
-      - name: Process coverage data
-        uses: julia-actions/julia-processcoverage@v1
-        with:
-          directories: src
-
-      - name: Upload code coverage data to codecov.io
-        uses: codecov/codecov-action@v2
-        with:
-          token: 7c23e583-ed11-43ef-8fe6-54307b67830c
-          files: lcov.info
-          fail_ci_if_error: true
-          verbose: true
