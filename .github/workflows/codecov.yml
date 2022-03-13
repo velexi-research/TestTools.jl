@@ -41,7 +41,7 @@ jobs:
       - name: Upload code coverage data to codecov.io
         uses: codecov/codecov-action@v2
         with:
-          # token: not required for public repos
+          token: 7c23e583-ed11-43ef-8fe6-54307b67830c
           files: lcov.info
           fail_ci_if_error: true
           verbose: true
