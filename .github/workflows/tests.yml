@@ -5,20 +5,14 @@ on:
     branches:
       - main
 
-concurrency:
-  # Skip intermediate builds: always.
-  # Cancel intermediate builds: only if it is a pull request build.
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
-
 jobs:
   run-tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: ["1.6", "1.7"]
+        julia-version: ["1.7"]
         julia-arch: [x64]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest]
 
     steps:
       - name: Check out code
