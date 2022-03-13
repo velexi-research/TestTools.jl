@@ -23,13 +23,12 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Set up Julia
+      - name: Set up Julia with caching enabled
         uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.julia-arch }}
 
-      - name: Enable caching of Julia artifacts and packages
         uses: julia-actions/cache@v1
 
       - name: Build package
