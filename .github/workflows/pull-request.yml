@@ -28,30 +28,29 @@ jobs:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.arch }}
 
-#      - name: Set up Julia caches
-#        uses: julia-actions/cache@v1
-#        with:
-#          cache-registries: "true"
-#          cache-name: ${{ matrix.arch }}-${{ matrix.julia-version }}
-
-      - name: Set up cache
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-artifacts+packages
+      - name: Set up Julia caches
+        uses: julia-actions/cache@v1
         with:
-          path:
-              ~/.julia/artifacts
-              ~/.julia/packages
+          cache-name: ${{ runner.arch }}-${{ matrix.julia-version }}
 
-          key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-
-          restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-            ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-
-#            ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-test-
-#            ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-
-#            ${{ runner.os }}-${{ runner.arch }}-
-#            ${{ runner.os }}-
+#      - name: Set up cache
+#        uses: actions/cache@v2
+#        env:
+#          cache-name: artifacts+packages
+#        with:
+#          path: |
+#              ~/.julia/artifacts
+#              ~/.julia/packages
+#
+#          key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-cache-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+#
+#          restore-keys: |
+#            ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-cache-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+#            ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-cache-${{ env.cache-name }}-
+##            ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-cache-
+##            ${{ runner.os }}-${{ runner.arch }}-${{ matrix.julia-version }}-
+##            ${{ runner.os }}-${{ runner.arch }}-
+##            ${{ runner.os }}-
 
       - name: Build package
         uses: julia-actions/julia-buildpkg@latest
