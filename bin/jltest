@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# -*- mode: julia -*-
+#=
+exec julia --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}" "$@"
+=#
+"""
+-------------------------------------------------------------------------------------------
+COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
+license terms in the LICENSE file found in the root directory of this distribution. No
+part of the TestTools.jl package, including this file, may be copied, modified, propagated,
+or distributed except according to the terms contained in the LICENSE file.
+-------------------------------------------------------------------------------------------
+"""
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    include(joinpath(dirname(@__DIR__), "src", "jltest", "cli", "main.jl"))
+end

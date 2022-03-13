@@ -1,5 +1,5 @@
 """
-The ExampleModule.jl module defines {{ PKG_NAME }} types and functions.
+Unit test runner for the {{ PKG_NAME }} package.
 
 ------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the {{ PKG_NAME }} package. It is
@@ -9,12 +9,10 @@ file, may be copied, modified, propagated, or distributed except according to
 the terms contained in the LICENSE file.
 ------------------------------------------------------------------------------
 """
-module ExampleModule
+# --- Imports
 
-# Types
-include("ExampleType.jl")
+using TestTools
 
-# Methods
-include("ExampleMethods.jl")
+# --- Run tests
 
-end  # End of ExampleModule.jl module
+TestTools.jltest(; mod=PKG_NAME)

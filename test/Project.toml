@@ -1,4 +1,4 @@
 [deps]
-Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Coverage = "a2441757-f6aa-5fb2-8edb-039e3f45d037"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-TestSetExtensions = "98d24dd4-01ad-11ea-1b02-c9a08f80db04"
