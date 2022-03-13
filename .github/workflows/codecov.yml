@@ -9,7 +9,7 @@ on:
       - closed
 
 jobs:
-  if_merged:
+  update-codecov:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +22,7 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: "1.7"
-          julia-arch: x64
+          arch: x64
 
       - name: Enable Julia caching
         uses: julia-actions/cache@v1
