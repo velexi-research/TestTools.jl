@@ -26,24 +26,25 @@ jobs:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.arch }}
 
-      - name: Set up Julia caches
-        uses: julia-actions/cache@v1
+#      - name: Set up Julia caches
+#        uses: julia-actions/cache@v1
 
-#        env:
-#      - name: Set up cache
-#        uses: actions/cache@v2
-#        env:
-#          cache-name: cache-artifacts
-#        with:
-#          path: ~/.julia/artifacts
-#          key: ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-#          restore-keys: |
-#            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-#            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-
-#            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-
-#            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-
-#            ${{ runner.os }}-${{ matrix.arch }}-
-#            ${{ runner.os }}-
+      - name: Set up cache for Julia artifacts and packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-artifacts+packages
+        with:
+          path: |
+              ~/.julia/artifacts
+              ~/.julia/packages
+          key: ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-
+            ${{ runner.os }}-${{ matrix.arch }}-
+            ${{ runner.os }}-
 
       - name: Build package
         uses: julia-actions/julia-buildpkg@latest
