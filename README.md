@@ -5,7 +5,6 @@ TestTools.jl (0.1.0)
 [![Codecov](https://codecov.io/gh/invenia/PkgTemplates.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/invenia/PkgTemplates.jl)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/velexi-corporation/TestTools.jl/issues)
 
-
 ------------------------------------------------------------------------------
 
 Contents
