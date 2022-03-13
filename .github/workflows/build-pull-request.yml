@@ -27,7 +27,7 @@ jobs:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.julia-arch }}
 
-      - name: Cache Julia artifacts and packages
+      - name: Enable caching of Julia artifacts and packages
         uses: julia-actions/cache@v1
 
       - name: Build package
