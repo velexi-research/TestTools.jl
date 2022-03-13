@@ -1,10 +1,10 @@
 TestTools.jl (0.1.0)
 ====================
 
-[![tests](https://github.com/velexi-corporation/TestTools.jl/actions/workflows/tests.yml/badge.svg)](https://github.com/velexi-corporation/TestTools.jl/actions/workflows/tests.yml)
-[![Codecov](https://codecov.io/gh/invenia/PkgTemplates.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/invenia/PkgTemplates.jl)
+[![Tests](https://github.com/velexi-corporation/TestTools.jl/actions/workflows/tests.yml/badge.svg)](https://github.com/velexi-corporation/TestTools.jl/actions/workflows/tests.yml)
+[![Codecov](https://codecov.io/gh/velexi-corporation/TestTools.jl/branch/main/graph/badge.svg?token=LW2DS0JUWF)](https://codecov.io/gh/velexi-corporation/TestTools.jl)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/velexi-corporation/TestTools.jl/issues)
+[![Contributions welcome!](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/velexi-corporation/TestTools.jl/issues)
 
 ------------------------------------------------------------------------------
 
