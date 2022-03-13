@@ -30,25 +30,28 @@ using TestTools.jltest: TestSetPlus
     install_dir = abspath(joinpath(@__DIR__, "testing-dir"))
 
     # Cache common variables
-    jltest_exec_path = Base.contractuser(joinpath(install_dir, "jltest"))
-    jlcoverage_exec_path = Base.contractuser(joinpath(install_dir, "jlcoverage"))
-    jlcodestyle_exec_path = Base.contractuser(joinpath(install_dir, "jlcodestyle"))
-
-    expected_output_install = """
-        [ Info: Installed jltest to `$(jltest_exec_path)`.
-        [ Info: Installed jlcoverage to `$(jlcoverage_exec_path)`.
-        [ Info: Installed jlcodestyle to `$(jlcodestyle_exec_path)`.
-        ┌ Info: Make sure that `$(install_dir)` is in PATH, or manually add a
-        └ symlink from a directory in PATH to the installed program file.
-        """
-
-    expected_output_uninstall = """
-        [ Info: Uninstalled `$(jltest_exec_path)`.
-        [ Info: Uninstalled `$(jlcoverage_exec_path)`.
-        [ Info: Uninstalled `$(jlcodestyle_exec_path)`.
-        """
+    jltest_cmd = "jltest"
+    jlcoverage_cmd = "jlcoverage"
+    jlcodestyle_cmd = "jlcodestyle"
+    if Sys.iswindows()
+        jltest_cmd = "$jltest_cmd.cmd"
+        jlcoverage_cmd = "$jlcoverage_cmd.cmd"
+        jlcodestyle_cmd = "$jlcodestyle_cmd.cmd"
+    end
 
     # --- install() tests
+
+    jltest_exec_path = Base.contractuser(joinpath(install_dir, jltest_cmd))
+    jlcoverage_exec_path = Base.contractuser(joinpath(install_dir, jlcoverage_cmd))
+    jlcodestyle_exec_path = Base.contractuser(joinpath(install_dir, jlcodestyle_cmd))
+
+    expected_output_install = """
+        [ Info: Installed $jltest_cmd to `$jltest_exec_path`.
+        [ Info: Installed $jlcoverage_cmd to `$jlcoverage_exec_path`.
+        [ Info: Installed $jlcodestyle_cmd to `$jlcodestyle_exec_path`.
+        ┌ Info: Make sure that `$install_dir` is in PATH, or manually add a
+        └ symlink from a directory in PATH to the installed program file.
+        """
 
     # Remove existing install directory
     if isdir(install_dir)
@@ -70,7 +73,7 @@ using TestTools.jltest: TestSetPlus
     end
 
     expected_error =
-        "File `$(jltest_exec_path)` already exists. " *
+        "File `$jltest_exec_path` already exists. " *
         "Use `TestTools.install(force=true)` to overwrite."
     @test error.msg == expected_error
 
@@ -88,7 +91,12 @@ using TestTools.jltest: TestSetPlus
         TestTools.uninstall(; install_dir=install_dir)
     end
 
-    @test output == expected_output_uninstall
+    expected_output = """
+        [ Info: Uninstalled `$jltest_exec_path`.
+        [ Info: Uninstalled `$jlcoverage_exec_path`.
+        [ Info: Uninstalled `$jlcodestyle_exec_path`.
+        """
+    @test output == expected_output
 
     # --- Clean up
 

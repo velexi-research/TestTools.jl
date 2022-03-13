@@ -1,5 +1,10 @@
-TestTools.jl (v0.1.0)
-=====================
+TestTools.jl (0.1.0)
+====================
+
+![build](https://github.com/velexi-corporation/TestTools.jl/actions/workflows/build.yml/badge.svg)
+![build-dev](https://github.com/velexi-corporation/TestTools.jl/actions/workflows/build-dev.yml/badge.svg)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/velexi-corporation/TestTools.jl/issues)
+
 
 ------------------------------------------------------------------------------
 
@@ -40,14 +45,36 @@ See the `[deps]` section of the `Project.toml` and `test/Project.toml` files.
 
 See the LICENSE file for copyright and license information.
 
+### 1.4. Acknowledgements
+
+* TestSetExtensions
+  * https://github.com/ssfrr/TestSetExtensions.jl
+    * TestSetPlus based on ExtendedTestSet.
+    * Tests for TestSetPlus from TestSetExtensions.jl
+
 ------------------------------------------------------------------------------
 
 ## 2. Usage
 
-## CLI Utilities
+### CLI Utilities
 
 * jltest
+* jlcodestyle
 * jlcoverage
+
+### Running tests via `Pkg.test()'`
+
+* Add `test/runtests.jl` file containing the following lines.
+
+```julia
+using TestTools: jltest
+jltest(; mod=PKG_NAME)
+```
+
+  Note: `TestTools.jltest()` automatically detects and runs all tests in the current
+  working directory.
+
+  * (BROKEN) it will also run doctests from the `PKG_NAME` module.
 
 ------------------------------------------------------------------------------
 
