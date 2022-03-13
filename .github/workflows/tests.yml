@@ -30,11 +30,16 @@ jobs:
         uses: julia-actions/cache@v1
         with:
           cache-registries: "true"
+          cache-name: ${{ matrix.arch }}-${{ matrix.julia-version }}
 
 #      - name: Set up cache
 #        uses: actions/cache@v2
 #        env:
-#          cache-name: cache-artifacts
+#          cache-name: cache-artifacts+packages
+#        with:
+#          path: |
+#              ~/.julia/artifacts
+#              ~/.julia/packages
 #        with:
 #          path: ~/.julia/artifacts
 #          key: ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
