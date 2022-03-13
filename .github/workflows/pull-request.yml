@@ -35,11 +35,11 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-            #${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-
-            #${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-
-            #${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-
-            #${{ runner.os }}-${{ matrix.arch }}-
-            #${{ runner.os }}-
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-
+            ${{ runner.os }}-${{ matrix.arch }}-
+            ${{ runner.os }}-
 
       - name: Build package
         uses: julia-actions/julia-buildpkg@latest
