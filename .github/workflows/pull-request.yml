@@ -5,6 +5,12 @@ on:
     branches:
       - main
 
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
 jobs:
   run-tests:
     runs-on: ${{ matrix.os }}
@@ -28,16 +34,16 @@ jobs:
 
       - name: Enable Julia caching
         uses: julia-actions/cache@v2
-          env:
-            cache-name: cache-artifacts
-          with:
-            path: ~/.julia/artifacts
-            key: ${{ runner.os }}-${{ matrix.arch }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-            restore-keys: |
-              ${{ runner.os }}-${{ matrix.arch }}-test-${{ env.cache-name }}-
-              ${{ runner.os }}-${{ matrix.arch }}-test-
-              ${{ runner.os }}-${{ matrix.arch }}-
-              ${{ runner.os }}-
+        env:
+          cache-name: cache-artifacts
+        with:
+          path: ~/.julia/artifacts
+          key: ${{ runner.os }}-${{ matrix.arch }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ matrix.arch }}-test-
+            ${{ runner.os }}-${{ matrix.arch }}-
+            ${{ runner.os }}-
 
       - name: Build package
         uses: julia-actions/julia-buildpkg@latest
