@@ -34,6 +34,7 @@ jobs:
           path: ~/.julia/artifacts
           key: ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
           restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
             ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-test-
             ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.julia-version }}-
