@@ -53,6 +53,10 @@ See the LICENSE file for copyright and license information.
     * TestSetPlus based on ExtendedTestSet.
     * Tests for TestSetPlus from TestSetExtensions.jl
 
+* SafeTestsets
+  * https://github.com/YingboMa/SafeTestsets.jl
+    * Isolation of test files based on strategy used in SafeTestsets.
+
 ------------------------------------------------------------------------------
 
 ## 2. Usage
@@ -81,7 +85,7 @@ jltest(; mod=PKG_NAME)
 
 ## 3. Known Issues
 
-PLACEHOLDER
+* Incomplete and erroneous documentation. Updates coming soon!
 
 ------------------------------------------------------------------------------
 
