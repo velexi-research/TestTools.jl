@@ -24,7 +24,7 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.julia-version }}
-          arch: ${{ matrix.julia-arch }}
+          arch: ${{ matrix.arch }}
 
       - name: Set up cache
         uses: actions/cache@v2
