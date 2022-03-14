@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        arch: [x64]
+        julia-arch: [x64]
         julia-version: ["1.7"]
 
     runs-on: ${{ matrix.os }}
@@ -27,12 +27,12 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.julia-version }}
-          arch: ${{ runner.arch }}
+          arch: ${{ matrix.julia-arch }}
 
       - name: Set up Julia caches
         uses: julia-actions/cache@v1
         with:
-          cache-name: ${{ runner.arch }}-${{ matrix.julia-version }}
+          cache-name: ${{ matrix.julia-arch }}-${{ matrix.julia-version }}
           cache-registries: "true"
 
       - name: Build package
