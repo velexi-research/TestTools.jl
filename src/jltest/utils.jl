@@ -231,6 +231,7 @@ end
 Return all Julia files in `dir` that contain unit tests.
 """
 function autodetect_tests(dir::AbstractString)::Vector{String}
+    # TODO: add search for directories
     files = filter(f -> endswith(f, ".jl") && f != "runtests.jl", readdir(dir))
     tests = [joinpath(dir, file) for file in files]
 
