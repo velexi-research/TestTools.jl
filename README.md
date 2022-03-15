@@ -61,70 +61,60 @@ least save effort and keystrokes).
 
 ### CLI Utilities
 
-* `jltest`
+#### `jltest`
 
-  Run unit tests in a single file.
+Run unit tests in a single file.
 
-  ```jl
-  $ jltest test/tests.jl
-  ```
+```jl
+$ jltest test/tests.jl
+```
 
-  Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
-  test).
+Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
+test).
 
-  ```jl
-  $ jltest -x test/tests.jl
-  ```
+```jl
+$ jltest -x test/tests.jl
+```
 
-  Run unit tests contained in a directory.
+Run unit tests contained in a directory.
 
-  ```jl
-  $ jltest test  # run all of the tests found in the `test` directory
-  ```
+```jl
+$ jltest test  # run all of the tests found in the `test` directory
+```
 
-* `jlcoverage`
+#### `jlcoverage`
 
-  Generate a coverage report (after running unit tests while collecting coverage data).
-  ```jl
-  $ julia -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'  # run unit tests
+Generate a coverage report (after running unit tests while collecting coverage data).
+```jl
+$ julia -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'  # run unit tests
 
-  $ jlcoverage  # generate coverage report
-  -------------------------------------------------------------------------------
-  File                                  Lines of Code     Missed   Coverage
-  -------------------------------------------------------------------------------
-  src/TestTools.jl                                  0          0        N/A
-  src/jlcodestyle/cli/cli.jl                       34          0     100.0%
-  src/jlcodestyle/cli/main.jl                       0          0        N/A
-  src/jlcodestyle/jlcodestyle.jl                    0          0        N/A
-  src/jlcoverage/cli/cli.jl                        30          0     100.0%
-  src/jlcoverage/cli/main.jl                        0          0        N/A
-  src/jlcoverage/jlcoverage.jl                      0          0        N/A
-  src/jlcoverage/utils.jl                          29          0     100.0%
-  src/jltest/TestSetPlus.jl                        60          3      95.0%
-  src/jltest/cli/cli.jl                            18          0     100.0%
-  src/jltest/cli/main.jl                            0          0        N/A
-  src/jltest/jltest.jl                              0          0        N/A
-  src/jltest/utils.jl                              76          1      98.7%
-  src/pkg.jl                                       42          3      92.9%
-  -------------------------------------------------------------------------------
-  TOTAL                                           289          7      97.6%
-  ```
+$ jlcoverage  # generate coverage report
+-------------------------------------------------------------------------------
+File                                  Lines of Code     Missed   Coverage
+-------------------------------------------------------------------------------
+src/TestTools.jl                                  0          0        N/A
+src/jlcodestyle/cli/cli.jl                       34          0     100.0%
+...
+src/pkg.jl                                       42          3      92.9%
+-------------------------------------------------------------------------------
+TOTAL                                           289          7      97.6%
+```
 
-* `jlcodestyle`
+#### `jlcodestyle`
 
-  Basic code style check (reformatting of source file disabled).
+Basic code style check (reformatting of source file disabled).
 
-  ```jl
-  $ jlcodestyle src/TestTools.jl
-  No style errors found.
+```jl
+$ jlcodestyle src/TestTools.jl
+No style errors found.
 
-  $ jlcodestyle examples/jlcodestyle/not-blue-style.jl
-  Style errors found. Files not modified.
-  ```
+$ jlcodestyle examples/jlcodestyle/not-blue-style.jl
+Style errors found. Files not modified.
+```
 
-  Code style check with reformatting of source file enabled.
+Code style check with reformatting of source file enabled.
 
-  ```jl
-  $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
-  Style errors found. Files modified to correct errors.
-  ```
+```jl
+$ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
+Style errors found. Files modified to correct errors.
+```
