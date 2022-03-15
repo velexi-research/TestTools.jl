@@ -46,13 +46,13 @@ jobs:
 
       - name: Process coverage data
         uses: julia-actions/julia-processcoverage@v1
-        if: github.ref_name == main && runner.os == Linux && matrix.julia-version == 1.7
+        if: github.ref_name == 'main' && runner.os == 'Linux' && matrix.julia-version == '1.7'
         with:
           directories: src
 
       - name: Upload code coverage data to codecov.io
         uses: codecov/codecov-action@v2
-        if: github.ref_name == main && runner.os == Linux && matrix.julia-version == 1.7
+        if: github.ref_name == 'main' && runner.os == 'Linux' && matrix.julia-version == '1.7'
         with:
           token: 7c23e583-ed11-43ef-8fe6-54307b67830c
           files: lcov.info
