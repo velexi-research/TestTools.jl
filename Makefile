@@ -14,7 +14,7 @@ test check:
 	julia --color=yes --compile=min -O0 -e 'using Coverage; clean_folder(".");'
 	@echo
 	@echo Unit Tests
-	julia --color=yes -e 'import Pkg; Pkg.test(coverage=true)'
+	julia --color=yes -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'
 	@echo
 	@echo Code Coverage
 	@jlcoverage
