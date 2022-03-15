@@ -1,102 +1,120 @@
-TestTools.jl (0.1.0)
-====================
+TestTools.jl
+============
 
-[![Tests](https://github.com/velexi-corporation/TestTools.jl/actions/workflows/tests.yml/badge.svg)](https://github.com/velexi-corporation/TestTools.jl/actions/workflows/tests.yml)
-[![Codecov](https://codecov.io/gh/velexi-corporation/TestTools.jl/branch/main/graph/badge.svg?token=LW2DS0JUWF)](https://codecov.io/gh/velexi-corporation/TestTools.jl)
-[![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
+[------------------------------------ BADGES: BEGIN ------------------------------------]: #
 
-[![HitCount](https://hits.dwyl.com/velexi/TestToolsjl.svg?style=flat-square&show=unique)](http://hits.dwyl.com/velexi/TestToolsjl)
-[![Contributions welcome!](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/velexi-corporation/TestTools.jl/issues)
+<table>
+  <tr>
+    <td>Documentation</td>
+    <td>
+      Coming Soon!
+      <!--
+      <a href=""><img style="vertical-align: bottom;" src="https://img.shields.io/badge/docs-stable-blue.svg"/></a>
+      -->
+    </td>
+  </tr>
 
-------------------------------------------------------------------------------
+  <tr>
+    <td>Build Status</td>
+    <td>
+      <a href="https://github.com/velexi-corporation/TestTools.jl/actions/workflows/CI.yml"><img style="vertical-align: bottom;" src="https://github.com/velexi-corporation/TestTools.jl/actions/workflows/CI.yml/badge.svg"/></a>
+      <a href="https://codecov.io/gh/velexi-corporation/TestTools.jl"><img style="vertical-align: bottom;" src="https://codecov.io/gh/velexi-corporation/TestTools.jl/branch/main/graph/badge.svg?token=LW2DS0JUWF"/></a>
+    </td>
+  </tr>
 
-Contents
---------
+  <!-- Miscellaneous Badges -->
+  <tr>
+    <td colspan=2 align="center">
+      <a href="https://github.com/velexi-corporation/TestTools.jl/issues"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"/></a>
+      <a href="https://github.com/invenia/BlueStyle"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/code%20style-blue-4495d1.svg"/></a>
+      <a href="http://hits.dwyl.com/velexi/TestToolsjl"><img style="vertical-align: bottom;" src="https://hits.dwyl.com/velexi/TestToolsjl.svg?style=flat-square&show=unique"/></a>
+    </td>
+  </tr>
+</table>
 
-1. [Overview][#1]
+[------------------------------------- BADGES: END -------------------------------------]: #
 
-    1.1. [Package Contents][#1.1]
+TestTools is a collection of CLI utilities and APIs that simplifies code testing, coverage
+analysis, and style checking. Our goal is to make it a joy to do software testing (or at
+least save effort and keystrokes).
 
-    1.2. [Software Dependencies][#1.2]
+## Quick Start
 
-    1.3. [License][#1.3]
+* Start Julia in the default (global) environment.
 
-2. [Usage][#2]
+  * __Note__: installation in the default environment makes the CLI utilities available
+    from within all projects.
 
-3. [Known Issues][#3]
+* Install the `TestTools` CLI utilities.
 
-------------------------------------------------------------------------------
+  ```jl
+  pkg> add TestTools  # Press ']' to enter the Pkg REPL mode.
+  ```
 
-## 1. Overview
+* Install the CLI utilities (to `~/.julia/bin`).
 
-PLACEHOLDER
+  ```jl
+  julia> using TestTools; TestTools.install()
+  ```
 
-### 1.1. Package Contents
-
-### 1.2. Software Dependencies
-
-#### Base Requirements
-
-* Julia (>=v1.6)
-
-#### Julia Packages ####
-
-See the `[deps]` section of the `Project.toml` and `test/Project.toml` files.
-
-### 1.3. License
-
-See the LICENSE file for copyright and license information.
-
-### 1.4. Acknowledgements
-
-* TestSetExtensions
-  * https://github.com/ssfrr/TestSetExtensions.jl
-    * TestSetPlus based on ExtendedTestSet.
-    * Tests for TestSetPlus from TestSetExtensions.jl
-
-* SafeTestsets
-  * https://github.com/YingboMa/SafeTestsets.jl
-    * Isolation of test files based on strategy used in SafeTestsets.
-
-------------------------------------------------------------------------------
-
-## 2. Usage
+## Usage
 
 ### CLI Utilities
 
-* jltest
-* jlcodestyle
-* jlcoverage
+#### `jltest`
 
-### Running tests via `Pkg.test()'`
+Run unit tests in a single file.
 
-* Add `test/runtests.jl` file containing the following lines.
-
-```julia
-using TestTools: jltest
-jltest(; mod=PKG_NAME)
+```jl
+$ jltest test/tests.jl
 ```
 
-  Note: `TestTools.jltest()` automatically detects and runs all tests in the current
-  working directory.
+Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
+test).
 
-  * (BROKEN) it will also run doctests from the `PKG_NAME` module.
+```jl
+$ jltest -x test/tests.jl
+```
 
-------------------------------------------------------------------------------
+Run unit tests contained in a directory.
 
-## 3. Known Issues
+```jl
+$ jltest test  # run all of the tests found in the `test` directory
+```
 
-* Incomplete and erroneous documentation. Updates coming soon!
+#### `jlcoverage`
 
-------------------------------------------------------------------------------
+Generate a coverage report (after running unit tests while collecting coverage data).
+```jl
+$ julia -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'  # run unit tests
 
-[-----------------------------INTERNAL LINKS-----------------------------]: #
+$ jlcoverage  # generate coverage report
+-------------------------------------------------------------------------------
+File                                  Lines of Code     Missed   Coverage
+-------------------------------------------------------------------------------
+src/TestTools.jl                                  0          0        N/A
+src/jlcodestyle/cli/cli.jl                       34          0     100.0%
+...
+src/pkg.jl                                       42          3      92.9%
+-------------------------------------------------------------------------------
+TOTAL                                           289          7      97.6%
+```
 
-[#1]: #1-overview
-[#1.1]: #11-package-contents
-[#1.2]: #12-software-dependencies
-[#1.3]: #13-license
+#### `jlcodestyle`
 
-[#2]: #2-usage
+Basic code style check (reformatting of source file disabled).
 
-[#3]: #3-known-issues
+```jl
+$ jlcodestyle src/TestTools.jl
+No style errors found.
+
+$ jlcodestyle examples/jlcodestyle/not-blue-style.jl
+Style errors found. Files not modified.
+```
+
+Code style check with reformatting of source file enabled.
+
+```jl
+$ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
+Style errors found. Files modified to correct errors.
+```
