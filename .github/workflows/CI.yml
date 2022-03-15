@@ -21,6 +21,9 @@ jobs:
         julia-arch: [x64]
         julia-version: ["1.6", "1.7"]
 
+    env:
+        codecov-julia-version: "1.7"
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -49,7 +52,7 @@ jobs:
         if: |
             github.ref_name == 'main' &&
             runner.os == 'Linux'
-            && matrix.julia-version == '1.7'
+            && matrix.julia-version == ${{ env.codecov-julia-version }}
 
         uses: julia-actions/julia-processcoverage@v1
         with:
@@ -60,7 +63,7 @@ jobs:
         if: |
             github.ref_name == 'main' &&
             runner.os == 'Linux'
-            && matrix.julia-version == '1.7'
+            && matrix.julia-version == ${{ env.codecov-julia-version }}
 
         uses: codecov/codecov-action@v2
         with:
