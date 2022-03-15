@@ -1,5 +1,5 @@
 """
-Example Julia source file in BlueStyle format.
+Example Julia source file in DefaultStyle format.
 
 -------------------------------------------------------------------------------------------
 COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
