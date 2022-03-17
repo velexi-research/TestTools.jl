@@ -46,13 +46,13 @@ least save effort and keystrokes).
 
 * Install the `TestTools` package.
 
-  ```jl
+  ```julia
   pkg> add TestTools  # Press ']' to enter the Pkg REPL mode.
   ```
 
 * Install the CLI utilities (to `~/.julia/bin`).
 
-  ```jl
+  ```julia
   julia> using TestTools; TestTools.install()
   ```
 
@@ -64,27 +64,27 @@ least save effort and keystrokes).
 
 Run unit tests in a single file.
 
-```jl
+```julia
 $ jltest test/tests.jl
 ```
 
 Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
 test).
 
-```jl
+```julia
 $ jltest -x test/tests.jl
 ```
 
 Run unit tests contained in a directory.
 
-```jl
+```julia
 $ jltest test  # run all of the tests found in the `test` directory
 ```
 
 #### jlcoverage
 
 Generate a coverage report (after running unit tests while collecting coverage data).
-```jl
+```julia
 $ julia -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'  # run unit tests
 
 $ jlcoverage  # generate coverage report
@@ -103,7 +103,7 @@ TOTAL                                           289          7      97.6%
 
 Basic code style check (reformatting of source file disabled).
 
-```jl
+```julia
 $ jlcodestyle src/TestTools.jl
 No style errors found.
 
@@ -113,7 +113,7 @@ Style errors found. Files not modified.
 
 Code style check with reformatting of source file enabled.
 
-```jl
+```julia
 $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files modified to correct errors.
 ```
