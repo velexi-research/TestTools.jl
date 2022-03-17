@@ -118,3 +118,19 @@ Code style check with reformatting of source file enabled.
 $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files modified to correct errors.
 ```
+
+## Acknowledgments
+
+TestTools borrows ideas (and some code) from the following excellent Julia packages.
+
+* [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
+
+  * The `TestSetPlus` type and methods are based extensively on
+    `TestsetExtensions.ExtendedTestSet`.
+
+  * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
+    and refactoring of the `TestsetExtensions.@includetests` macro as methods.
+
+* [SafeTestsets](https://github.com/YingboMa/SafeTestsets.jl)
+
+  * The strategy for isolating tests came from the `SafeTestsets.@safetestset` macro.
