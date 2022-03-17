@@ -27,7 +27,7 @@ using TestTools.jltest: TestSetPlus
     # --- Preparations
 
     # Construct path to test installation directory
-    bin_dir = abspath(joinpath(@__DIR__, "testing-dir", "bin"))
+    bin_dir = abspath(joinpath(@__DIR__, "testing-bin-dir")
 
     # Cache common variables
     jltest_cmd = "jltest"
