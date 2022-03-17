@@ -35,7 +35,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-        codecov-arch: 'x64'
+        codecov-arch: x64
         codecov-version: '1.7'
 
     steps:
@@ -76,7 +76,6 @@ jobs:
         if: |
             github.ref_name == 'main' &&
             runner.os == 'Linux' &&
-            matrix.arch == 'x64' &&
             matrix.arch == env.codecov-arch &&
             matrix.version == env.codecov-version
 
