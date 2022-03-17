@@ -20,6 +20,7 @@ using Test
 using Test: DefaultTestSet
 
 # External packages
+using Coverage: Coverage
 using Suppressor
 
 # Local modules
@@ -29,6 +30,9 @@ using TestTools.jltest
 
 @testset TestSetPlus "jltest.run_tests(): basic tests" begin
     # --- Preparations
+
+    # Get current directory
+    cwd = pwd()
 
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
@@ -68,7 +72,7 @@ using TestTools.jltest
         """
     )
 
-    # --- Tests
+    # --- Tests for run_tests(tests::Vector{<:AbstractString})
 
     # `tests` contains tests named with ".jl" extension
     tests = [some_tests_file]
@@ -87,10 +91,8 @@ using TestTools.jltest
 
     # `tests` contains only a directory
     tests = [test_dir]
-    log_msg = strip(@capture_err begin
-        output = strip(@capture_out begin
-            run_tests(tests)
-        end)
+    output = strip(@capture_out begin
+        run_tests(tests)
     end)
 
     expected_output_lines = [
@@ -105,10 +107,8 @@ using TestTools.jltest
 
     # `tests` contains both directories and files
     tests = [test_dir, some_tests_file]
-    log_msg = strip(@capture_err begin
-        output = strip(@capture_out begin
-            run_tests(tests)
-        end)
+    output = strip(@capture_out begin
+        run_tests(tests)
     end)
 
     expected_output_lines = [
@@ -123,6 +123,53 @@ using TestTools.jltest
 
     output_lines = split(output, '\n')
     @test count(i -> (i == expected_output_some_tests), output_lines) == 2
+
+    # `tests` is empty list
+    tests = Vector{String}()
+    @test_throws ArgumentError run_tests(tests)
+
+    # --- Tests for run_tests(tests::AbstractString)
+
+    # `tests` is a string
+    tests = some_tests_file
+    output = strip(@capture_out begin
+        run_tests(tests)
+    end)
+
+    @test output == expected_output_some_tests
+
+    # `tests` is empty string
+    tests = ""
+    @test_throws ArgumentError run_tests(tests)
+
+    # --- Tests for run_tests() - no arguments
+
+    # Directory contains tests
+    cd(test_dir)
+    output = strip(@capture_out begin
+        run_tests()
+    end)
+
+    expected_output_lines = [
+        expected_output_some_tests,
+        expected_output_some_tests_no_testset,
+        expected_output_failing_tests,
+        expected_output_failing_tests_no_testset,
+    ]
+    for line in expected_output_lines
+        @test occursin(line, output)
+    end
+
+    # Directory contains no tests
+    cd(joinpath(@__DIR__, "data-empty-directory-tests"))
+    output = strip(@capture_out begin
+        run_tests()
+    end)
+
+    @test output == ""
+
+    # Restore current directory
+    cd(cwd)
 
     # --- Keyword arguments tests
 
@@ -145,16 +192,6 @@ using TestTools.jltest
         "$(joinpath(test_dir, "failing_tests")): failing tests" *
         ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):19"
     @test startswith(output, expected_prefix)
-
-    # --- Invalid argument tests
-
-    # `tests` is empty list
-    tests = Vector{String}()
-    @test_throws ArgumentError run_tests(tests)
-
-    # `tests` is empty string
-    tests = ""
-    @test_throws ArgumentError run_tests(tests)
 end
 
 @testset TestSetPlus "jltest.run_tests(): log message tests" begin
@@ -266,6 +303,11 @@ end
     change_dir_file = joinpath(test_dir, "change_dir.jl")
     expected_output_change_dir = "$(joinpath(test_dir, "change_dir")): "
 
+    # Delete old coverage data files
+    @suppress begin
+        Coverage.clean_folder(test_dir)
+    end
+
     # --- Tests
 
     # Case: change directory before running test file
@@ -298,12 +340,12 @@ end
     cd(cwd)
 end
 
-@testset TestSetPlus "jltest.autodetect_tests()" begin
+@testset TestSetPlus "jltest.find_tests()" begin
 
     # --- normal operation
 
     test_dir = joinpath(@__DIR__, "data-basic-tests")
-    tests = Set(autodetect_tests(test_dir))
+    tests = Set(find_tests(test_dir))
     expected_tests = Set([
         joinpath(test_dir, file) for file in [
             "failing_tests.jl",
@@ -318,4 +360,4 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 6 failures and 0 errors are expected."
+@info "For $(basename(@__FILE__)), 8 failures and 0 errors are expected."
