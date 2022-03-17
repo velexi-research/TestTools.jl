@@ -23,34 +23,32 @@ Install all of the CLI utilities.
 
 # Keyword arguments
 
-* `julia`: path to julia executable, defaults to the path of the current running julia.
+* `julia`: path to julia executable. Default: path of the current running julia
 
-* `install_dir`: writable directory (available in PATH) for the executable.
-  Default: `~/.julia/bin`.
+* `bin_dir`: directory to install CLI utilities into. Default: `~/.julia/bin`
 
-* `julia_flags`: vector with command line flags for the julia executable,
-   defaults to `["--startup-file=no", "-q", "--compile=min", "-O0"]`.
+* `julia_flags`: vector containing command line flags for CLI executables.
+   Default: `["--startup-file=no", "-q", "--compile=min", "-O0"]`.
 
-* `force`: boolean used to overwrite any existing commands.
+* `force`: boolean flag used to indicate that existing CLI executables should be
+  overwritten. Default: false
 """
 function install(;
     julia::String=joinpath(Sys.BINDIR, Base.julia_exename()),
-    install_dir::String=joinpath(DEPOT_PATH[1], "bin"),
+    bin_dir::String=joinpath(DEPOT_PATH[1], "bin"),
     julia_flags::Vector{String}=default_julia_flags,
     force::Bool=false,
 )
     # --- Install CLI utilities
 
     for cli in cli_tools
-        install_cli(
-            cli; julia=julia, install_dir=install_dir, julia_flags=julia_flags, force=force
-        )
+        install_cli(cli; julia=julia, bin_dir=bin_dir, julia_flags=julia_flags, force=force)
     end
 
     # --- Emit informational message
 
     @info """
-          Make sure that `$(install_dir)` is in PATH, or manually add a
+          Make sure that `$(bin_dir)` is in PATH, or manually add a
           symlink from a directory in PATH to the installed program file.
           """
 end
@@ -64,20 +62,20 @@ Valid values for `name`: "jltest", "jlcoverage", "jlcodestyle".
 
 # Keyword arguments
 
-* `julia`: path to julia executable, defaults to the path of the current running julia.
+* `julia`: path to julia executable. Default: path of the current running julia
 
-* `install_dir`: writable directory (available in PATH) for the executable.
-  Default: `~/.julia/bin`.
+* `bin_dir`: directory to install CLI utilities into. Default: `~/.julia/bin`
 
-* `julia_flags`: vector with command line flags for the julia executable,
-   defaults to `["--startup-file=no", "-q", "--compile=min", "-O0"]`.
+* `julia_flags`: vector containing command line flags for CLI executables.
+   Default: `["--startup-file=no", "-q", "--compile=min", "-O0"]`.
 
-* `force`: boolean used to overwrite any existing executables.
+* `force`: boolean flag used to indicate that existing CLI executables should be
+  overwritten. Default: false
 """
 function install_cli(
     cli::AbstractString;
     julia::String=joinpath(Sys.BINDIR, Base.julia_exename()),
-    install_dir::String=joinpath(DEPOT_PATH[1], "bin"),
+    bin_dir::String=joinpath(DEPOT_PATH[1], "bin"),
     julia_flags::Vector{String}=default_julia_flags,
     force::Bool=false,
 )
@@ -98,10 +96,10 @@ function install_cli(
     end
 
     # Get absolute path to installation directory
-    install_dir = abspath(expanduser(install_dir))
+    bin_dir = abspath(expanduser(bin_dir))
 
     # Get absolute path to executable to be installed
-    exec_path = joinpath(install_dir, cli)
+    exec_path = joinpath(bin_dir, cli)
 
     # Check if the executable already exists
     if ispath(exec_path) && !force
@@ -112,7 +110,7 @@ function install_cli(
     end
 
     # Create installation directory
-    mkpath(install_dir)
+    mkpath(bin_dir)
 
     # --- Install executable
 
@@ -182,12 +180,11 @@ Unnstall all of the CLI utilities.
 
 # Keyword arguments
 
-* `install_dir`: writable directory (available in PATH) for the executable.
-  Default: `~/.julia/bin`.
+* `bin_dir`: directory containing CLI utilities to uninstall. Default: `~/.julia/bin`
 """
-function uninstall(; install_dir::String=joinpath(DEPOT_PATH[1], "bin"))
+function uninstall(; bin_dir::String=joinpath(DEPOT_PATH[1], "bin"))
     for cli in cli_tools
-        uninstall_cli(cli; install_dir=install_dir)
+        uninstall_cli(cli; bin_dir=bin_dir)
     end
 end
 
@@ -200,12 +197,9 @@ Valid values for `name`: "jltest", "jlcoverage", "jlcodestyle".
 
 # Keyword arguments
 
-* `install_dir`: writable directory (available in PATH) for the executable.
-  Default: `~/.julia/bin`.
+* `bin_dir`: directory containing CLI utilities to uninstall. Default: `~/.julia/bin`
 """
-function uninstall_cli(
-    cli::AbstractString; install_dir::String=joinpath(DEPOT_PATH[1], "bin")
-)
+function uninstall_cli(cli::AbstractString; bin_dir::String=joinpath(DEPOT_PATH[1], "bin"))
     # --- Check arguments
 
     if !(cli in cli_tools)
@@ -223,10 +217,10 @@ function uninstall_cli(
     end
 
     # Get absolute path to installation directory
-    install_dir = abspath(expanduser(install_dir))
+    bin_dir = abspath(expanduser(bin_dir))
 
     # Get absolute path to executable to be installed
-    exec_path = joinpath(install_dir, cli)
+    exec_path = joinpath(bin_dir, cli)
 
     # --- Uninstall CLI
 
