@@ -113,6 +113,9 @@ jobs:
         run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using TestPkg
-            DocMeta.setdocmeta!(TestPkg, :DocTestSetup, :(using TestPkg); recursive=true)
-            doctest(TestPkg)'
+            using TestTools
+            DocMeta.setdocmeta!(TestTools,
+                                :DocTestSetup,
+                                :(using TestTools);
+                                recursive=true)
+            doctest(TestTools)'
