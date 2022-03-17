@@ -32,6 +32,15 @@ using Distributed
 
 # --- Types
 
+"""
+    struct TestSetPlus{T<:AbstractTestSet} <: AbstractTestSet
+
+Extension of the TestSet type that provides the following functionality:
+
+* display diffs when comparison tests fail and
+
+* supports "fail fast".
+"""
 struct TestSetPlus{T<:AbstractTestSet} <: AbstractTestSet
     wrapped::T
 
