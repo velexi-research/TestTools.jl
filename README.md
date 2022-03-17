@@ -41,7 +41,7 @@ least save effort and keystrokes).
 
 * Start Julia in the default (global) environment.
 
-  * __Note__: installation in the default environment makes the CLI utilities available
+  * __Note__. Installation in the default environment makes the CLI utilities available
     from within all projects.
 
 * Install the `TestTools` package.
