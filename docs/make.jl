@@ -23,7 +23,7 @@ makedocs(;
     sitename="TestTools.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://ktchu.github.io/TestPkg.jl",
+        canonical="https://github.com/velexi-corporation/TestTools.jl",
         assets=String[],
     ),
     pages=[
