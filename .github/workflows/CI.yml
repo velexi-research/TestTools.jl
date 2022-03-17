@@ -4,27 +4,35 @@ on:
   push:
     branches:
       - main
+    tags: '*'
 
   pull_request:
     branches:
       - main
 
 concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  run-tests:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+
     strategy:
+      fail-fast: false
+
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        julia-arch: [x64]
-        julia-version: ["1.6", "1.7"]
-
-    env:
-        codecov-julia-version: "1.7"
+        arch: [x64, x86]
+        version: ['1.6', '1.7']
 
     runs-on: ${{ matrix.os }}
+
+    env:
+        codecov-arch: 'x64'
+        codecov-version: '1.7'
 
     steps:
       - name: Check out code
@@ -33,19 +41,19 @@ jobs:
       - name: Set up Julia environment
         uses: julia-actions/setup-julia@v1
         with:
-          version: ${{ matrix.julia-version }}
-          arch: ${{ matrix.julia-arch }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
 
       - name: Set up Julia caches
         uses: julia-actions/cache@v1
         with:
-          cache-name: ${{ matrix.julia-arch }}-${{ matrix.julia-version }}
+          cache-name: ${{ matrix.arch }}-${{ matrix.version }}
 
       - name: Build package
-        uses: julia-actions/julia-buildpkg@latest
+        uses: julia-actions/julia-buildpkg@v1
 
       - name: Run tests
-        uses: julia-actions/julia-runtest@latest
+        uses: julia-actions/julia-runtest@v1
 
       - name: Process coverage data
         # Only run for 'main' branch running on 'Linux' with the latest version of Julia
@@ -71,3 +79,34 @@ jobs:
           files: lcov.info
           fail_ci_if_error: true
           verbose: true
+
+  docs:
+    name: Documentation
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Julia environment
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: '1'
+
+      - name: Build package
+        uses: julia-actions/julia-buildpkg@v1
+
+      - name: Deploy documentation
+        uses: julia-actions/julia-docdeploy@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+
+      - name: Build documentation
+        run: |
+          julia --project=docs -e '
+            using Documenter: DocMeta, doctest
+            using TestPkg
+            DocMeta.setdocmeta!(TestPkg, :DocTestSetup, :(using TestPkg); recursive=true)
+            doctest(TestPkg)'
