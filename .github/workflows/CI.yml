@@ -64,7 +64,8 @@ jobs:
         if: |
             github.ref_name == 'main' &&
             runner.os == 'Linux' &&
-            matrix.julia-version == env.codecov-julia-version
+            matrix.arch == env.codecov-arch &&
+            matrix.version == env.codecov-version
 
         uses: julia-actions/julia-processcoverage@v1
         with:
@@ -75,7 +76,9 @@ jobs:
         if: |
             github.ref_name == 'main' &&
             runner.os == 'Linux' &&
-            matrix.julia-version == env.codecov-julia-version
+            matrix.arch == 'x64' &&
+            matrix.arch == env.codecov-arch &&
+            matrix.version == env.codecov-version
 
         uses: codecov/codecov-action@v2
         with:
