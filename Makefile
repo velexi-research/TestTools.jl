@@ -19,6 +19,9 @@ test:
 	@echo Generate code coverage report
 	@jlcoverage
 
+docs:
+	cd docs; julia --compile=min -O0 make.jl
+
 # Maintenance
 clean:
 	@echo Remove coverage files
@@ -30,4 +33,5 @@ spotless: clean
 # Phony Targets
 .PHONY: all \
 		test \
+		docs \
 		clean spotless

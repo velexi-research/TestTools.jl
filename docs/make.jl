@@ -28,9 +28,9 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        # "jltest" => "jltest.md",
-        # "jlcoverage" => "jlcoverage.md",
-        # "jlcodestyle" => "jlcodestyle.md",
+        "Installation" => "install.md",
+        "Modules" => "modules.md",
+        "Index" => "docs-index.md",
     ],
 )
 
