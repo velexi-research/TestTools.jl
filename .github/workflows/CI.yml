@@ -28,6 +28,10 @@ jobs:
         arch: [x64, x86]
         version: ['1.6', '1.7']
 
+        exclude:
+          - os: macos-latest
+            arch: x86
+
     runs-on: ${{ matrix.os }}
 
     env:
