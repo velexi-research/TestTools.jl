@@ -44,7 +44,7 @@ least save effort and keystrokes).
   * __Note__: installation in the default environment makes the CLI utilities available
     from within all projects.
 
-* Install the `TestTools` CLI utilities.
+* Install the `TestTools` package.
 
   ```jl
   pkg> add TestTools  # Press ']' to enter the Pkg REPL mode.
@@ -60,7 +60,7 @@ least save effort and keystrokes).
 
 ### CLI Utilities
 
-#### `jltest`
+#### jltest
 
 Run unit tests in a single file.
 
@@ -81,7 +81,7 @@ Run unit tests contained in a directory.
 $ jltest test  # run all of the tests found in the `test` directory
 ```
 
-#### `jlcoverage`
+#### jlcoverage
 
 Generate a coverage report (after running unit tests while collecting coverage data).
 ```jl
@@ -99,7 +99,7 @@ src/pkg.jl                                       42          3      92.9%
 TOTAL                                           289          7      97.6%
 ```
 
-#### `jlcodestyle`
+#### jlcodestyle
 
 Basic code style check (reformatting of source file disabled).
 
@@ -120,16 +120,24 @@ Style errors found. Files modified to correct errors.
 
 ## Acknowledgments
 
-TestTools borrows ideas (and some code) from the following excellent Julia packages.
+* TestTools borrows ideas (and some code) from the following excellent Julia packages.
 
-* [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
+  * [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
 
-  * The `TestSetPlus` type and methods are based extensively on
-    `TestsetExtensions.ExtendedTestSet`.
+    * The `TestSetPlus` type and methods are based extensively on
+      `TestsetExtensions.ExtendedTestSet`.
 
-  * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
-    and refactoring of the `TestsetExtensions.@includetests` macro as methods.
+    * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
+      and refactoring of the `TestsetExtensions.@includetests` macro as methods.
 
-* [SafeTestsets](https://github.com/YingboMa/SafeTestsets.jl)
+  * [SafeTestsets](https://github.com/YingboMa/SafeTestsets.jl)
 
-  * The strategy for isolating tests came from the `SafeTestsets.@safetestset` macro.
+    * The strategy for isolating tests came from the `SafeTestsets.@safetestset` macro.
+
+* TestTools was inspired by analogous code testing packages in the Python ecosystem:
+
+  * [pytest](https://docs.pytest.org/en/latest/)
+
+  * [coverage](https://coverage.readthedocs.io/en/latest/)
+
+  * [pycodestyle](https://pycodestyle.pycqa.org/en/latest/)
