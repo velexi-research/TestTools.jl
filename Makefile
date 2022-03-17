@@ -10,13 +10,13 @@
 all: test
 
 test:
-	@echo Remove old coverage files
+	@echo Removing old coverage files
 	julia --color=yes --compile=min -O0 -e 'using Coverage; clean_folder(".");'
 	@echo
-	@echo Run tests
+	@echo Running tests
 	julia --color=yes -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'
 	@echo
-	@echo Generate code coverage report
+	@echo Generating code coverage report
 	@jlcoverage
 
 docs:
@@ -24,7 +24,7 @@ docs:
 
 # Maintenance
 clean:
-	@echo Remove coverage files
+	@echo Removing coverage files
 	julia --color=yes --compile=min -O0 -e 'using Coverage; clean_folder(".");'
 
 spotless: clean
