@@ -51,7 +51,7 @@ analysis, and style checking.
   !!! note
 
       _Uninstallation_. CLI utilities may be uninstalled by using the
-      [`TestTools.uninstall()`](@ref TestTools.uninstall) method
+      [`TestTools.uninstall()`](@ref TestTools.uninstall) method.
 
       ```julia
       julia> using TestTools; TestTools.uninstall()
