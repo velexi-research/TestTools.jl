@@ -78,7 +78,7 @@ $ jltest -x test/tests.jl
 Run unit tests contained in a directory.
 
 ```julia
-$ jltest test  # run all of the tests found in the `test` directory
+$ jltest test
 ```
 
 #### jlcoverage
