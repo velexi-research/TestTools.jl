@@ -1,13 +1,21 @@
+#   Copyright (c) 2022 Velexi Corporation
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 """
 Unit test runner for the TestTools.jl package.
-
--------------------------------------------------------------------------------------------
-COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
-license terms in the LICENSE file found in the root directory of this distribution. No
-part of the TestTools.jl package, including this file, may be copied, modified, propagated,
-or distributed except according to the terms contained in the LICENSE file.
--------------------------------------------------------------------------------------------
 """
+
 # --- Imports
 
 # Standard library
@@ -119,17 +127,17 @@ print("jltest/utils_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 52 passed, 6 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 54 passed, 6 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = strip(
         """
-        $(joinpath("jltest", "utils_tests")): ............................
+        $(joinpath("jltest", "utils_tests")): ..............................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |   52     6     58
-          utils tests                                    |   52     6     58
+        jltest                                           |   54     6     60
+          utils tests                                    |   54     6     60
             jltest.run_tests(): basic tests              |   38     6     44
                                                          |    2            2
                                                          |    2            2
@@ -148,7 +156,7 @@ print("jltest/utils_tests: ")
                 failing tests                            |    1     1      2
             jltest.run_tests(): log message tests        |    9            9
             jltest.run_tests(): current directory checks |    4            4
-            jltest.find_tests()                          |    1            1
+            jltest.find_tests()                          |    3            3
             """
     )
 

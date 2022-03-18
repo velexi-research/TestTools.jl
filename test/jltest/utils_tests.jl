@@ -1,17 +1,25 @@
+#   Copyright (c) 2022 Velexi Corporation
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 """
 Unit tests for the methods in `jltest/utils.jl`.
 
 Notes
 -----
 * For the unit tests in this files, failures and errors are expected.
-
--------------------------------------------------------------------------------------------
-COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
-license terms in the LICENSE file found in the root directory of this distribution. No
-part of the TestTools.jl package, including this file, may be copied, modified, propagated,
-or distributed except according to the terms contained in the LICENSE file.
--------------------------------------------------------------------------------------------
 """
+
 # --- Imports
 
 # Standard library
@@ -46,7 +54,7 @@ using TestTools.jltest
         """
         $(joinpath(test_dir, "failing_tests")): .
         =====================================================
-        failing tests: Test Failed at $(failing_tests_file):19
+        failing tests: Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
            Evaluated: 2 == 1
 
@@ -60,7 +68,7 @@ using TestTools.jltest
         """
         $(joinpath(test_dir, "failing_tests_no_testset")): .
         =====================================================
-        : Test Failed at $(failing_tests_no_testset_file):18
+        : Test Failed at $(failing_tests_no_testset_file):26
           Expression: 2 == 1
            Evaluated: 2 == 1
 
@@ -158,7 +166,7 @@ using TestTools.jltest
     end)
     expected_prefix =
         "$(joinpath(test_dir, "failing_tests")): failing tests" *
-        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):19"
+        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):27"
     @test startswith(output, expected_prefix)
 end
 
@@ -310,7 +318,7 @@ end
 
 @testset TestSetPlus "jltest.find_tests()" begin
 
-    # --- normal operation
+    # --- flat directory
 
     test_dir = joinpath(@__DIR__, "data-basic-tests")
     tests = Set(find_tests(test_dir))
@@ -320,6 +328,31 @@ end
             "failing_tests_no_testset.jl",
             "some_tests.jl",
             "some_tests_no_testset.jl",
+        ]
+    ])
+    @test tests == expected_tests
+
+    # --- directory with subdirectories
+
+    test_dir = joinpath(@__DIR__, "data-find-tests")
+    tests = Set(find_tests(test_dir))
+    expected_tests = Set([
+        joinpath(test_dir, file) for
+        file in ["some_tests.jl", joinpath("subdir", "more_tests.jl")]
+    ])
+    @test tests == expected_tests
+
+    # --- Keyword arguments tests
+
+    # exclude_runtests = false
+    test_dir = joinpath(@__DIR__, "data-find-tests")
+    tests = Set(find_tests(test_dir; exclude_runtests=false))
+    expected_tests = Set([
+        joinpath(test_dir, file) for file in [
+            "runtests.jl",
+            "some_tests.jl",
+            joinpath("subdir", "more_tests.jl"),
+            joinpath("subdir", "runtests.jl"),
         ]
     ])
     @test tests == expected_tests

@@ -1,15 +1,23 @@
+#   Copyright (c) 2022 Velexi Corporation
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 """
 The `pkg.jl` file defines package management functions.
-
--------------------------------------------------------------------------------------------
-COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
-license terms in the LICENSE file found in the root directory of this distribution. No
-part of the TestTools.jl package, including this file, may be copied, modified, propagated,
-or distributed except according to the terms contained in the LICENSE file.
--------------------------------------------------------------------------------------------
 """
+
 # --- Constants
-#
+
 const cli_tools = ["jltest", "jlcoverage", "jlcodestyle"]
 
 # --- CLI installer functions
@@ -23,20 +31,22 @@ Install all of the CLI utilities.
 
 # Keyword arguments
 
-* `julia`: path to julia executable. Default: path of the current running julia
+* `julia::AbstractString`: path to julia executable. Default: path of the current running
+    julia
 
-* `bin_dir`: directory to install CLI utilities into. Default: `~/.julia/bin`
+* `bin_dir::AbstractString`: directory to install CLI utilities into.
+    Default: `~/.julia/bin`
 
-* `julia_flags`: vector containing command line flags for CLI executables.
-   Default: `["--startup-file=no", "-q", "--compile=min", "-O0"]`.
+* `julia_flags::Vector{<:AbstractString}`: command line flags for CLI executables.
+    Default: `["--startup-file=no", "-q", "--compile=min", "-O0"]`
 
-* `force`: boolean flag used to indicate that existing CLI executables should be
-  overwritten. Default: false
+* `force::Bool`: flag used to indicate that existing CLI executables should be
+    overwritten. Default: `false`
 """
 function install(;
-    julia::String=joinpath(Sys.BINDIR, Base.julia_exename()),
-    bin_dir::String=joinpath(DEPOT_PATH[1], "bin"),
-    julia_flags::Vector{String}=default_julia_flags,
+    julia::AbstractString=joinpath(Sys.BINDIR, Base.julia_exename()),
+    bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"),
+    julia_flags::Vector{<:AbstractString}=default_julia_flags,
     force::Bool=false,
 )
     # --- Install CLI utilities
@@ -62,21 +72,23 @@ Valid values for `name`: "jltest", "jlcoverage", "jlcodestyle".
 
 # Keyword arguments
 
-* `julia`: path to julia executable. Default: path of the current running julia
+* `julia::AbstractString`: path to julia executable. Default: path of the current running
+    julia
 
-* `bin_dir`: directory to install CLI utilities into. Default: `~/.julia/bin`
+* `bin_dir::AbstractString`: directory to install CLI executable into.
+    Default: `~/.julia/bin`
 
-* `julia_flags`: vector containing command line flags for CLI executables.
-   Default: `["--startup-file=no", "-q", "--compile=min", "-O0"]`.
+* `julia_flags::Vector{<:AbstractString}`: command line flags for CLI executable.
+    Default: `["--startup-file=no", "-q", "--compile=min", "-O0"]`
 
-* `force`: boolean flag used to indicate that existing CLI executables should be
-  overwritten. Default: false
+* `force::Bool`: flag used to indicate that existing CLI executable should be
+    overwritten. Default: `false`
 """
 function install_cli(
     cli::AbstractString;
-    julia::String=joinpath(Sys.BINDIR, Base.julia_exename()),
-    bin_dir::String=joinpath(DEPOT_PATH[1], "bin"),
-    julia_flags::Vector{String}=default_julia_flags,
+    julia::AbstractString=joinpath(Sys.BINDIR, Base.julia_exename()),
+    bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"),
+    julia_flags::Vector{<:AbstractString}=default_julia_flags,
     force::Bool=false,
 )
     # --- Check arguments
@@ -121,10 +133,19 @@ function install_cli(
                 io,
                 """
 :: -----------------------------------------------------------------------------------------
-:: COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
-:: license terms in the LICENSE file found in the root directory of this distribution. No
-:: part of the TestTools.jl package, including this file, may be copied, modified, propagated,
-:: or distributed except according to the terms contained in the LICENSE file.
+::  Copyright (c) 2022 Velexi Corporation
+::
+::  Licensed under the Apache License, Version 2.0 (the "License");
+::  you may not use this file except in compliance with the License.
+::  You may obtain a copy of the License at
+::
+::      http://www.apache.org/licenses/LICENSE-2.0
+::
+::  Unless required by applicable law or agreed to in writing, software
+::  distributed under the License is distributed on an "AS IS" BASIS,
+::  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+::  See the License for the specific language governing permissions and
+::  limitations under the License.
 :: -----------------------------------------------------------------------------------------
 @ECHO OFF
 $(julia) $(join(julia_flags, ' ')) $(abspath(@__DIR__, cli, "cli", "main.jl")) %*
@@ -139,14 +160,21 @@ $(julia) $(join(julia_flags, ' ')) $(abspath(@__DIR__, cli, "cli", "main.jl")) %
 #=
 exec $(julia) $(join(julia_flags, ' ')) "\${BASH_SOURCE[0]}" "\$@"
 =#
-\"\"\"
--------------------------------------------------------------------------------------------
-COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
-license terms in the LICENSE file found in the root directory of this distribution. No
-part of the TestTools.jl package, including this file, may be copied, modified, propagated,
-or distributed except according to the terms contained in the LICENSE file.
--------------------------------------------------------------------------------------------
-\"\"\"
+
+#   Copyright (c) 2022 Velexi Corporation
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 """,
             )
             open(abspath(@__DIR__, cli, "cli", "main.jl"), "r") do main
@@ -180,9 +208,10 @@ Unnstall all of the CLI utilities.
 
 # Keyword arguments
 
-* `bin_dir`: directory containing CLI utilities to uninstall. Default: `~/.julia/bin`
+* `bin_dir::AbstractString`: directory containing CLI executables to uninstall.
+    Default: `~/.julia/bin`
 """
-function uninstall(; bin_dir::String=joinpath(DEPOT_PATH[1], "bin"))
+function uninstall(; bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"))
     for cli in cli_tools
         uninstall_cli(cli; bin_dir=bin_dir)
     end
@@ -197,9 +226,12 @@ Valid values for `name`: "jltest", "jlcoverage", "jlcodestyle".
 
 # Keyword arguments
 
-* `bin_dir`: directory containing CLI utilities to uninstall. Default: `~/.julia/bin`
+* `bin_dir::AbstractString`: directory containing CLI executable to uninstall.
+    Default: `~/.julia/bin`
 """
-function uninstall_cli(cli::AbstractString; bin_dir::String=joinpath(DEPOT_PATH[1], "bin"))
+function uninstall_cli(
+    cli::AbstractString; bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin")
+)
     # --- Check arguments
 
     if !(cli in cli_tools)

@@ -1,16 +1,24 @@
+#   Copyright (c) 2022 Velexi Corporation
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 """
 Unit tests for the `TestSetPlus` type.
 
 This set of unit tests checks the behavior of `TestSetPlus` when the test set type is
 `TestSetPlus{FallbackTestSet}` (i.e., fail fast).
-
--------------------------------------------------------------------------------------------
-COPYRIGHT/LICENSE. This file is part of the TestTools.jl package. It is subject to the
-license terms in the LICENSE file found in the root directory of this distribution. No
-part of the TestTools.jl package, including this file, may be copied, modified, propagated,
-or distributed except according to the terms contained in the LICENSE file.
--------------------------------------------------------------------------------------------
 """
+
 # --- Imports
 
 # Standard library
@@ -49,7 +57,7 @@ using TestTools.jltest
 
     expected_prefix = strip("""
                             =====================================================
-                            Test Failed at $(@__FILE__):37
+                            Test Failed at $(@__FILE__):45
                               Expression: 1 == 2
                                Evaluated: 1 == 2
                             """)
@@ -81,7 +89,7 @@ using TestTools.jltest
 
     expected_prefix = strip("""
                             =====================================================
-                            Test Failed at $(@__FILE__):65
+                            Test Failed at $(@__FILE__):73
                               Expression: 1 == 2
                                Evaluated: 1 == 2
                             """)
@@ -120,7 +128,7 @@ using TestTools.jltest
     @test error_type == FallbackTestSetException
 
     expected_prefix = strip("""
-                            Failing test: Test Failed at $(@__FILE__):106
+                            Failing test: Test Failed at $(@__FILE__):114
                               Expression: 1 == 2
                                Evaluated: 1 == 2
                             """)
