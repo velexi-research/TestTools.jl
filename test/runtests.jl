@@ -127,17 +127,17 @@ print("jltest/utils_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 53 passed, 6 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 54 passed, 6 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = strip(
         """
-        $(joinpath("jltest", "utils_tests")): .............................
+        $(joinpath("jltest", "utils_tests")): ..............................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |   53     6     59
-          utils tests                                    |   53     6     59
+        jltest                                           |   54     6     60
+          utils tests                                    |   54     6     60
             jltest.run_tests(): basic tests              |   38     6     44
                                                          |    2            2
                                                          |    2            2
@@ -156,7 +156,7 @@ print("jltest/utils_tests: ")
                 failing tests                            |    1     1      2
             jltest.run_tests(): log message tests        |    9            9
             jltest.run_tests(): current directory checks |    4            4
-            jltest.find_tests()                          |    2            2
+            jltest.find_tests()                          |    3            3
             """
     )
 

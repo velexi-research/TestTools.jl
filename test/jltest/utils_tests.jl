@@ -341,6 +341,21 @@ end
         file in ["some_tests.jl", joinpath("subdir", "more_tests.jl")]
     ])
     @test tests == expected_tests
+
+    # --- Keyword arguments tests
+
+    # exclude_runtests = false
+    test_dir = joinpath(@__DIR__, "data-find-tests")
+    tests = Set(find_tests(test_dir; exclude_runtests=false))
+    expected_tests = Set([
+        joinpath(test_dir, file) for file in [
+            "runtests.jl",
+            "some_tests.jl",
+            joinpath("subdir", "more_tests.jl"),
+            joinpath("subdir", "runtests.jl"),
+        ]
+    ])
+    @test tests == expected_tests
 end
 
 # --- Emit message about expected failures and errors

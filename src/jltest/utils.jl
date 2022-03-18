@@ -257,7 +257,7 @@ function find_tests(dir::AbstractString; exclude_runtests::Bool=true)::Vector{St
     # Recursively search directories
     dirs = filter(f -> isdir(f), [joinpath(dir, f) for f in readdir(dir)])
     for dir in dirs
-        tests = vcat(tests, find_tests(dir))
+        tests = vcat(tests, find_tests(dir; exclude_runtests=exclude_runtests))
     end
 
     return tests
