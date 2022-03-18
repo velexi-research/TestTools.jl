@@ -134,6 +134,10 @@ Style errors found. Files modified to correct errors.
 
     * The strategy for isolating tests came from the `SafeTestsets.@safetestset` macro.
 
+  * [jlpkg](https://github.com/fredrikekre/jlpkg)
+
+    * The strategy for installing CLI executables came from `jlpkg.install()`.
+
 * TestTools was inspired by analogous code testing packages in the Python ecosystem:
 
   * [pytest](https://docs.pytest.org/en/latest/)
