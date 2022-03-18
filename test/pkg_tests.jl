@@ -27,7 +27,7 @@ using TestTools.jltest: TestSetPlus
     # --- Preparations
 
     # Construct path to test installation directory
-    install_dir = abspath(joinpath(@__DIR__, "testing-dir"))
+    bin_dir = abspath(joinpath(@__DIR__, "testing-bin-dir"))
 
     # Cache common variables
     jltest_cmd = "jltest"
@@ -41,26 +41,26 @@ using TestTools.jltest: TestSetPlus
 
     # --- install() tests
 
-    jltest_exec_path = Base.contractuser(joinpath(install_dir, jltest_cmd))
-    jlcoverage_exec_path = Base.contractuser(joinpath(install_dir, jlcoverage_cmd))
-    jlcodestyle_exec_path = Base.contractuser(joinpath(install_dir, jlcodestyle_cmd))
+    jltest_exec_path = Base.contractuser(joinpath(bin_dir, jltest_cmd))
+    jlcoverage_exec_path = Base.contractuser(joinpath(bin_dir, jlcoverage_cmd))
+    jlcodestyle_exec_path = Base.contractuser(joinpath(bin_dir, jlcodestyle_cmd))
 
     expected_output_install = """
         [ Info: Installed $jltest_cmd to `$jltest_exec_path`.
         [ Info: Installed $jlcoverage_cmd to `$jlcoverage_exec_path`.
         [ Info: Installed $jlcodestyle_cmd to `$jlcodestyle_exec_path`.
-        ┌ Info: Make sure that `$install_dir` is in PATH, or manually add a
+        ┌ Info: Make sure that `$bin_dir` is in PATH, or manually add a
         └ symlink from a directory in PATH to the installed program file.
         """
 
     # Remove existing install directory
-    if isdir(install_dir)
-        rm(install_dir; force=true, recursive=true)
+    if isdir(bin_dir)
+        rm(bin_dir; force=true, recursive=true)
     end
 
     # Case: fresh installation
     output = @capture_err begin
-        TestTools.install(; install_dir=install_dir)
+        TestTools.install(; bin_dir=bin_dir)
     end
 
     @test output == expected_output_install
@@ -68,7 +68,7 @@ using TestTools.jltest: TestSetPlus
     # Case: attempt to reinstall with force=false
     local error
     try
-        TestTools.install(; install_dir=install_dir)
+        TestTools.install(; bin_dir=bin_dir)
     catch error
     end
 
@@ -79,7 +79,7 @@ using TestTools.jltest: TestSetPlus
 
     # Case: attempt to reinstall with force=true
     output = @capture_err begin
-        TestTools.install(; install_dir=install_dir, force=true)
+        TestTools.install(; bin_dir=bin_dir, force=true)
     end
 
     @test output == expected_output_install
@@ -88,7 +88,7 @@ using TestTools.jltest: TestSetPlus
 
     # Case: uninstall
     output = @capture_err begin
-        TestTools.uninstall(; install_dir=install_dir)
+        TestTools.uninstall(; bin_dir=bin_dir)
     end
 
     expected_output = """
@@ -100,7 +100,7 @@ using TestTools.jltest: TestSetPlus
 
     # --- Clean up
 
-    rm(install_dir)
+    rm(bin_dir)
 end
 
 @testset TestSetPlus "TestTools: install_cli(), uninstall_cli(): invalid arguments" begin

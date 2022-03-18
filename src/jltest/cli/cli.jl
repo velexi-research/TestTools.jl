@@ -119,7 +119,7 @@ function run(
 
     # Unit tests
     if length(tests) == 0
-        tests = autodetect_tests(pwd())
+        tests = find_tests(pwd())
     end
     run_tests(tests; name=name, test_set_type=test_set_type)
 

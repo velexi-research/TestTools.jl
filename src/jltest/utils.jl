@@ -10,7 +10,7 @@ or distributed except according to the terms contained in the LICENSE file.
 """
 # --- Exports
 
-export autodetect_tests, run_tests
+export find_tests, run_tests
 
 # --- Imports
 
@@ -114,7 +114,8 @@ end
 # --- Functions/Methods
 
 """
-    run_tests(tests::Union{Vector{<:AbstractString}, AbstractString}; <keyword arguments>)
+    run_tests(tests::Vector{<:AbstractString}; <keyword arguments>)
+    run_tests(tests::AbstractString; <keyword arguments>)
 
 Run unit tests contained in the list of files or modules provided in `tests`. If `tests`
 is an empty list or an empty string, an `ArgumentError` is thrown. File names in `tests`
@@ -198,7 +199,7 @@ function run_tests(
             cd(cwd)
 
             # Run tests
-            run_tests(autodetect_tests(dir))
+            run_tests(find_tests(dir))
         end
     end
 
@@ -226,11 +227,11 @@ function run_tests(
 end
 
 """
-    autodetect_tests(dir::AbstractString)::Vector{String}
+    find_tests(dir::AbstractString)::Vector{String}
 
 Return all Julia files in `dir` that contain unit tests.
 """
-function autodetect_tests(dir::AbstractString)::Vector{String}
+function find_tests(dir::AbstractString)::Vector{String}
     # TODO: add search for directories
     files = filter(f -> endswith(f, ".jl") && f != "runtests.jl", readdir(dir))
     tests = [joinpath(dir, file) for file in files]

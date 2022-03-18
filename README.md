@@ -41,18 +41,18 @@ least save effort and keystrokes).
 
 * Start Julia in the default (global) environment.
 
-  * __Note__: installation in the default environment makes the CLI utilities available
+  * __Note__. Installation in the default environment makes the CLI utilities available
     from within all projects.
 
-* Install the `TestTools` CLI utilities.
+* Install the `TestTools` package.
 
-  ```jl
+  ```julia
   pkg> add TestTools  # Press ']' to enter the Pkg REPL mode.
   ```
 
 * Install the CLI utilities (to `~/.julia/bin`).
 
-  ```jl
+  ```julia
   julia> using TestTools; TestTools.install()
   ```
 
@@ -60,31 +60,31 @@ least save effort and keystrokes).
 
 ### CLI Utilities
 
-#### `jltest`
+#### jltest
 
 Run unit tests in a single file.
 
-```jl
+```julia
 $ jltest test/tests.jl
 ```
 
 Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
 test).
 
-```jl
+```julia
 $ jltest -x test/tests.jl
 ```
 
 Run unit tests contained in a directory.
 
-```jl
+```julia
 $ jltest test  # run all of the tests found in the `test` directory
 ```
 
-#### `jlcoverage`
+#### jlcoverage
 
 Generate a coverage report (after running unit tests while collecting coverage data).
-```jl
+```julia
 $ julia -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'  # run unit tests
 
 $ jlcoverage  # generate coverage report
@@ -99,11 +99,11 @@ src/pkg.jl                                       42          3      92.9%
 TOTAL                                           289          7      97.6%
 ```
 
-#### `jlcodestyle`
+#### jlcodestyle
 
 Basic code style check (reformatting of source file disabled).
 
-```jl
+```julia
 $ jlcodestyle src/TestTools.jl
 No style errors found.
 
@@ -113,23 +113,31 @@ Style errors found. Files not modified.
 
 Code style check with reformatting of source file enabled.
 
-```jl
+```julia
 $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files modified to correct errors.
 ```
 
 ## Acknowledgments
 
-TestTools borrows ideas (and some code) from the following excellent Julia packages.
+* TestTools borrows ideas (and some code) from the following excellent Julia packages.
 
-* [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
+  * [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
 
-  * The `TestSetPlus` type and methods are based extensively on
-    `TestsetExtensions.ExtendedTestSet`.
+    * The `TestSetPlus` type and methods are based extensively on
+      `TestsetExtensions.ExtendedTestSet`.
 
-  * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
-    and refactoring of the `TestsetExtensions.@includetests` macro as methods.
+    * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
+      and refactoring of the `TestsetExtensions.@includetests` macro as methods.
 
-* [SafeTestsets](https://github.com/YingboMa/SafeTestsets.jl)
+  * [SafeTestsets](https://github.com/YingboMa/SafeTestsets.jl)
 
-  * The strategy for isolating tests came from the `SafeTestsets.@safetestset` macro.
+    * The strategy for isolating tests came from the `SafeTestsets.@safetestset` macro.
+
+* TestTools was inspired by analogous code testing packages in the Python ecosystem:
+
+  * [pytest](https://docs.pytest.org/en/latest/)
+
+  * [coverage](https://coverage.readthedocs.io/en/latest/)
+
+  * [pycodestyle](https://pycodestyle.pycqa.org/en/latest/)

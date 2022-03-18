@@ -119,18 +119,18 @@ print("jltest/utils_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 49 passed, 6 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 52 passed, 6 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = strip(
         """
-        $(joinpath("jltest", "utils_tests")): ...........................
+        $(joinpath("jltest", "utils_tests")): ............................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |   49     6     55
-          utils tests                                    |   49     6     55
-            jltest.run_tests(): basic tests              |   35     6     41
+        jltest                                           |   52     6     58
+          utils tests                                    |   52     6     58
+            jltest.run_tests(): basic tests              |   38     6     44
                                                          |    2            2
                                                          |    2            2
                                                          |    6     2      8
@@ -142,12 +142,13 @@ print("jltest/utils_tests: ")
                                                          |    6     2      8
                   failing tests                          |    1     1      2
                   some tests                             |    2            2
+                                                         |    2            2
               test-name                                  |    1     1      2
                                                          |    1     1      2
                 failing tests                            |    1     1      2
             jltest.run_tests(): log message tests        |    9            9
             jltest.run_tests(): current directory checks |    4            4
-            jltest.autodetect_tests()                    |    1            1
+            jltest.find_tests()                          |    1            1
             """
     )
 

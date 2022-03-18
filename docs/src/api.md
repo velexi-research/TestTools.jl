@@ -14,18 +14,18 @@ TestTools.uninstall
 ## jltest
 
 ```@autodocs
-Modules = [TestTools.jltest]
+Modules = [jltest]
 ```
 
 ## jlcoverage
 
 ```@docs
-TestTools.jlcoverage
-TestTools.jlcoverage.display_coverage
+jlcoverage
+jlcoverage.display_coverage
 ```
 
 ## jlcodestyle
 
 ```@autodocs
-Modules = [TestTools.jlcodestyle]
+Modules = [jlcodestyle]
 ```
