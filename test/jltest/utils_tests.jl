@@ -318,7 +318,7 @@ end
 
 @testset TestSetPlus "jltest.find_tests()" begin
 
-    # --- normal operation
+    # --- flat directory
 
     test_dir = joinpath(@__DIR__, "data-basic-tests")
     tests = Set(find_tests(test_dir))
@@ -329,6 +329,16 @@ end
             "some_tests.jl",
             "some_tests_no_testset.jl",
         ]
+    ])
+    @test tests == expected_tests
+
+    # --- directory with subdirectories
+
+    test_dir = joinpath(@__DIR__, "data-find-tests")
+    tests = Set(find_tests(test_dir))
+    expected_tests = Set([
+        joinpath(test_dir, file) for
+        file in ["some_tests.jl", joinpath("subdir", "more_tests.jl")]
     ])
     @test tests == expected_tests
 end

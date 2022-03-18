@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 """
-jltest/utils.jl defines utility functions to support unit testing.
+jltest/utils.jl defines utility functions to support testing.
 """
 
 # --- Exports
@@ -125,9 +125,9 @@ end
     run_tests(tests::Vector{<:AbstractString}; <keyword arguments>)
     run_tests(tests::AbstractString; <keyword arguments>)
 
-Run unit tests contained in the list of files or modules provided in `tests`. If `tests`
-is an empty list or an empty string, an `ArgumentError` is thrown. File names in `tests`
-may be specified with or without the `.jl` extension.
+Run tests contained in the list of files or modules provided in `tests`. If `tests` is an
+empty list or an empty string, an `ArgumentError` is thrown. File names in `tests` may be
+specified with or without the `.jl` extension.
 
 # Keyword Arguments
 
@@ -235,16 +235,30 @@ function run_tests(
 end
 
 """
-    find_tests(dir::AbstractString)::Vector{String}
+    find_tests(dir::AbstractString), <keyword arguments>)::Vector{String}
 
-Return all Julia files in `dir` that contain unit tests.
+Recursively search `dir` for Julia files tests.
+
+# Keyword Arguments
+
+* `exclude_runtests::Bool`: flag that determines whether to exclude files named
+  `runtests.jl` from the list of test files. Default: true
 """
-function find_tests(dir::AbstractString)::Vector{String}
-    # TODO: add search for directories
-    files = filter(f -> endswith(f, ".jl") && f != "runtests.jl", readdir(dir))
+function find_tests(dir::AbstractString; exclude_runtests::Bool=true)::Vector{String}
+    # Find test files in `dir`
+    files = filter(f -> endswith(f, ".jl"), readdir(dir))
+    if exclude_runtests
+        files = filter(f -> f != "runtests.jl", files)
+    end
+    # TODO: filter `tests` to exclude files that do not contain tests
+
     tests = [joinpath(dir, file) for file in files]
 
-    # TODO: filter `tests` to exclude files that do not contain unit tests
+    # Recursively search directories
+    dirs = filter(f -> isdir(f), [joinpath(dir, f) for f in readdir(dir)])
+    for dir in dirs
+        tests = vcat(tests, find_tests(dir))
+    end
 
     return tests
 end
