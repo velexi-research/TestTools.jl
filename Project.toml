@@ -20,5 +20,6 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 ArgParse = "1"
+JuliaFormatter = "0.22"
 OrderedCollections = "1"
 julia = "1.6"
