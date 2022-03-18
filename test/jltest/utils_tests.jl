@@ -31,9 +31,6 @@ using TestTools.jltest
 @testset TestSetPlus "jltest.run_tests(): basic tests" begin
     # --- Preparations
 
-    # Get current directory
-    cwd = pwd()
-
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
 
@@ -141,35 +138,6 @@ using TestTools.jltest
     # `tests` is empty string
     tests = ""
     @test_throws ArgumentError run_tests(tests)
-
-    # --- Tests for run_tests() - no arguments
-
-    # Directory contains tests
-    cd(test_dir)
-    output = strip(@capture_out begin
-        run_tests()
-    end)
-
-    expected_output_lines = [
-        expected_output_some_tests,
-        expected_output_some_tests_no_testset,
-        expected_output_failing_tests,
-        expected_output_failing_tests_no_testset,
-    ]
-    for line in expected_output_lines
-        @test occursin(line, output)
-    end
-
-    # Directory contains no tests
-    cd(joinpath(@__DIR__, "data-empty-directory-tests"))
-    output = strip(@capture_out begin
-        run_tests()
-    end)
-
-    @test output == ""
-
-    # Restore current directory
-    cd(cwd)
 
     # --- Keyword arguments tests
 
@@ -360,4 +328,4 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 8 failures and 0 errors are expected."
+@info "For $(basename(@__FILE__)), 6 failures and 0 errors are expected."

@@ -115,22 +115,22 @@ output = strip(
 
 print("jltest/utils_tests: ")
 @testset TestSetPlus "jltest.utils: check for expected test failures" begin
-    @test log_message == "[ Info: For utils_tests.jl, 8 failures and 0 errors are expected."
+    @test log_message == "[ Info: For utils_tests.jl, 6 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 63 passed, 8 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 52 passed, 6 failed, 0 errored, 0 broken."
 
     # Check output from TestSetPlus
     expected_output = strip(
         """
-        $(joinpath("jltest", "utils_tests")): .................................
+        $(joinpath("jltest", "utils_tests")): ............................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |   63     8     71
-          utils tests                                    |   63     8     71
-            jltest.run_tests(): basic tests              |   49     8     57
+        jltest                                           |   52     6     58
+          utils tests                                    |   52     6     58
+            jltest.run_tests(): basic tests              |   38     6     44
                                                          |    2            2
                                                          |    2            2
                                                          |    6     2      8
@@ -143,9 +143,6 @@ print("jltest/utils_tests: ")
                   failing tests                          |    1     1      2
                   some tests                             |    2            2
                                                          |    2            2
-                                                         |    6     2      8
-                failing tests                            |    1     1      2
-                some tests                               |    2            2
               test-name                                  |    1     1      2
                                                          |    1     1      2
                 failing tests                            |    1     1      2

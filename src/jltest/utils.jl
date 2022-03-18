@@ -116,7 +116,6 @@ end
 """
     run_tests(tests::Vector{<:AbstractString}; <keyword arguments>)
     run_tests(tests::AbstractString; <keyword arguments>)
-    run_tests(; <keyword arguments>)
 
 Run unit tests contained in the list of files or modules provided in `tests`. If `tests`
 is an empty list or an empty string, an `ArgumentError` is thrown. File names in `tests`
@@ -223,21 +222,6 @@ function run_tests(
     # --- Run tests
 
     run_tests([tests]; name=name, test_set_type=test_set_type)
-
-    return nothing
-end
-
-# run_tests() method that auto-detects tests in the current working directory
-function run_tests(;
-    name::AbstractString="", test_set_type::Type{<:AbstractTestSet}=TestSetPlus
-)
-    # Auto-detect tests in the current working directory
-    tests = find_tests(pwd())
-
-    # Run detected tests
-    if !isempty(tests)
-        run_tests(tests; name=name, test_set_type=test_set_type)
-    end
 
     return nothing
 end
