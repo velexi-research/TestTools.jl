@@ -49,7 +49,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
     # Define the command-line interface
     description = "Run unit tests"
-    arg_table = ArgParse.ArgParseSettings(; description=description)
+    arg_table = ArgParse.ArgParseSettings(; prog="jltest", description=description)
     ArgParse.@add_arg_table! arg_table begin
         "--fail-fast", "-x"
         help = "stop testing at first failure"

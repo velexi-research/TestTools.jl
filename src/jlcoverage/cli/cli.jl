@@ -51,7 +51,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
     # Define command-line arguments
     description = "Generate coverage analysis report."
-    arg_table = ArgParse.ArgParseSettings(; description=description)
+    arg_table = ArgParse.ArgParseSettings(; prog="jlcoverage", description=description)
     ArgParse.@add_arg_table! arg_table begin
         "--verbose", "-v"
         help = "enable verbose mode"

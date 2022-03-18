@@ -47,7 +47,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
     # Define command-line arguments
     description = "Check source code files against Julia style conventions."
-    arg_table = ArgParse.ArgParseSettings(; description=description)
+    arg_table = ArgParse.ArgParseSettings(; prog="jlcodestyle", description=description)
     ArgParse.@add_arg_table! arg_table begin
         "--overwrite", "-o"
         help = "overwrite files with reformatted source code"

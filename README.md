@@ -33,7 +33,7 @@ TestTools.jl
 
 [------------------------------------- BADGES: END -------------------------------------]: #
 
-TestTools is a collection of CLI utilities and APIs that simplifies code testing, coverage
+TestTools is a collection of CLI tools and APIs that simplifies code testing, coverage
 analysis, and style checking. Our goal is to make it a joy to do software testing (or at
 least save effort and keystrokes).
 
@@ -41,8 +41,8 @@ least save effort and keystrokes).
 
 * Start Julia in the default (global) environment.
 
-  * __Note__. Installation in the default environment makes the CLI utilities available
-    from within all projects.
+  * __Note__. Installation in the default environment makes the CLI tools available from
+    within all projects.
 
 * Install the `TestTools` package.
 
@@ -50,7 +50,7 @@ least save effort and keystrokes).
   pkg> add TestTools  # Press ']' to enter the Pkg REPL mode.
   ```
 
-* Install the CLI utilities (to `~/.julia/bin`).
+* Install the CLI tools (to `~/.julia/bin`).
 
   ```julia
   julia> using TestTools; TestTools.install()
@@ -78,7 +78,7 @@ $ jltest -x test/tests.jl
 Run unit tests contained in a directory.
 
 ```julia
-$ jltest test  # run all of the tests found in the `test` directory
+$ jltest test
 ```
 
 #### jlcoverage
@@ -118,9 +118,17 @@ $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files modified to correct errors.
 ```
 
-## Acknowledgments
+## Acknowledgements
 
-* TestTools borrows ideas (and some code) from the following excellent Julia packages.
+* TestTools leverages several excellent Julia packages to support its core capabilities.
+
+  * [Coverage](https://github.com/JuliaCI/Coverage.jl)
+
+  * [CoverageTools](https://github.com/JuliaCI/CoverageTools.jl)
+
+  * [JuliaFormatter](https://github.com/domluna/JuliaFormatter.jl)
+
+* TestTools borrows ideas (and some code) from the following great Julia packages.
 
   * [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
 
@@ -133,6 +141,10 @@ Style errors found. Files modified to correct errors.
   * [SafeTestsets](https://github.com/YingboMa/SafeTestsets.jl)
 
     * The strategy for isolating tests came from the `SafeTestsets.@safetestset` macro.
+
+  * [jlpkg](https://github.com/fredrikekre/jlpkg)
+
+    * The strategy for installing CLI executables came from `jlpkg.install()`.
 
 * TestTools was inspired by analogous code testing packages in the Python ecosystem:
 

@@ -2,7 +2,7 @@
 CurrentModule = TestTools
 ```
 
-# Modules
+# API
 
 ## TestTools
 
