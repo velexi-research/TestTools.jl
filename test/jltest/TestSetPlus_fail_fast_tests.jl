@@ -57,7 +57,7 @@ using TestTools.jltest
 
     expected_prefix = strip("""
                             =====================================================
-                            Test Failed at $(@__FILE__):37
+                            Test Failed at $(@__FILE__):45
                               Expression: 1 == 2
                                Evaluated: 1 == 2
                             """)
@@ -89,7 +89,7 @@ using TestTools.jltest
 
     expected_prefix = strip("""
                             =====================================================
-                            Test Failed at $(@__FILE__):65
+                            Test Failed at $(@__FILE__):73
                               Expression: 1 == 2
                                Evaluated: 1 == 2
                             """)
@@ -128,7 +128,7 @@ using TestTools.jltest
     @test error_type == FallbackTestSetException
 
     expected_prefix = strip("""
-                            Failing test: Test Failed at $(@__FILE__):106
+                            Failing test: Test Failed at $(@__FILE__):114
                               Expression: 1 == 2
                                Evaluated: 1 == 2
                             """)

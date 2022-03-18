@@ -54,7 +54,7 @@ using TestTools.jltest
         """
         $(joinpath(test_dir, "failing_tests")): .
         =====================================================
-        failing tests: Test Failed at $(failing_tests_file):19
+        failing tests: Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
            Evaluated: 2 == 1
 
@@ -68,7 +68,7 @@ using TestTools.jltest
         """
         $(joinpath(test_dir, "failing_tests_no_testset")): .
         =====================================================
-        : Test Failed at $(failing_tests_no_testset_file):18
+        : Test Failed at $(failing_tests_no_testset_file):26
           Expression: 2 == 1
            Evaluated: 2 == 1
 
@@ -166,7 +166,7 @@ using TestTools.jltest
     end)
     expected_prefix =
         "$(joinpath(test_dir, "failing_tests")): failing tests" *
-        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):19"
+        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):27"
     @test startswith(output, expected_prefix)
 end
 

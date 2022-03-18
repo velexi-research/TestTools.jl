@@ -150,7 +150,7 @@ end
         """
         $(joinpath(test_dir, "failing_tests")): .
         =====================================================
-        failing tests: Test Failed at $(failing_tests_file):19
+        failing tests: Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
            Evaluated: 2 == 1
 
@@ -163,7 +163,7 @@ end
         """
         $(joinpath(test_dir, "failing_tests")): .
         =====================================================
-        Test Failed at $(failing_tests_file):19
+        Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
            Evaluated: 2 == 1
 
