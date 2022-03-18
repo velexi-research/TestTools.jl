@@ -35,7 +35,8 @@ using Coverage: Coverage
     display_coverage(coverage_data::Vector; startpath::AbstractString)
 
 Display coverage results provided in `coverage_data`. File names are displayed relative
-to `startpath`. To display absolute paths, set `startpath` to an empty string.
+to `startpath`. To display absolute paths, set `startpath` to an empty string. By default,
+`startpath` is set to the current working directory.
 """
 function display_coverage(coverage_data::Vector; startpath::AbstractString=pwd())
     # --- Check arguments

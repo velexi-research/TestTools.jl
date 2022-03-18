@@ -100,11 +100,13 @@ Run code style checks for files contained in `paths`.
 
 # Keyword Arguments
 
-* `style::JuliaFormatter.AbstractStyle=BlueStyle()`: code style to apply
+* `style::JuliaFormatter.AbstractStyle`: code style to apply.
+    Default: `BlueStyle()`
 
-* `overwrite::Bool=false`: overwrite existing files with style-corrected versions
+* `overwrite::Bool`: overwrite existing files with style-corrected versions.
+    Default: `false`
 
-* `verbose::Bool=false`: print more output to the console
+* `verbose::Bool`: print more output to the console. Default: `false`
 """
 function run(
     paths::Vector;

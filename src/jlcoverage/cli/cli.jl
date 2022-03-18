@@ -85,7 +85,7 @@ Run code coverage analysis for files and directories in `paths`.
 
 # Keyword Arguments
 
-* `verbose::Bool=false`: print more output to the console
+* `verbose::Bool`: print more output to the console. Default: `false`
 """
 function run(paths::Vector; verbose::Bool=false)
     # --- Check arguments

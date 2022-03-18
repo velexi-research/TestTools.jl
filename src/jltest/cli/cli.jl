@@ -85,11 +85,12 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 
 # Keyword Arguments
 
-* `name::AbstractString`: name to use for test set used to group `tests`
+* `name::AbstractString`: name to use for test set used to group `tests`.
+    Default: `"All tests"
 
-* `fail_fast::Bool=false`: stop testing at first failure
+* `fail_fast::Bool`: stop testing at first failure. Default: `false`
 
-* `verbose::Bool=false`: print more output to the console
+* `verbose::Bool`: print more output to the console. Default: `false`
 """
 function run(
     tests::Vector;

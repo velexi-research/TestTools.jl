@@ -131,9 +131,10 @@ specified with or without the `.jl` extension.
 
 # Keyword Arguments
 
-* `name::AbstractString`: name to use for test set used to group `tests`
+* `name::AbstractString`: name to use for test set used to group `tests`.
+    Default: empty string
 
-* `test_set_type::Type`: type of test set to use to group tests
+* `test_set_type::Type`: type of test set to use to group tests. Default: `TestSetPlus`
 """
 function run_tests(
     tests::Vector{<:AbstractString};
@@ -242,7 +243,7 @@ Recursively search `dir` for Julia files tests.
 # Keyword Arguments
 
 * `exclude_runtests::Bool`: flag that determines whether to exclude files named
-  `runtests.jl` from the list of test files. Default: true
+  `runtests.jl` from the list of test files. Default: `true`
 """
 function find_tests(dir::AbstractString; exclude_runtests::Bool=true)::Vector{String}
     # Find test files in `dir`
