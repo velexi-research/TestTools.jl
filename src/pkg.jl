@@ -31,20 +31,22 @@ Install all of the CLI utilities.
 
 # Keyword arguments
 
-* `julia`: path to julia executable. Default: path of the current running julia
+* `julia::AbstractString`: path to julia executable. Default: path of the current running
+  julia
 
-* `bin_dir`: directory to install CLI utilities into. Default: `~/.julia/bin`
+* `bin_dir::AbstractString`: directory to install CLI utilities into.
+   Default: `~/.julia/bin`
 
-* `julia_flags`: vector containing command line flags for CLI executables.
+* `julia_flags::Vector{<:AbstractString}`: command line flags for CLI executables.
    Default: `["--startup-file=no", "-q", "--compile=min", "-O0"]`.
 
-* `force`: boolean flag used to indicate that existing CLI executables should be
+* `force::Bool`: flag used to indicate that existing CLI executables should be
   overwritten. Default: false
 """
 function install(;
-    julia::String=joinpath(Sys.BINDIR, Base.julia_exename()),
-    bin_dir::String=joinpath(DEPOT_PATH[1], "bin"),
-    julia_flags::Vector{String}=default_julia_flags,
+    julia::AbstractString=joinpath(Sys.BINDIR, Base.julia_exename()),
+    bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"),
+    julia_flags::Vector{<:AbstractString}=default_julia_flags,
     force::Bool=false,
 )
     # --- Install CLI utilities
@@ -70,21 +72,23 @@ Valid values for `name`: "jltest", "jlcoverage", "jlcodestyle".
 
 # Keyword arguments
 
-* `julia`: path to julia executable. Default: path of the current running julia
+* `julia::AbstractString`: path to julia executable. Default: path of the current running
+  julia
 
-* `bin_dir`: directory to install CLI utilities into. Default: `~/.julia/bin`
+* `bin_dir::AbstractString`: directory to install CLI executable into.
+   Default: `~/.julia/bin`
 
-* `julia_flags`: vector containing command line flags for CLI executables.
+* `julia_flags::Vector{<:AbstractString}`: command line flags for CLI executable.
    Default: `["--startup-file=no", "-q", "--compile=min", "-O0"]`.
 
-* `force`: boolean flag used to indicate that existing CLI executables should be
+* `force::Bool`: flag used to indicate that existing CLI executable should be
   overwritten. Default: false
 """
 function install_cli(
     cli::AbstractString;
-    julia::String=joinpath(Sys.BINDIR, Base.julia_exename()),
-    bin_dir::String=joinpath(DEPOT_PATH[1], "bin"),
-    julia_flags::Vector{String}=default_julia_flags,
+    julia::AbstractString=joinpath(Sys.BINDIR, Base.julia_exename()),
+    bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"),
+    julia_flags::Vector{<:AbstractString}=default_julia_flags,
     force::Bool=false,
 )
     # --- Check arguments
@@ -204,9 +208,10 @@ Unnstall all of the CLI utilities.
 
 # Keyword arguments
 
-* `bin_dir`: directory containing CLI utilities to uninstall. Default: `~/.julia/bin`
+* `bin_dir::AbstractString`: directory containing CLI executables to uninstall.
+   Default: `~/.julia/bin`
 """
-function uninstall(; bin_dir::String=joinpath(DEPOT_PATH[1], "bin"))
+function uninstall(; bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"))
     for cli in cli_tools
         uninstall_cli(cli; bin_dir=bin_dir)
     end
@@ -221,9 +226,12 @@ Valid values for `name`: "jltest", "jlcoverage", "jlcodestyle".
 
 # Keyword arguments
 
-* `bin_dir`: directory containing CLI utilities to uninstall. Default: `~/.julia/bin`
+* `bin_dir::AbstractString`: directory containing CLI executable to uninstall.
+   Default: `~/.julia/bin`
 """
-function uninstall_cli(cli::AbstractString; bin_dir::String=joinpath(DEPOT_PATH[1], "bin"))
+function uninstall_cli(
+    cli::AbstractString; bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin")
+)
     # --- Check arguments
 
     if !(cli in cli_tools)
