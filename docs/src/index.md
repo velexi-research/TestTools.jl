@@ -98,16 +98,18 @@ $ jlcodestyle --help
 
 ## Integration with `Pkg.test()`
 
-* Add `test/runtests.jl` file containing the following lines.
+When using `Pkg.test()` to run tests, TestTools makes it easy to automatically gather and
+run all tests within the `test` directory (including subdirectories). Simply, create a
+`test/runtests.jl` file containing the following lines.
 
-  ```julia
-  using TestTools: jltest
-  jltest.run_test(@__DIR__)
-  ```
+```julia
+using TestTools: jltest
+jltest.run_test(@__DIR__)
+```
 
-  !!! note
-      Passing `@__DIR__` as the first argument causes `jltest.run_tests()` to auto-detect
-      all tests in the directory containing the `runtests.jl` file. To run tests that
-      reside in a different directory, replace `@__DIR__` with the path to the directory
-      containing the tests. For more details, please refer to the documentation for the
-      [`jltest.run_tests()`](@ref TestTools.jltest.run_tests) method.
+!!! note
+    Passing `@__DIR__` as the first argument causes `jltest.run_tests()` to auto-detect
+    all tests in the directory containing the `runtests.jl` file. To run tests that
+    reside in a different directory, replace `@__DIR__` with the path to the directory
+    containing the tests. For more details, please refer to the documentation for the
+    [`jltest.run_tests()`](@ref TestTools.jltest.run_tests) method.
