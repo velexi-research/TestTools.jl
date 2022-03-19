@@ -19,6 +19,10 @@ test:
 	@echo Generating code coverage report
 	@jlcoverage
 
+codestyle:
+	@echo Checking code style
+	@jlcodestyle -v $(PKG_DIR)
+
 docs:
 	cd docs; julia --compile=min -O0 make.jl
 
