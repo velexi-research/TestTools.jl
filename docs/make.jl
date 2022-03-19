@@ -33,4 +33,4 @@ makedocs(;
 
 # --- Deploy documentation
 
-deploydocs(; repo="github.com/velexi-corporation/TestTools.jl.git", devbranch="main")
+deploydocs(; repo="github.com/velexi-corporation/TestTools.jl", devbranch="main")
