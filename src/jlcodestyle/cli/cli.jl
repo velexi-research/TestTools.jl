@@ -147,9 +147,9 @@ function run(
         println("No style errors found.")
     else
         if overwrite
-            println("Style errors found. Files modified to correct errors.")
+            println(stderr, "Style errors found. Files modified to correct errors.")
         else
-            println("Style errors found. Files not modified.")
+            println(stderr, "Style errors found. Files not modified.")
         end
     end
 
