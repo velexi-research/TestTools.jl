@@ -19,7 +19,7 @@ makedocs(;
     sitename="TestTools.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://juliadocs.github.io/Documenter.jl/stable",
+        canonical="https://juliadocs.github.io/TestTools.jl/stable",
         assets=String[],
     ),
     pages=[
