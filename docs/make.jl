@@ -1,12 +1,8 @@
-# --- Imports
-
-# Standard library
-using Documenter
-
-# Local package
-using TestTools
-
 # --- Setup
+
+# Imports
+using Documenter
+using TestTools
 
 # Make sure that the Julia source code directory is on LOAD_PATH
 push!(LOAD_PATH, "../src/")
