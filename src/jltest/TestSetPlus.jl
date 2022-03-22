@@ -45,9 +45,9 @@ using Distributed
 
 Extension of the TestSet type that provides the following functionality:
 
-* display diffs when comparison tests fail and
+* display diffs (when available) for comparison test failures;
 
-* supports "fail fast".
+* support "fail fast".
 """
 struct TestSetPlus{T<:AbstractTestSet} <: AbstractTestSet
     wrapped::T
