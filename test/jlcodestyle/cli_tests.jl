@@ -194,14 +194,14 @@ end
     # Case: `paths` is empty
     cd(test_file_dir)
 
-    output = @capture_out begin
+    error = @capture_err begin
         cli.run([])
     end
 
-    expected_output = """
-                      Style errors found. Files not modified.
-                      """
-    @test output == expected_output
+    expected_error = """
+                     Style errors found. Files not modified.
+                     """
+    @test error == expected_error
 
     cd(cwd)  # Restore current directory
 
@@ -215,7 +215,7 @@ end
     expected_output = """
                       No style errors found.
                       """
-    @test output == expected_output
+    @test output == ""
 
     # Case: verbose = true
     cd(test_file_dir)
@@ -286,13 +286,13 @@ end
     expected_error = """
                      [ Info: Style = YASStyle
                      [ Info: Overwrite = true
+
+                     Style errors found. Files modified to correct errors.
                      """
     @test error == expected_error
 
     expected_output = """
         Formatting $(yasstyle_fail_file)
-
-        Style errors found. Files modified to correct errors.
         """
     @test output == expected_output
 
