@@ -100,6 +100,54 @@ print("jltest/TestSetPlus_failing_tests: ")
     @test output == expected_output
 end
 
+# TestSetPlus with nested test sets
+println()
+test_file = joinpath("jltest", "TestSetPlus_nested_test_set_tests.jl")
+output = strip(
+    @capture_out begin
+        try
+            @testset TestSetPlus "TestSetPlus" begin
+                global log_message = strip(
+                    @capture_err begin
+                        jltest.run_tests(test_file; name="nested test set tests")
+                    end
+                )
+            end
+        catch error
+            bt = catch_backtrace()
+            global error_type = typeof(error)
+            global error_message = sprint(showerror, error, bt)
+        end
+    end
+)
+
+print("jltest/TestSetPlus_nested_test_set_tests: ")
+@testset TestSetPlus "TestSetPlus: check for expected test failures" begin
+    @test log_message ==
+        "[ Info: For TestSetPlus_nested_test_set_tests.jl, 2 failures and 0 error are expected."
+
+    @test error_type == TestSetException
+    @test error_message ==
+        "Some tests did not pass: 2 passed, 2 failed, 0 errored, 0 broken."
+
+    # Check output from TestSetPlus
+    expected_output = strip(
+        """
+        $(joinpath("jltest", "TestSetPlus_nested_test_set_tests")): ..
+
+
+        Test Summary:                                 | Pass  Fail  Total
+        TestSetPlus                                   |    2     2      4
+          nested test set tests                       |    2     2      4
+            TestSetPlus: nested inherited TestSetPlus |          1      1
+              Nested Inherited Test Set               |          1      1
+            TestSetPlus: nested DefaultTestSet        |          1      1
+              DefaultTestSet Nested in TestSetPlus    |          1      1
+        """
+    )
+    @test output == expected_output
+end
+
 # utils.jl
 println()
 test_file = joinpath("jltest", "utils_tests.jl")

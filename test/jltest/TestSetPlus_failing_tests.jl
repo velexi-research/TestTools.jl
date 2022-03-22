@@ -15,7 +15,7 @@
 """
 Unit tests for the `TestSetPlus` type.
 
-This set of unit tests checks the behavior of `TestSetPlus` for failing tests.
+This set of unit tests checks the output of `TestSetPlus` for failing tests.
 
 Notes
 -----
