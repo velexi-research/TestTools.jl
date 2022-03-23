@@ -143,8 +143,8 @@ Style errors found. Files modified to correct errors.
 
   * [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
 
-    * The `EnhancedTestSet` type and methods are based extensively on
-      `TestsetExtensions.ExtendedTestSet`.
+    * The base code for `EnhancedTestSet` (which implements diffs for comparisons and
+      progress dots) comes directly from `TestsetExtensions.ExtendedTestSet`.
 
     * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
       and refactoring of the `TestsetExtensions.@includetests` macro as methods.
