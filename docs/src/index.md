@@ -10,15 +10,34 @@ style checking.
 
 TestTools provides the following core components.
 
-* CLI tools: `jltest`, `jlcoverage`, `jlcodestyle`
+* CLI tools: [`jltest`](@ref jltest-cli), [`jlcoverage`](@ref jlcoverage-cli),
+  [`jlcodestyle`](@ref jlcodestyle-cli)
 
-* API: functions to management of unit tests (e.g. automatic detection of tests).
+* API: functions and types to support unit testing (e.g. enhanced test sets and
+  auto-detection of tests).
+
+--------------------------------------------------------------------------------------------
+
+## Why Use TestTools.jl?
+
+* Easy-to-use (and fast) CLI tools for testing
+
+* Compatible with `Pkg.test()`
+
+* Enhanced test set functionality: diffs for failed comparisons and fail-fast support
+
+* Adds zero package dependencies
 
 --------------------------------------------------------------------------------------------
 
 ## CLI Tools
 
-### jltest
+!!! note
+    Because they are are configured to eliminate unnecessary compiler optimizations, the
+    TestTools CLI utilities often run faster than calling the functions they rely on from
+    the Julia REPL.
+
+### [`jltest`](@id jltest-cli)
 
 Run unit tests in a single file.
 
@@ -45,7 +64,7 @@ Display all command-line options.
 $ jltest --help
 ```
 
-### jlcoverage
+### [`jlcoverage`](@id jlcoverage-cli)
 
 Generate a coverage report (after running unit tests while collecting coverage data).
 
@@ -70,7 +89,7 @@ Display all command-line options.
 $ jlcoverage --help
 ```
 
-### jlcodestyle
+### [`jlcodestyle`](@id jlcodestyle-cli)
 
 Basic code style check (reformatting of source file disabled).
 
@@ -109,8 +128,43 @@ jltest.run_test(@__DIR__)
 ```
 
 !!! note
-    Passing `@__DIR__` as the first argument causes `jltest.run_tests()` to auto-detect
-    all tests in the directory containing the `runtests.jl` file. To run tests that
-    reside in a different directory, replace `@__DIR__` with the path to the directory
-    containing the tests. For more details, please refer to the documentation for the
+    Passing `@__DIR__` as the first argument causes
+    [`jltest.run_tests()`](@ref TestTools.jltest.run_tests) to auto-detect all tests in
+    the directory containing the `runtests.jl` file. To run tests that reside in a
+    different directory, replace `@__DIR__` with the path to the directory containing the
+    tests. For more details, please refer to the documentation for the
     [`jltest.run_tests()`](@ref TestTools.jltest.run_tests) method.
+
+--------------------------------------------------------------------------------------------
+
+## [`EnhancedTestSet`](@ref TestTools.jltest.EnhancedTestSet) Functionality
+
+TestTools runs tests within an [`EnhancedTestSet`](@ref TestTools.jltest.EnhancedTestSet),
+which augments the `DefaultTestSet` with the following functionality:
+
+* display diffs for failed comparison tests (when possible) and
+
+* support fail-fast (i.e., stop testing at first failure).
+
+!!! tip
+    No special effort is required to benefit from these enhancements. Simply use the
+    `@testset` macro _without expicitly specifying the test set type_ (which is the easiest
+    way to use `@testset` anyways). By default, `@testset` inherits the test set type, so
+    tests run using either the `jltest` CLI tool or
+    [`jltest.run_tests()`](@ref TestTools.jltest.run_tests) will automatically inherit the
+    [`EnhancedTestSet`](@ref TestTools.jltest.EnhancedTestSet) functionality.
+
+!!! note
+    When `@testset` is invoked with an explicitly specified test set type, diffs are no
+    longer displayed, but fail-fast still works.
+
+--------------------------------------------------------------------------------------------
+
+## Zero Dependency
+
+Using the TestTools CLI utilities within a Julia package _does not_ require the addition
+of any dependencies to the Julia package (with the possible exception of the `test`
+environment for the package).
+
+!!! note
+    For zero dependency, TestTools must be installed in the default (global) environment.
