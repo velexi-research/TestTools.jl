@@ -37,6 +37,17 @@ TestTools is a collection of CLI tools and APIs that simplifies code testing, co
 analysis, and style checking. Our goal is to make it a joy to do software testing (or at
 least save effort and keystrokes).
 
+
+## Why Use TestTools.jl?
+
+* Easy-to-use (and fast) CLI tools for testing
+
+* Compatible with `Pkg.test()`
+
+* Enhanced test set functionality: diffs for failed comparisons and fail-fast support
+
+* Adds zero package dependencies
+
 ## Quick Start
 
 * Start Julia in the default (global) environment.
@@ -132,7 +143,7 @@ Style errors found. Files modified to correct errors.
 
   * [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
 
-    * The `TestSetPlus` type and methods are based extensively on
+    * The `EnhancedTestSet` type and methods are based extensively on
       `TestsetExtensions.ExtendedTestSet`.
 
     * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
