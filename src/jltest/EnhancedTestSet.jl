@@ -20,7 +20,7 @@ Acknowledgements
 * Much of the core functionality of the `EnhancedTestSet` type (and associated methods)
   were taken directly from the TestSetExtensions package developed by Spencer Russell and
   his collaborators (https://github.com/ssfrr/TestSetExtensions.jl). `EnhancedTestSet`
-  builds upon the foundation of `ExtendedTestSet` to add support for fail fast
+  builds upon the foundation of `ExtendedTestSet` to add support for fail-fast
   functionality.
 """
 
@@ -48,7 +48,7 @@ Extension of the TestSet type that provides the following functionality:
 
 * display diffs (when available) for comparison test failures;
 
-* support fail fast (i.e., stop testing at first failure).
+* support fail-fast (i.e., stop testing at first failure).
 """
 struct EnhancedTestSet{T<:AbstractTestSet} <: AbstractTestSet
     wrapped::T

@@ -16,7 +16,7 @@
 Unit tests for the `EnhancedTestSet` type.
 
 This set of unit tests checks the behavior of `EnhancedTestSet` when the test set type is
-`EnhancedTestSet{FallbackTestSet}` (i.e., fail fast).
+`EnhancedTestSet{FallbackTestSet}` (i.e., fail-fast).
 """
 
 # --- Imports
