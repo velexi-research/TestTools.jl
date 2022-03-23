@@ -44,7 +44,7 @@ using Distributed
 """
     struct EnhancedTestSet{T<:AbstractTestSet} <: AbstractTestSet
 
-Extension of the TestSet type that provides the following functionality:
+Extension of the `AbstracctTestSet` type that provides the following functionality:
 
 * display diffs (when available) for comparison test failures;
 
