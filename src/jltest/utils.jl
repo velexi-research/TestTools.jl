@@ -139,7 +139,7 @@ specified with or without the `.jl` extension.
 function run_tests(
     tests::Vector{<:AbstractString};
     name::AbstractString="",
-    test_set_type::Type{<:AbstractTestSet}=EnhancedTestSet,
+    test_set_type::Type{<:AbstractTestSet}=EnhancedTestSet{DefaultTestSet},
 )
     # --- Handle edge cases
 
@@ -219,7 +219,7 @@ end
 function run_tests(
     tests::AbstractString;
     name::AbstractString="",
-    test_set_type::Type{<:AbstractTestSet}=EnhancedTestSet,
+    test_set_type::Type{<:AbstractTestSet}=EnhancedTestSet{DefaultTestSet},
 )
     # --- Handle edge cases
 

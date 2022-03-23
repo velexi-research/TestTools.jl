@@ -112,7 +112,7 @@ function run(
     if fail_fast
         test_set_type = EnhancedTestSet{Test.FallbackTestSet}
     else
-        test_set_type = EnhancedTestSet
+        test_set_type = EnhancedTestSet{Test.DefaultTestSet}
     end
 
     # Set test options

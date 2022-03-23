@@ -72,8 +72,19 @@ end
 
 # --- Functions/Methods
 
-function EnhancedTestSet(desc; wrap=DefaultTestSet)
-    return EnhancedTestSet{wrap}(desc)
+"""
+    EnhancedTestSet(description::AbstractString; <keyword arguments>)
+
+Construct an EnhancedTestSet with the specified `description`.
+
+# Keyword Arguments
+
+* `wrap::Type{<:AbstractTestSet}`: test set to wrap. Default: `DefaultTestSet`
+"""
+function EnhancedTestSet(
+    description::AbstractString; wrap::Type{<:AbstractTestSet}=DefaultTestSet
+)
+    return EnhancedTestSet{wrap}(description)
 end
 
 function Test.record(ts::EnhancedTestSet{T}, res::Fail) where {T}
