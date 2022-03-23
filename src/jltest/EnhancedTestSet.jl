@@ -79,7 +79,7 @@ Construct an EnhancedTestSet with the specified `description`.
 
 # Keyword Arguments
 
-* `wrap::Type{<:AbstractTestSet}`: test set to wrap. Default: `DefaultTestSet`
+* `wrap::Type{<:AbstractTestSet}`: test set type to wrap. Default: `DefaultTestSet`
 """
 function EnhancedTestSet(
     description::AbstractString; wrap::Type{<:AbstractTestSet}=DefaultTestSet
