@@ -13,9 +13,9 @@
 #   limitations under the License.
 
 """
-Unit tests for the `TestSetPlus` type.
+Unit tests for the `EnhancedTestSet` type.
 
-This set of unit tests checks the behavior of `TestSetPlus` for failing tests.
+This set of unit tests checks the output of `EnhancedTestSet` for failing tests.
 
 Notes
 -----
@@ -39,14 +39,14 @@ using TestTools.jltest
 
 # Array equality test
 output = strip(@capture_out begin
-    @testset TestSetPlus "TestSetPlus: Array equality test" begin
+    @testset EnhancedTestSet "EnhancedTestSet: Array equality test" begin
         @test [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
     end
 end)
 
 expected_prefix = strip("""
                   =====================================================
-                  TestSetPlus: Array equality test: Test Failed
+                  EnhancedTestSet: Array equality test: Test Failed
                     Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
 
                     Diff:
@@ -57,7 +57,7 @@ expected_prefix = strip("""
 # Dict equality test
 output = strip(
     @capture_out begin
-        @testset TestSetPlus "TestSetPlus: Dict equality test" begin
+        @testset EnhancedTestSet "EnhancedTestSet: Dict equality test" begin
             @test Dict(:foo => "bar", :baz => [1, 4, 5], :biz => nothing) ==
                 Dict(:baz => [1, 7, 5], :biz => 42)
         end
@@ -67,7 +67,7 @@ output = strip(
 expected_prefix = strip(
     """
 =====================================================
-TestSetPlus: Dict equality test: Test Failed
+EnhancedTestSet: Dict equality test: Test Failed
   Expression: Dict(:foo => \"bar\", :baz => [1, 4, 5], :biz => nothing) == Dict(:baz => [1, 7, 5], :biz => 42)
 
   Diff:
@@ -81,7 +81,7 @@ TestSetPlus: Dict equality test: Test Failed
 # String equality test
 output = strip(
     @capture_out begin
-        @testset TestSetPlus "TestSetPlus: String equality test" begin
+        @testset EnhancedTestSet "EnhancedTestSet: String equality test" begin
             @test """Lorem ipsum dolor sit amet,
                      consectetur adipiscing elit, sed do
                      eiusmod tempor incididunt ut
@@ -100,7 +100,7 @@ output = strip(
 expected_prefix = join(
     [
         "=====================================================",
-        "TestSetPlus: String equality test: Test Failed",
+        "EnhancedTestSet: String equality test: Test Failed",
         "  Expression: \"Lorem ipsum dolor sit amet,\\nconsectetur adipiscing elit, " *
         "sed do\\neiusmod tempor incididunt ut\\nlabore et dolore magna aliqua.\\nUt " *
         "enim ad minim veniam, quis nostrud\\nexercitation ullamco aboris.\" " *
@@ -128,14 +128,14 @@ expected_prefix = join(
 
 # Boolean expression test
 output = strip(@capture_out begin
-    @testset TestSetPlus "TestSetPlus: Boolean expression test" begin
+    @testset EnhancedTestSet "EnhancedTestSet: Boolean expression test" begin
         @test iseven(7)
     end
 end)
 
 expected_prefix = strip("""
                   =====================================================
-                  TestSetPlus: Boolean expression test: Test Failed at $(@__FILE__):132
+                  EnhancedTestSet: Boolean expression test: Test Failed at $(@__FILE__):132
                     Expression: iseven(7)
 
                   Stacktrace:
@@ -146,14 +146,14 @@ expected_prefix = strip("""
 
 # Exception test
 output = strip(@capture_out begin
-    @testset TestSetPlus "TestSetPlus: Exception test" begin
+    @testset EnhancedTestSet "EnhancedTestSet: Exception test" begin
         throw(ErrorException("This test is supposed to throw an error"))
     end
 end)
 
 expected_prefix = strip("""
                   =====================================================
-                  TestSetPlus: Exception test: Error During Test at $(@__FILE__):149
+                  EnhancedTestSet: Exception test: Error During Test at $(@__FILE__):149
                     Got exception outside of a @test
                     This test is supposed to throw an error
                     Stacktrace:
@@ -163,14 +163,14 @@ expected_prefix = strip("""
 
 # Inequality test
 output = strip(@capture_out begin
-    @testset TestSetPlus "TestSetPlus: inequality test" begin
+    @testset EnhancedTestSet "EnhancedTestSet: inequality test" begin
         @test 1 > 2
     end
 end)
 
 expected_prefix = strip("""
                   =====================================================
-                  TestSetPlus: inequality test: Test Failed at $(@__FILE__):167
+                  EnhancedTestSet: inequality test: Test Failed at $(@__FILE__):167
                     Expression: 1 > 2
                      Evaluated: 1 > 2
 
@@ -181,14 +181,14 @@ expected_prefix = strip("""
 
 # Matrix equality test
 output = strip(@capture_out begin
-    @testset TestSetPlus "TestSetPlus: Matrix equality test" begin
+    @testset EnhancedTestSet "EnhancedTestSet: Matrix equality test" begin
         @test [1 2; 3 4] == [1 4; 3 4]
     end
 end)
 
 expected_prefix = strip("""
                   =====================================================
-                  TestSetPlus: Matrix equality test: Test Failed
+                  EnhancedTestSet: Matrix equality test: Test Failed
                     Expression: [1 2; 3 4] == [1 4; 3 4]
 
                     Diff:

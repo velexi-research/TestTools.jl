@@ -12,7 +12,7 @@
 
   * [TestSetExtensions](https://github.com/ssfrr/TestSetExtensions.jl)
 
-    * The `TestSetPlus` type and methods are based extensively on
+    * The `EnhancedTestSet` type and methods are based extensively on
       `TestsetExtensions.ExtendedTestSet`.
 
     * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation

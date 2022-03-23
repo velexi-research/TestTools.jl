@@ -26,12 +26,12 @@ using JuliaFormatter
 using Suppressor
 
 # Local modules
-using TestTools.jltest: TestSetPlus
+using TestTools.jltest: EnhancedTestSet
 using TestTools.jlcodestyle: cli
 
 # --- Tests
 
-@testset TestSetPlus "jlcodestyle.cli.parse_args()" begin
+@testset EnhancedTestSet "jlcodestyle.cli.parse_args()" begin
 
     # --- Default arguments
 
@@ -180,7 +180,7 @@ using TestTools.jlcodestyle: cli
     @test args == expected_args
 end
 
-@testset TestSetPlus "jlcodestyle.cli.run()" begin
+@testset EnhancedTestSet "jlcodestyle.cli.run()" begin
     # --- Preparations
 
     # Get current directory
@@ -194,14 +194,14 @@ end
     # Case: `paths` is empty
     cd(test_file_dir)
 
-    output = @capture_out begin
+    error = @capture_err begin
         cli.run([])
     end
 
-    expected_output = """
-                      Style errors found. Files not modified.
-                      """
-    @test output == expected_output
+    expected_error = """
+                     Style errors found. Files not modified.
+                     """
+    @test error == expected_error
 
     cd(cwd)  # Restore current directory
 
@@ -209,13 +209,13 @@ end
     cd(test_file_dir)
 
     output = @capture_out begin
-        cli.run([joinpath(test_file_dir, "bluestyle-pass.jl")])
+        cli.run([joinpath(test_file_dir, "blue-style.jl")])
     end
 
     expected_output = """
                       No style errors found.
                       """
-    @test output == expected_output
+    @test output == ""
 
     # Case: verbose = true
     cd(test_file_dir)
@@ -223,7 +223,7 @@ end
     local output
     error = @capture_err begin
         output = @capture_out begin
-            cli.run([joinpath(test_file_dir, "bluestyle-pass.jl")]; verbose=true)
+            cli.run([joinpath(test_file_dir, "blue-style.jl")]; verbose=true)
         end
     end
 
@@ -234,7 +234,7 @@ end
     @test error == expected_error
 
     expected_output = """
-        Formatting $(joinpath(pwd(), "bluestyle-pass.jl"))
+        Formatting $(joinpath(pwd(), "blue-style.jl"))
 
         No style errors found.
         """
@@ -247,7 +247,7 @@ end
     error = @capture_err begin
         output = @capture_out begin
             cli.run(
-                [joinpath(test_file_dir, "bluestyle-pass.jl")]; overwrite=true, verbose=true
+                [joinpath(test_file_dir, "blue-style.jl")]; overwrite=true, verbose=true
             )
         end
     end
@@ -259,7 +259,7 @@ end
     @test error == expected_error
 
     expected_output = """
-        Formatting $(joinpath(pwd(), "bluestyle-pass.jl"))
+        Formatting $(joinpath(pwd(), "blue-style.jl"))
 
         No style errors found.
         """
@@ -267,7 +267,7 @@ end
 
     # Case: `paths` contains only source files with style errors, overwrite = true
     cd(test_file_dir)
-    bluestyle_pass_file = joinpath(test_file_dir, "bluestyle-pass.jl")
+    bluestyle_pass_file = joinpath(test_file_dir, "blue-style.jl")
     yasstyle_fail_file = joinpath(test_file_dir, "yasstyle-fail.jl")
     cp(bluestyle_pass_file, yasstyle_fail_file; force=true)
 
@@ -286,20 +286,20 @@ end
     expected_error = """
                      [ Info: Style = YASStyle
                      [ Info: Overwrite = true
+
+                     Style errors found. Files modified to correct errors.
                      """
     @test error == expected_error
 
     expected_output = """
         Formatting $(yasstyle_fail_file)
-
-        Style errors found. Files modified to correct errors.
         """
     @test output == expected_output
 
     rm(yasstyle_fail_file)
 end
 
-@testset TestSetPlus "jlcodestyle.cli.run(): invalid arguments" begin
+@testset EnhancedTestSet "jlcodestyle.cli.run(): invalid arguments" begin
 
     # Case: invalid `paths` arg
     @test_throws MethodError cli.run([1, 2, 3])

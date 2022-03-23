@@ -26,11 +26,11 @@ using Suppressor
 
 # Local modules
 using TestTools: TestTools
-using TestTools.jltest: TestSetPlus
+using TestTools.jltest: EnhancedTestSet
 
 # --- Tests
 
-@testset TestSetPlus "TestTools: install(), uninstall()" begin
+@testset EnhancedTestSet "TestTools: install(), uninstall()" begin
 
     # --- Preparations
 
@@ -111,7 +111,7 @@ using TestTools.jltest: TestSetPlus
     rm(bin_dir)
 end
 
-@testset TestSetPlus "TestTools: install_cli(), uninstall_cli(): invalid arguments" begin
+@testset EnhancedTestSet "TestTools: install_cli(), uninstall_cli(): invalid arguments" begin
 
     # --- install_cli() tests
 

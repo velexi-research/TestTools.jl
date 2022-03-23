@@ -36,8 +36,8 @@ cd(@__DIR__)
 
 tests = [
     "pkg_tests.jl",
-    joinpath("jltest", "TestSetPlus_passing_tests.jl"),
-    joinpath("jltest", "TestSetPlus_fail_fast_tests.jl"),
+    joinpath("jltest", "EnhancedTestSet_passing_tests.jl"),
+    joinpath("jltest", "EnhancedTestSet_fail_fast_tests.jl"),
     joinpath("jlcodestyle", "cli_tests.jl"),
     joinpath("jlcoverage", "cli_tests.jl"),
     joinpath("jlcoverage", "utils_tests.jl"),
@@ -49,13 +49,13 @@ jltest.run_tests(tests; name="jltest")
 local log_message
 local error_type, error_message
 
-# TestSetPlus with failing tests
+# EnhancedTestSet with failing tests
 println()
-test_file = joinpath("jltest", "TestSetPlus_failing_tests.jl")
+test_file = joinpath("jltest", "EnhancedTestSet_failing_tests.jl")
 output = strip(
     @capture_out begin
         try
-            @testset TestSetPlus "TestSetPlus" begin
+            @testset EnhancedTestSet "EnhancedTestSet" begin
                 global log_message = strip(
                     @capture_err begin
                         jltest.run_tests(test_file; name="failing tests")
@@ -70,31 +70,79 @@ output = strip(
     end
 )
 
-print("jltest/TestSetPlus_failing_tests: ")
-@testset TestSetPlus "TestSetPlus: check for expected test failures" begin
+print("jltest/EnhancedTestSet_failing_tests: ")
+@testset EnhancedTestSet "EnhancedTestSet: check for expected test failures" begin
     @test log_message ==
-        "[ Info: For TestSetPlus_failing_tests.jl, 6 failures and 1 error are expected."
+        "[ Info: For EnhancedTestSet_failing_tests.jl, 6 failures and 1 error are expected."
 
     @test error_type == TestSetException
     @test error_message ==
         "Some tests did not pass: 7 passed, 6 failed, 1 errored, 0 broken."
 
-    # Check output from TestSetPlus
+    # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "TestSetPlus_failing_tests")): .......
+        $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......
 
 
-        Test Summary:                            | Pass  Fail  Error  Total
-        TestSetPlus                              |    7     6      1     14
-          failing tests                          |    7     6      1     14
-            TestSetPlus: Array equality test     |          1             1
-            TestSetPlus: Dict equality test      |          1             1
-            TestSetPlus: String equality test    |          1             1
-            TestSetPlus: Boolean expression test |          1             1
-            TestSetPlus: Exception test          |                 1      1
-            TestSetPlus: inequality test         |          1             1
-            TestSetPlus: Matrix equality test    |          1             1
+        Test Summary:                                | Pass  Fail  Error  Total
+        EnhancedTestSet                              |    7     6      1     14
+          failing tests                              |    7     6      1     14
+            EnhancedTestSet: Array equality test     |          1             1
+            EnhancedTestSet: Dict equality test      |          1             1
+            EnhancedTestSet: String equality test    |          1             1
+            EnhancedTestSet: Boolean expression test |          1             1
+            EnhancedTestSet: Exception test          |                 1      1
+            EnhancedTestSet: inequality test         |          1             1
+            EnhancedTestSet: Matrix equality test    |          1             1
+        """
+    )
+    @test output == expected_output
+end
+
+# EnhancedTestSet with nested test sets
+println()
+test_file = joinpath("jltest", "EnhancedTestSet_nested_test_set_tests.jl")
+output = strip(
+    @capture_out begin
+        try
+            @testset EnhancedTestSet "EnhancedTestSet" begin
+                global log_message = strip(
+                    @capture_err begin
+                        jltest.run_tests(test_file; name="nested test set tests")
+                    end
+                )
+            end
+        catch error
+            bt = catch_backtrace()
+            global error_type = typeof(error)
+            global error_message = sprint(showerror, error, bt)
+        end
+    end
+)
+
+print("jltest/EnhancedTestSet_nested_test_set_tests: ")
+@testset EnhancedTestSet "EnhancedTestSet: check for expected test failures" begin
+    @test log_message ==
+        "[ Info: For EnhancedTestSet_nested_test_set_tests.jl, 2 failures and 0 error are expected."
+
+    @test error_type == TestSetException
+    @test error_message ==
+        "Some tests did not pass: 2 passed, 2 failed, 0 errored, 0 broken."
+
+    # Check output from EnhancedTestSet
+    expected_output = strip(
+        """
+        $(joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")): ..
+
+
+        Test Summary:                                         | Pass  Fail  Total
+        EnhancedTestSet                                       |    2     2      4
+          nested test set tests                               |    2     2      4
+            EnhancedTestSet: nested inherited EnhancedTestSet |          1      1
+              Nested Inherited Test Set                       |          1      1
+            EnhancedTestSet: nested DefaultTestSet            |          1      1
+              DefaultTestSet Nested in EnhancedTestSet        |          1      1
         """
     )
     @test output == expected_output
@@ -106,7 +154,7 @@ test_file = joinpath("jltest", "utils_tests.jl")
 output = strip(
     @capture_out begin
         try
-            @testset TestSetPlus "jltest" begin
+            @testset EnhancedTestSet "jltest" begin
                 global log_message = strip(
                     @capture_err begin
                         jltest.run_tests(test_file; name="utils tests")
@@ -122,14 +170,14 @@ output = strip(
 )
 
 print("jltest/utils_tests: ")
-@testset TestSetPlus "jltest.utils: check for expected test failures" begin
+@testset EnhancedTestSet "jltest.utils: check for expected test failures" begin
     @test log_message == "[ Info: For utils_tests.jl, 6 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
         "Some tests did not pass: 54 passed, 6 failed, 0 errored, 0 broken."
 
-    # Check output from TestSetPlus
+    # Check output from EnhancedTestSet
     expected_output = strip(
         """
         $(joinpath("jltest", "utils_tests")): ..............................
@@ -169,7 +217,7 @@ test_file = joinpath("jltest", "cli_tests.jl")
 output = strip(
     @capture_out begin
         try
-            @testset TestSetPlus "jltest" begin
+            @testset EnhancedTestSet "jltest" begin
                 global log_message = strip(
                     @capture_err begin
                         jltest.run_tests(test_file; name="cli tests")
@@ -185,14 +233,14 @@ output = strip(
 )
 
 print("jltest/cli_tests: ")
-@testset TestSetPlus "jltest.cli: check for expected test failures" begin
+@testset EnhancedTestSet "jltest.cli: check for expected test failures" begin
     @test log_message == "[ Info: For cli_tests.jl, 4 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
         "Some tests did not pass: 45 passed, 4 failed, 0 errored, 0 broken."
 
-    # Check output from TestSetPlus
+    # Check output from EnhancedTestSet
     expected_output = strip(
         """
         $(joinpath("jltest", "cli_tests")): .............................

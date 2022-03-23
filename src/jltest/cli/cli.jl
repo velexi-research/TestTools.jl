@@ -110,9 +110,9 @@ function run(
         fail_fast = get(ENV, "JLTEST_FAIL_FAST", "false") == "true"
     end
     if fail_fast
-        test_set_type = TestSetPlus{Test.FallbackTestSet}
+        test_set_type = EnhancedTestSet{Test.FallbackTestSet}
     else
-        test_set_type = TestSetPlus
+        test_set_type = EnhancedTestSet{Test.DefaultTestSet}
     end
 
     # Set test options

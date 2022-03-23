@@ -4,7 +4,7 @@ CurrentModule = TestTools
 
 # API
 
-## TestTools
+## Installer/Uninstaller Functions
 
 ```@docs
 TestTools.install
@@ -13,8 +13,10 @@ TestTools.uninstall
 
 ## jltest
 
-```@autodocs
-Modules = [jltest]
+```@docs
+jltest
+jltest.find_tests
+jltest.run_tests
 ```
 
 ## jlcoverage
@@ -28,4 +30,11 @@ jlcoverage.display_coverage
 
 ```@autodocs
 Modules = [jlcodestyle]
+```
+
+## EnhancedTestSet
+
+```@docs
+jltest.EnhancedTestSet
+jltest.EnhancedTestSet(::AbstractString)
 ```

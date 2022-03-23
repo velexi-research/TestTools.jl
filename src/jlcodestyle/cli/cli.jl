@@ -139,17 +139,19 @@ function run(
 
     check_passed = format(paths; style=style, overwrite=overwrite, verbose=verbose)
 
-    if verbose
-        println()
-    end
-
     if check_passed
-        println("No style errors found.")
+        if verbose
+            println()
+            println("No style errors found.")
+        end
     else
+        if verbose
+            println(stderr)
+        end
         if overwrite
-            println("Style errors found. Files modified to correct errors.")
+            println(stderr, "Style errors found. Files modified to correct errors.")
         else
-            println("Style errors found. Files not modified.")
+            println(stderr, "Style errors found. Files not modified.")
         end
     end
 

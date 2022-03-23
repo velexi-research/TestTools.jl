@@ -13,10 +13,10 @@
 #   limitations under the License.
 
 """
-Unit tests for the `TestSetPlus` type.
+Unit tests for the `EnhancedTestSet` type.
 
-This set of unit tests checks the behavior of `TestSetPlus` when the test set type is
-`TestSetPlus{FallbackTestSet}` (i.e., fail fast).
+This set of unit tests checks the behavior of `EnhancedTestSet` when the test set type is
+`EnhancedTestSet{FallbackTestSet}` (i.e., fail-fast).
 """
 
 # --- Imports
@@ -33,8 +33,8 @@ using TestTools.jltest
 
 # --- Tests
 
-@testset "TestSetPlus{FallbackTestSet} Tests" begin
-    test_set_type = TestSetPlus{FallbackTestSet}
+@testset "EnhancedTestSet{FallbackTestSet} Tests" begin
+    test_set_type = EnhancedTestSet{FallbackTestSet}
 
     # Single-level test set with a failing test
     error_type = Nothing
@@ -52,7 +52,7 @@ using TestTools.jltest
         end
     end)
 
-    @test error_type == TestSetPlusException
+    @test error_type == EnhancedTestSetException
     @test error_message == "FallbackTestSetException occurred"
 
     expected_prefix = strip("""
@@ -84,7 +84,7 @@ using TestTools.jltest
         end
     end)
 
-    @test error_type == TestSetPlusException
+    @test error_type == EnhancedTestSetException
     @test error_message == "FallbackTestSetException occurred"
 
     expected_prefix = strip("""
@@ -97,12 +97,12 @@ using TestTools.jltest
 
     # --- Nested DefaultTestSet tests
     #
-    # * Tests Test.record(TestSetPlus{FallbackTestSet}, DefaultTestSet) needed for
+    # * Tests Test.record(EnhancedTestSet{FallbackTestSet}, DefaultTestSet) needed for
     #   backward compatibility with Julia<=1.3.
 
     default_test_set = DefaultTestSet
 
-    # ------ DefaultTest nested under single TestSetPlus{FallbackTestSet} test set
+    # ------ DefaultTest nested under single EnhancedTestSet{FallbackTestSet} test set
 
     # With failing tests
     error_type = Nothing
@@ -148,7 +148,7 @@ using TestTools.jltest
 
     @test isnothing(error)
 
-    # ------ DefaultTest nested under multiple TestSetPlus{FallbackTestSet} test sets
+    # ------ DefaultTest nested under multiple EnhancedTestSet{FallbackTestSet} test sets
 
     # With failing tests
     error_type = Nothing
@@ -173,7 +173,7 @@ using TestTools.jltest
         end
     end
 
-    @test error_type == TestSetPlusException
+    @test error_type == EnhancedTestSetException
     @test error_message == "FallbackTestSetException occurred"
 
     # With no failing tests
