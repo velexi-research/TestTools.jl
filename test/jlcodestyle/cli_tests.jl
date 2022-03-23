@@ -26,12 +26,12 @@ using JuliaFormatter
 using Suppressor
 
 # Local modules
-using TestTools.jltest: TestSetPlus
+using TestTools.jltest: EnhancedTestSet
 using TestTools.jlcodestyle: cli
 
 # --- Tests
 
-@testset TestSetPlus "jlcodestyle.cli.parse_args()" begin
+@testset EnhancedTestSet "jlcodestyle.cli.parse_args()" begin
 
     # --- Default arguments
 
@@ -180,7 +180,7 @@ using TestTools.jlcodestyle: cli
     @test args == expected_args
 end
 
-@testset TestSetPlus "jlcodestyle.cli.run()" begin
+@testset EnhancedTestSet "jlcodestyle.cli.run()" begin
     # --- Preparations
 
     # Get current directory
@@ -299,7 +299,7 @@ end
     rm(yasstyle_fail_file)
 end
 
-@testset TestSetPlus "jlcodestyle.cli.run(): invalid arguments" begin
+@testset EnhancedTestSet "jlcodestyle.cli.run(): invalid arguments" begin
 
     # Case: invalid `paths` arg
     @test_throws MethodError cli.run([1, 2, 3])

@@ -36,7 +36,7 @@ using TestTools.jltest
 
 # --- Tests
 
-@testset TestSetPlus "jltest.run_tests(): basic tests" begin
+@testset EnhancedTestSet "jltest.run_tests(): basic tests" begin
     # --- Preparations
 
     # Construct path to test directory
@@ -170,7 +170,7 @@ using TestTools.jltest
     @test startswith(output, expected_prefix)
 end
 
-@testset TestSetPlus "jltest.run_tests(): log message tests" begin
+@testset EnhancedTestSet "jltest.run_tests(): log message tests" begin
     # --- Preparations
 
     # Construct path to test directory
@@ -265,7 +265,7 @@ end
     end
 end
 
-@testset TestSetPlus "jltest.run_tests(): current directory checks" begin
+@testset EnhancedTestSet "jltest.run_tests(): current directory checks" begin
     # --- Preparations
 
     # Get current directory
@@ -316,7 +316,7 @@ end
     cd(cwd)
 end
 
-@testset TestSetPlus "jltest.find_tests()" begin
+@testset EnhancedTestSet "jltest.find_tests()" begin
 
     # --- flat directory
 

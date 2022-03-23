@@ -13,9 +13,9 @@
 #   limitations under the License.
 
 """
-Unit tests for the `TestSetPlus` type.
+Unit tests for the `EnhancedTestSet` type.
 
-This set of unit tests checks the behavior of `TestSetPlus` with nested test sets.
+This set of unit tests checks the behavior of `EnhancedTestSet` with nested test sets.
 
 Notes
 -----
@@ -39,13 +39,15 @@ using TestTools.jltest
 # ------ Failing tests with diffs
 
 # Nested inherited test set
-output = strip(@capture_out begin
-    @testset TestSetPlus "TestSetPlus: nested inherited TestSetPlus" begin
-        @testset "Nested Inherited Test Set" begin
-            @test [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
+output = strip(
+    @capture_out begin
+        @testset EnhancedTestSet "EnhancedTestSet: nested inherited EnhancedTestSet" begin
+            @testset "Nested Inherited Test Set" begin
+                @test [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
+            end
         end
     end
-end)
+)
 
 expected_prefix = strip("""
                   =====================================================
@@ -59,8 +61,8 @@ expected_prefix = strip("""
 
 # Nested DefaultTestSet
 output = strip(@capture_out begin
-    @testset TestSetPlus "TestSetPlus: nested DefaultTestSet" begin
-        @testset DefaultTestSet "DefaultTestSet Nested in TestSetPlus" begin
+    @testset EnhancedTestSet "EnhancedTestSet: nested DefaultTestSet" begin
+        @testset DefaultTestSet "DefaultTestSet Nested in EnhancedTestSet" begin
             @test [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
         end
     end
@@ -68,7 +70,7 @@ end)
 
 expected_prefix = strip(
     """
-    DefaultTestSet Nested in TestSetPlus: Test Failed at $(@__FILE__):64
+    DefaultTestSet Nested in EnhancedTestSet: Test Failed at $(@__FILE__):64
       Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
        Evaluated: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
     Stacktrace:

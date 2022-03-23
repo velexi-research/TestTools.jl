@@ -18,7 +18,7 @@ The `jltest` module provides support for running unit tests.
 module jltest
 
 # API
-include("TestSetPlus.jl")
+include("EnhancedTestSet.jl")
 include("utils.jl")
 
 # CLI

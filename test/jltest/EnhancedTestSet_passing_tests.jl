@@ -13,9 +13,9 @@
 #   limitations under the License.
 
 """
-Unit tests for the `TestSetPlus` type.
+Unit tests for the `EnhancedTestSet` type.
 
-This set of unit tests checks the behavior of `TestSetPlus` for passing tests.
+This set of unit tests checks the behavior of `EnhancedTestSet` for passing tests.
 """
 
 # --- Imports
@@ -31,9 +31,9 @@ using TestTools.jltest
 
 # --- Tests
 
-@testset TestSetPlus "TestSetPlus: Check output dots" begin
+@testset EnhancedTestSet "EnhancedTestSet: Check output dots" begin
     output = @capture_out begin
-        @testset TestSetPlus "top-level tests" begin
+        @testset EnhancedTestSet "top-level tests" begin
             @testset "2nd-level tests 1" begin
                 @test true
                 @test 1 == 1

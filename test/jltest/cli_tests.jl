@@ -29,11 +29,11 @@ using Test
 using Suppressor
 
 # Local modules
-using TestTools.jltest: cli, TestSetPlus
+using TestTools.jltest: cli, EnhancedTestSet
 
 # --- Tests
 
-@testset TestSetPlus "jltest.cli.parse_args()" begin
+@testset EnhancedTestSet "jltest.cli.parse_args()" begin
 
     # --- Default arguments
 
@@ -132,7 +132,7 @@ using TestTools.jltest: cli, TestSetPlus
     @test args == expected_args
 end
 
-@testset TestSetPlus "jltest.cli.run(): basic tests" begin
+@testset EnhancedTestSet "jltest.cli.run(): basic tests" begin
     # --- Preparations
 
     # Construct path to test directory
@@ -263,7 +263,7 @@ end
     @test isnothing(error)
 end
 
-@testset TestSetPlus "jltest.cli.run(): error cases" begin
+@testset EnhancedTestSet "jltest.cli.run(): error cases" begin
 
     # --- Exercise functionality and check results
 

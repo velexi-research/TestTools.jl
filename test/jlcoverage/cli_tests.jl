@@ -28,11 +28,11 @@ using Suppressor
 
 # Local modules
 using TestTools.jlcoverage: cli
-using TestTools.jltest: TestSetPlus
+using TestTools.jltest: EnhancedTestSet
 
 # --- Tests
 
-@testset TestSetPlus "jlcoverage.cli.parse_args()" begin
+@testset EnhancedTestSet "jlcoverage.cli.parse_args()" begin
 
     # --- Default arguments
 
@@ -94,7 +94,7 @@ using TestTools.jltest: TestSetPlus
     @test args == expected_args
 end
 
-@testset TestSetPlus "jlcoverage.cli.run(): normal operation" begin
+@testset EnhancedTestSet "jlcoverage.cli.run(): normal operation" begin
 
     # --- Preparations
 
@@ -218,7 +218,7 @@ TOTAL                                             6          3      50.0%
     rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
 
-@testset TestSetPlus "jlcoverage.cli.run(): error cases" begin
+@testset EnhancedTestSet "jlcoverage.cli.run(): error cases" begin
 
     # --- Exercise functionality and check results
 

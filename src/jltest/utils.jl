@@ -134,12 +134,12 @@ specified with or without the `.jl` extension.
 * `name::AbstractString`: name to use for test set used to group `tests`.
     Default: empty string
 
-* `test_set_type::Type`: type of test set to use to group tests. Default: `TestSetPlus`
+* `test_set_type::Type`: type of test set to use to group tests. Default: `EnhancedTestSet`
 """
 function run_tests(
     tests::Vector{<:AbstractString};
     name::AbstractString="",
-    test_set_type::Type{<:AbstractTestSet}=TestSetPlus,
+    test_set_type::Type{<:AbstractTestSet}=EnhancedTestSet,
 )
     # --- Handle edge cases
 
@@ -219,7 +219,7 @@ end
 function run_tests(
     tests::AbstractString;
     name::AbstractString="",
-    test_set_type::Type{<:AbstractTestSet}=TestSetPlus,
+    test_set_type::Type{<:AbstractTestSet}=EnhancedTestSet,
 )
     # --- Handle edge cases
 

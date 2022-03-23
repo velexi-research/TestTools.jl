@@ -28,11 +28,11 @@ using Suppressor
 
 # Local modules
 using TestTools.jlcoverage
-using TestTools.jltest: TestSetPlus
+using TestTools.jltest: EnhancedTestSet
 
 # --- Tests
 
-@testset TestSetPlus "jlcoverage.display_coverage()" begin
+@testset EnhancedTestSet "jlcoverage.display_coverage()" begin
 
     # --- Preparations
 
