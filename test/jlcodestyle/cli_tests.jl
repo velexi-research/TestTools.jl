@@ -209,7 +209,7 @@ end
     cd(test_file_dir)
 
     output = @capture_out begin
-        cli.run([joinpath(test_file_dir, "bluestyle-pass.jl")])
+        cli.run([joinpath(test_file_dir, "blue-style.jl")])
     end
 
     expected_output = """
@@ -223,7 +223,7 @@ end
     local output
     error = @capture_err begin
         output = @capture_out begin
-            cli.run([joinpath(test_file_dir, "bluestyle-pass.jl")]; verbose=true)
+            cli.run([joinpath(test_file_dir, "blue-style.jl")]; verbose=true)
         end
     end
 
@@ -234,7 +234,7 @@ end
     @test error == expected_error
 
     expected_output = """
-        Formatting $(joinpath(pwd(), "bluestyle-pass.jl"))
+        Formatting $(joinpath(pwd(), "blue-style.jl"))
 
         No style errors found.
         """
@@ -247,7 +247,7 @@ end
     error = @capture_err begin
         output = @capture_out begin
             cli.run(
-                [joinpath(test_file_dir, "bluestyle-pass.jl")]; overwrite=true, verbose=true
+                [joinpath(test_file_dir, "blue-style.jl")]; overwrite=true, verbose=true
             )
         end
     end
@@ -259,7 +259,7 @@ end
     @test error == expected_error
 
     expected_output = """
-        Formatting $(joinpath(pwd(), "bluestyle-pass.jl"))
+        Formatting $(joinpath(pwd(), "blue-style.jl"))
 
         No style errors found.
         """
@@ -267,7 +267,7 @@ end
 
     # Case: `paths` contains only source files with style errors, overwrite = true
     cd(test_file_dir)
-    bluestyle_pass_file = joinpath(test_file_dir, "bluestyle-pass.jl")
+    bluestyle_pass_file = joinpath(test_file_dir, "blue-style.jl")
     yasstyle_fail_file = joinpath(test_file_dir, "yasstyle-fail.jl")
     cp(bluestyle_pass_file, yasstyle_fail_file; force=true)
 
