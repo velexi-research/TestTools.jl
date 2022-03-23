@@ -4,7 +4,7 @@ CurrentModule = TestTools
 
 # API
 
-## TestTools
+## Installer/Uninstaller Functions
 
 ```@docs
 TestTools.install
