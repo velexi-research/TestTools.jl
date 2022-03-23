@@ -162,9 +162,13 @@ which augments the `DefaultTestSet` with the following functionality:
 
 ## Zero Dependency
 
-Using the TestTools CLI utilities within a Julia package _does not_ require the addition
-of any dependencies to the Julia package (with the possible exception of the `test`
-environment for the package).
+Using the TestTools CLI utilities within a Julia project _does not_ require the addition
+of TestTools as a dependency for the project.
+
+!!! note
+    Depending on how unit tests are organized, the `test` environment of a Julia package
+    might have TestTools as a dependency even though the package itself does not have
+    TestTools as a dependency.
 
 !!! note
     For zero dependency, TestTools must be installed in the default (global) environment.
