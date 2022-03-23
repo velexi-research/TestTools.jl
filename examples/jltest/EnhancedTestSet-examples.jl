@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 """
-Examples that demonstrate the diffs reported by TestSetPlus
+Examples that demonstrate the diffs reported by EnhancedTestSet
 
 Acknowledgements
 ----------------
@@ -28,11 +28,11 @@ Acknowledgements
 using Test
 
 # Local modules
-using TestTools.jltest: TestSetPlus
+using TestTools.jltest: EnhancedTestSet
 
 # --- Tests
 
-@testset TestSetPlus "Diff Examples" begin
+@testset EnhancedTestSet "Diff Examples" begin
     @test [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
 
     @test """Lorem ipsum dolor sit amet,
