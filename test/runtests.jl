@@ -171,22 +171,22 @@ output = strip(
 
 print("jltest/utils_tests: ")
 @testset EnhancedTestSet "jltest.utils: check for expected test failures" begin
-    @test log_message == "[ Info: For utils_tests.jl, 6 failures and 0 errors are expected."
+    @test log_message == "[ Info: For utils_tests.jl, 7 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 54 passed, 6 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 56 passed, 7 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "utils_tests")): ..............................
+        $(joinpath("jltest", "utils_tests")): ...............................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |   54     6     60
-          utils tests                                    |   54     6     60
-            jltest.run_tests(): basic tests              |   38     6     44
+        jltest                                           |   56     7     63
+          utils tests                                    |   56     7     63
+            jltest.run_tests(): basic tests              |   40     7     47
                                                          |    2            2
                                                          |    2            2
                                                          |    6     2      8
@@ -202,6 +202,7 @@ print("jltest/utils_tests: ")
               test-name                                  |    1     1      2
                                                          |    1     1      2
                 failing tests                            |    1     1      2
+              failing tests                              |    1     1      2
             jltest.run_tests(): log message tests        |    9            9
             jltest.run_tests(): current directory checks |    4            4
             jltest.find_tests()                          |    3            3
@@ -234,28 +235,25 @@ output = strip(
 
 print("jltest/cli_tests: ")
 @testset EnhancedTestSet "jltest.cli: check for expected test failures" begin
-    @test log_message == "[ Info: For cli_tests.jl, 4 failures and 0 errors are expected."
+    @test log_message == "[ Info: For cli_tests.jl, 3 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 47 passed, 4 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 41 passed, 3 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "cli_tests")): ...............................
+        $(joinpath("jltest", "cli_tests")): ............................
 
 
         Test Summary:                     | Pass  Fail  Total
-        jltest                            |   47     4     51
-          cli tests                       |   47     4     51
+        jltest                            |   41     3     44
+          cli tests                       |   41     3     44
             jltest.cli.parse_args()       |   10           10
-            jltest.cli.run(): basic tests |   36     4     40
+            jltest.cli.run(): basic tests |   30     3     33
               All tests                   |    4            4
-              All tests                   |    3     1      4
-                failing tests             |    1     1      2
-              All tests                   |    3     1      4
-                failing tests             |    1     1      2
+              failing tests               |    1     1      2
               All tests                   |    6     2      8
                 failing tests             |    1     1      2
                 some tests                |    2            2
