@@ -55,6 +55,17 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
         help = "stop testing at first failure"
         action = :store_true
 
+        "--no-wrapper", "-W"
+        help = """
+               run tests without wrapping them in an EnhancedTestSet. Ignored if fail-fast
+               is enabled. Note: running tests in this mode manner will disable
+               EnhancedTestSet functionality within each test files unless the test file
+               (1) explicitly sets the test set when using the `@testset` macro or
+               (2) calls `jltest.run_tests()` (without setting the `test_set_type` keyword
+               argument to `nothing`)
+               """
+        action = :store_true
+
         "--verbose", "-v"
         help = "display more output to the console"
         action = :store_true
@@ -90,12 +101,28 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 
 * `fail_fast::Bool`: stop testing at first failure. Default: `false`
 
+* `no_wrapper::Bool`: run tests without wrapping them in an EnhancedTestSet.
+  Default: `false`
+
+  !!! note
+      Ignored if `fail_fast` is set to `true`.
+
+  !!! note
+      Setting `no_wrapper` to `true` will disable EnhancedTestSet functionality within
+      each test files unless the test file
+
+      * explicitly sets the test set when using the `@testset` macro or
+
+      * calls `jltest.run_tests()` (without setting the `test_set_type` keyword argument
+        to `nothing`).
+
 * `verbose::Bool`: print more output to the console. Default: `false`
 """
 function run(
     tests::Vector;
     name::AbstractString="All tests",
     fail_fast::Bool=false,
+    no_wrapper::Bool=false,
     verbose::Bool=false,
 )
     # --- Check arguments
@@ -103,16 +130,22 @@ function run(
     # Ensure that `tests` contains strings
     tests = convert(Vector{String}, tests)
 
-    # --- Preparations
-
-    # Set test set type
+    # Check for JLTEST_FAIL_FAST environment variable.
     if !fail_fast
         fail_fast = get(ENV, "JLTEST_FAIL_FAST", "false") == "true"
     end
+
+    # --- Preparations
+
+    # Set test set type
     if fail_fast
         test_set_type = EnhancedTestSet{Test.FallbackTestSet}
     else
-        test_set_type = EnhancedTestSet{Test.DefaultTestSet}
+        if !no_wrapper
+            test_set_type = EnhancedTestSet{Test.DefaultTestSet}
+        else
+            test_set_type = nothing
+        end
     end
 
     # Set test options
@@ -129,6 +162,7 @@ function run(
     if length(tests) == 0
         tests = find_tests(pwd())
     end
+
     run_tests(tests; name=name, test_set_type=test_set_type)
 
     return nothing

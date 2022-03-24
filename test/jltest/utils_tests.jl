@@ -73,7 +73,7 @@ using TestTools.jltest
            Evaluated: 2 == 1
 
         Stacktrace:
-         [1]
+          [1]
         """
     )
 

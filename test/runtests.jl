@@ -238,18 +238,18 @@ print("jltest/cli_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 45 passed, 4 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 47 passed, 4 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "cli_tests")): .............................
+        $(joinpath("jltest", "cli_tests")): ...............................
 
 
         Test Summary:                     | Pass  Fail  Total
-        jltest                            |   45     4     49
-          cli tests                       |   45     4     49
-            jltest.cli.parse_args()       |    8            8
+        jltest                            |   47     4     51
+          cli tests                       |   47     4     51
+            jltest.cli.parse_args()       |   10           10
             jltest.cli.run(): basic tests |   36     4     40
               All tests                   |    4            4
               All tests                   |    3     1      4
