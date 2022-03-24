@@ -17,7 +17,7 @@
 By default, `jlcodestyle` applies the Blue style, so running the following command will
 detect style errors:
 
-```julia
+```shell
 $ jlcodestyle default-style.jl
 ```
 
