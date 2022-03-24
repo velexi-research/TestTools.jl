@@ -11,7 +11,7 @@ TestTools.install
 TestTools.uninstall
 ```
 
-## `jltest` Module
+## `jltest`
 
 ```@docs
 jltest
@@ -19,14 +19,14 @@ jltest.find_tests
 jltest.run_tests
 ```
 
-## `jlcoverage` Module
+## `jlcoverage`
 
 ```@docs
 jlcoverage
 jlcoverage.display_coverage
 ```
 
-## `EnhancedTestSet` Type
+## `EnhancedTestSet`
 
 ```@docs
 jltest.EnhancedTestSet

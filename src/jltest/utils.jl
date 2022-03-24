@@ -33,6 +33,11 @@ using Suppressor: @capture_err
 
 # --- Private utility functions
 
+"""
+    reemit_log_msg(messages::AbstractString)
+
+Remove missing dependency warnings from log messages and reemit them.
+"""
 function reemit_log_msg(messages::AbstractString)
 
     # --- Preparations
@@ -119,42 +124,86 @@ function reemit_log_msg(messages::AbstractString)
     end
 end
 
+"""
+    run_all_tests(test_files::OrderedDict, test_dirs::Vector{<:AbstractString})
+
+Run all tests contained in `test_files` and `test_dirs`.
+"""
+function run_all_tests(test_files::OrderedDict, test_dirs::Vector{<:AbstractString})
+
+    # Get current directory
+    cwd = pwd()
+
+    # Run tests files
+    if !isempty(test_files)
+        for (module_name, file_name) in test_files
+            # Restore current directory before each test file is run
+            cd(cwd)
+
+            # Run test, capturing log messages
+            println()
+            print(module_name, ": ")
+            mod = gensym(module_name)
+            log_msg = strip(@capture_err begin
+                @eval module $mod
+                Base.include($mod, abspath($file_name))
+                end
+            end)
+
+            # Suppress warnings about missing TestTools dependencies
+            if !isempty(log_msg)
+                reemit_log_msg(log_msg)
+            end
+        end
+    end
+
+    # Run tests in directories
+    for dir in test_dirs
+        # Restore current directory before tests are run
+        cd(cwd)
+
+        # Run tests
+        run_tests(find_tests(dir))
+    end
+end
+
 # --- Functions/Methods
 
 """
-    run_tests(tests::Vector{<:AbstractString}; <keyword arguments>)
+    run_tests(tests::Vector; <keyword arguments>)
     run_tests(tests::AbstractString; <keyword arguments>)
 
-Run tests contained in the list of files or modules provided in `tests`. If `tests` is an
-empty list or an empty string, an `ArgumentError` is thrown. File names in `tests` may be
-specified with or without the `.jl` extension.
+Run tests in the list of files or modules provided in `tests`. If `tests` is an empty list
+or an empty string, an `ArgumentError` is thrown. File names in `tests` may be specified
+with or without the `.jl` extension.
 
 # Keyword Arguments
 
 * `name::AbstractString`: name to use for test set used to group `tests`.
     Default: empty string
 
-* `test_set_type::Type`: type of test set to use to group tests. Default: `EnhancedTestSet`
+* `test_set_type::Type`: type of test set to use to group tests. When `test_set_type`
+  is set to `nothing`, the tests are run individually.
+  Default: `EnhancedTestSet{DefaultTestSet}`
 """
 function run_tests(
-    tests::Vector{<:AbstractString};
+    tests::Vector;
     name::AbstractString="",
-    test_set_type::Type{<:AbstractTestSet}=EnhancedTestSet{DefaultTestSet},
+    test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
 )
-    # --- Handle edge cases
+    # --- Check arguments
 
-    # No tests to run
     if isempty(tests)
         throw(ArgumentError("`tests` may not be empty"))
     end
 
+    # Ensure that `tests` contains strings
+    tests = convert(Vector{String}, tests)
+
     # --- Preparations
 
-    # Get current directory
-    cwd = pwd()
-
     # Separate tests into files and directories
-    test_dirs = []
+    test_dirs = Vector{String}()
     test_files = OrderedDict()
     for test in tests
         if isdir(test)
@@ -178,37 +227,11 @@ function run_tests(
 
     # --- Run tests
 
-    @testset test_set_type "$name" begin
-        # Run tests files
-        if !isempty(test_files)
-            for (module_name, file_name) in test_files
-                # Restore current directory before each test file is run
-                cd(cwd)
-
-                # Run test, capturing log messages
-                println()
-                print(module_name, ": ")
-                mod = gensym(module_name)
-                log_msg = strip(@capture_err begin
-                    @eval module $mod
-                    Base.include($mod, abspath($file_name))
-                    end
-                end)
-
-                # Suppress warnings about missing TestTools dependencies
-                if !isempty(log_msg)
-                    reemit_log_msg(log_msg)
-                end
-            end
-        end
-
-        # Run tests in directories
-        for dir in test_dirs
-            # Restore current directory before tests are run
-            cd(cwd)
-
-            # Run tests
-            run_tests(find_tests(dir))
+    if isnothing(test_set_type)
+        run_all_tests(test_files, test_dirs)
+    else
+        @testset test_set_type "$name" begin
+            run_all_tests(test_files, test_dirs)
         end
     end
 
@@ -217,20 +240,19 @@ end
 
 # run_tests(tests::AbstractString) method that converts the argument to a Vector{String}
 function run_tests(
-    tests::AbstractString;
+    test::AbstractString;
     name::AbstractString="",
-    test_set_type::Type{<:AbstractTestSet}=EnhancedTestSet{DefaultTestSet},
+    test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
 )
-    # --- Handle edge cases
+    # --- Check arguments
 
-    # No tests to run
-    if isempty(tests)
-        throw(ArgumentError("`tests` may not be empty"))
+    if isempty(test)
+        throw(ArgumentError("`test` may not be empty"))
     end
 
     # --- Run tests
 
-    run_tests([tests]; name=name, test_set_type=test_set_type)
+    run_tests(Vector{String}([test]); name=name, test_set_type=test_set_type)
 
     return nothing
 end

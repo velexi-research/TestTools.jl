@@ -142,9 +142,11 @@ jltest.run_test(@__DIR__)
 TestTools runs tests within an [`EnhancedTestSet`](@ref TestTools.jltest.EnhancedTestSet),
 which augments the `DefaultTestSet` with the following functionality:
 
-* display diffs for failed comparison tests (when possible) and
+* display diffs for failed comparison tests (when possible),
 
-* support fail-fast (i.e., stop testing at first failure).
+* support fail-fast (i.e., stop testing at first failure), and
+
+* display progress dots.
 
 !!! tip
     No special effort is required to benefit from these enhancements. Simply use the

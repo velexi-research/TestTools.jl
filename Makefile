@@ -19,7 +19,7 @@ test:
 	find . -name "*.jl.*.cov" -exec rm -f {} \;
 	@echo
 	@echo Running tests
-	julia --color=yes -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'
+	julia --color=yes -e 'import Pkg; Pkg.test(; coverage=true)'
 	@echo
 	@echo Generating code coverage report
 	@jlcoverage

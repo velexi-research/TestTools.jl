@@ -35,4 +35,9 @@ if args["version"]
 end
 
 # Run main program
-jltest.cli.run(args["tests"]; fail_fast=args["fail-fast"], verbose=args["verbose"])
+jltest.cli.run(
+    args["tests"];
+    fail_fast=args["fail-fast"],
+    no_wrapper=args["no-wrapper"],
+    verbose=args["verbose"],
+)

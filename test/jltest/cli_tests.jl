@@ -41,6 +41,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
         "fail-fast" => false,
+        "no-wrapper" => false,
         "verbose" => false,
         "version" => false,
         "tests" => Vector{String}(),
@@ -54,6 +55,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
         "fail-fast" => true,
+        "no-wrapper" => false,
         "verbose" => false,
         "version" => false,
         "tests" => Vector{String}(),
@@ -65,6 +67,33 @@ using TestTools.jltest: cli, EnhancedTestSet
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
         "fail-fast" => true,
+        "no-wrapper" => false,
+        "verbose" => false,
+        "version" => false,
+        "tests" => Vector{String}(),
+    )
+    @test args == expected_args
+
+    # --- no-wrapper
+
+    # Case: raw_args = "--no-wrapper"
+    raw_args = ["--no-wrapper"]
+    args = cli.parse_args(; raw_args=raw_args)
+    expected_args = Dict(
+        "fail-fast" => false,
+        "no-wrapper" => true,
+        "verbose" => false,
+        "version" => false,
+        "tests" => Vector{String}(),
+    )
+    @test args == expected_args
+
+    # Case: raw_args = "-W"
+    raw_args = ["-W"]
+    args = cli.parse_args(; raw_args=raw_args)
+    expected_args = Dict(
+        "fail-fast" => false,
+        "no-wrapper" => true,
         "verbose" => false,
         "version" => false,
         "tests" => Vector{String}(),
@@ -78,6 +107,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
         "fail-fast" => false,
+        "no-wrapper" => false,
         "verbose" => true,
         "version" => false,
         "tests" => Vector{String}(),
@@ -89,6 +119,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
         "fail-fast" => false,
+        "no-wrapper" => false,
         "verbose" => true,
         "version" => false,
         "tests" => Vector{String}(),
@@ -102,6 +133,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
         "fail-fast" => false,
+        "no-wrapper" => false,
         "verbose" => false,
         "version" => true,
         "tests" => Vector{String}(),
@@ -113,6 +145,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
         "fail-fast" => false,
+        "no-wrapper" => false,
         "verbose" => false,
         "version" => true,
         "tests" => Vector{String}(),
@@ -125,6 +158,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     args = cli.parse_args(; raw_args=raw_args)
     expected_args = Dict(
         "fail-fast" => false,
+        "no-wrapper" => false,
         "verbose" => false,
         "version" => false,
         "tests" => ["test-1", "test-2.jl"],
