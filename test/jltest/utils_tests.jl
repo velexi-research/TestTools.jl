@@ -168,6 +168,14 @@ using TestTools.jltest
         "$(joinpath(test_dir, "failing_tests")): failing tests" *
         ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):27"
     @test startswith(output, expected_prefix)
+
+    # test_set_type = nothing
+    test_set_type = nothing
+    tests = [failing_tests_file]
+    output = strip(@capture_out begin
+        run_tests(tests; test_set_type=test_set_type)
+    end)
+    @test startswith(output, expected_output_failing_tests)
 end
 
 @testset EnhancedTestSet "jltest.run_tests(): log message tests" begin
@@ -361,4 +369,4 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 6 failures and 0 errors are expected."
+@info "For $(basename(@__FILE__)), 7 failures and 0 errors are expected."

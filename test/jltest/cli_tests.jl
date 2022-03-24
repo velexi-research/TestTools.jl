@@ -232,13 +232,12 @@ end
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
 
-    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] = true
-    ENV["JLTEST_FAIL_FAST"] = "true"
+    # Case: no_wrapper = true, fail_fast = true
     tests = [failing_tests_file, some_tests_no_testset_file]
     local error = nothing
     output = strip(@capture_out begin
         try
-            cli.run(tests; fail_fast=false)
+            cli.run(tests; fail_fast=true, no_wrapper=true)
         catch error
         end
     end)
@@ -248,28 +247,12 @@ end
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
 
-    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] = false
-    ENV["JLTEST_FAIL_FAST"] = false
+    # Case: no_wrapper = true, fail_fast = false
     tests = [failing_tests_file, some_tests_no_testset_file]
     local error = nothing
     output = strip(@capture_out begin
         try
-            cli.run(tests; fail_fast=false)
-        catch error
-        end
-    end)
-
-    @test startswith(output, expected_output_failing_tests)
-    @test occursin(expected_output_some_tests_no_testset, output)
-    @test isnothing(error)
-
-    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] undefined
-    delete!(ENV, "JLTEST_FAIL_FAST")
-    tests = [failing_tests_file, some_tests_no_testset_file]
-    local error = nothing
-    output = strip(@capture_out begin
-        try
-            cli.run(tests; fail_fast=false)
+            cli.run(tests; no_wrapper=true)
         catch error
         end
     end)
@@ -308,4 +291,4 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 4 failures and 0 errors are expected."
+@info "For $(basename(@__FILE__)), 3 failures and 0 errors are expected."

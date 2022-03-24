@@ -130,11 +130,6 @@ function run(
     # Ensure that `tests` contains strings
     tests = convert(Vector{String}, tests)
 
-    # Check for JLTEST_FAIL_FAST environment variable.
-    if !fail_fast
-        fail_fast = get(ENV, "JLTEST_FAIL_FAST", "false") == "true"
-    end
-
     # --- Preparations
 
     # Set test set type
