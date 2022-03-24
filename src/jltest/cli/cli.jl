@@ -96,9 +96,6 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 
 # Keyword Arguments
 
-* `name::AbstractString`: name to use for test set used to group `tests`.
-    Default: `"All tests"
-
 * `fail_fast::Bool`: stop testing at first failure. Default: `false`
 
 * `no_wrapper::Bool`: run tests without wrapping them in an EnhancedTestSet.
@@ -119,11 +116,7 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 * `verbose::Bool`: print more output to the console. Default: `false`
 """
 function run(
-    tests::Vector;
-    name::AbstractString="All tests",
-    fail_fast::Bool=false,
-    no_wrapper::Bool=false,
-    verbose::Bool=false,
+    tests::Vector; fail_fast::Bool=false, no_wrapper::Bool=false, verbose::Bool=false
 )
     # --- Check arguments
 
@@ -158,7 +151,7 @@ function run(
         tests = find_tests(pwd())
     end
 
-    run_tests(tests; name=name, test_set_type=test_set_type)
+    run_tests(tests; desc="All tests", test_set_type=test_set_type)
 
     return nothing
 end
