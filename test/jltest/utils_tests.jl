@@ -68,7 +68,7 @@ using TestTools.jltest
         """
         $(joinpath(test_dir, "failing_tests_no_testset")): .
         =====================================================
-        : Test Failed at $(failing_tests_no_testset_file):26
+        test set: Test Failed at $(failing_tests_no_testset_file):26
           Expression: 2 == 1
            Evaluated: 2 == 1
 
@@ -76,6 +76,9 @@ using TestTools.jltest
           [1]
         """
     )
+
+    more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
+    expected_output_more_tests = "$(joinpath(test_dir, "subdir", "more_tests")): .."
 
     # --- Tests for run_tests(tests::Vector{<:AbstractString})
 
@@ -105,6 +108,7 @@ using TestTools.jltest
         expected_output_some_tests_no_testset,
         expected_output_failing_tests,
         expected_output_failing_tests_no_testset,
+        expected_output_more_tests,
     ]
     for line in expected_output_lines
         @test occursin(line, output)
@@ -121,6 +125,7 @@ using TestTools.jltest
         expected_output_some_tests_no_testset,
         expected_output_failing_tests,
         expected_output_failing_tests_no_testset,
+        expected_output_more_tests,
     ]
     for line in expected_output_lines
         @test occursin(line, output)
@@ -149,20 +154,19 @@ using TestTools.jltest
 
     # --- Keyword arguments tests
 
-    # name
+    # desc
     tests = [failing_tests_no_testset_file]
-    name = "test-name"
+    desc = "test description"
     output = strip(@capture_out begin
-        run_tests(tests; name=name)
+        run_tests(tests; desc=desc)
     end)
     output_line_three = split(output, '\n')[3]
-    @test startswith(output_line_three, name)
+    @test startswith(output_line_three, desc)
 
     # test_set_type
-    test_set_type = DefaultTestSet
     tests = [failing_tests_file]
     output = strip(@capture_out begin
-        run_tests(tests; test_set_type=test_set_type)
+        run_tests(tests; test_set_type=DefaultTestSet)
     end)
     expected_prefix =
         "$(joinpath(test_dir, "failing_tests")): failing tests" *
@@ -170,12 +174,45 @@ using TestTools.jltest
     @test startswith(output, expected_prefix)
 
     # test_set_type = nothing
-    test_set_type = nothing
     tests = [failing_tests_file]
     output = strip(@capture_out begin
-        run_tests(tests; test_set_type=test_set_type)
+        run_tests(tests; test_set_type=nothing)
     end)
     @test startswith(output, expected_output_failing_tests)
+
+    # recursive = false
+    tests = [test_dir]
+    output = strip(@capture_out begin
+        run_tests(tests; recursive=false)
+    end)
+
+    expected_output_lines = [
+        expected_output_some_tests,
+        expected_output_some_tests_no_testset,
+        expected_output_failing_tests,
+        expected_output_failing_tests_no_testset,
+    ]
+    for line in expected_output_lines
+        @test occursin(line, output)
+    end
+    @test !occursin(expected_output_more_tests, output)
+
+    # exclude_runtests = false
+    tests = [test_dir]
+    output = strip(@capture_out begin
+        run_tests(tests; exclude_runtests=false)
+    end)
+
+    expected_output_lines = [
+        expected_output_some_tests,
+        expected_output_some_tests_no_testset,
+        expected_output_failing_tests,
+        expected_output_failing_tests_no_testset,
+        "$(joinpath(test_dir, "failing_tests")):",
+    ]
+    for line in expected_output_lines
+        @test occursin(line, output)
+    end
 end
 
 @testset EnhancedTestSet "jltest.run_tests(): log message tests" begin
@@ -326,18 +363,11 @@ end
 
 @testset EnhancedTestSet "jltest.find_tests()" begin
 
-    # --- flat directory
+    # --- directory without subdirectories
 
-    test_dir = joinpath(@__DIR__, "data-basic-tests")
+    test_dir = joinpath(@__DIR__, "data-find-tests", "subdir")
     tests = Set(find_tests(test_dir))
-    expected_tests = Set([
-        joinpath(test_dir, file) for file in [
-            "failing_tests.jl",
-            "failing_tests_no_testset.jl",
-            "some_tests.jl",
-            "some_tests_no_testset.jl",
-        ]
-    ])
+    expected_tests = Set([joinpath(test_dir, "more_tests.jl")])
     @test tests == expected_tests
 
     # --- directory with subdirectories
@@ -351,6 +381,12 @@ end
     @test tests == expected_tests
 
     # --- Keyword arguments tests
+
+    # recursive = false
+    test_dir = joinpath(@__DIR__, "data-find-tests")
+    tests = Set(find_tests(test_dir; recursive=false))
+    expected_tests = Set([joinpath(test_dir, "some_tests.jl")])
+    @test tests == expected_tests
 
     # exclude_runtests = false
     test_dir = joinpath(@__DIR__, "data-find-tests")
@@ -369,4 +405,4 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 7 failures and 0 errors are expected."
+@info "For $(basename(@__FILE__)), 11 failures and 0 errors are expected."

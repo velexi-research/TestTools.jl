@@ -42,7 +42,7 @@ tests = [
     joinpath("jlcoverage", "cli_tests.jl"),
     joinpath("jlcoverage", "utils_tests.jl"),
 ]
-jltest.run_tests(tests; name="jltest")
+jltest.run_tests(tests; desc="jltest")
 
 # --- jltest unit tests that have expected failures and errors
 
@@ -58,7 +58,7 @@ output = strip(
             @testset EnhancedTestSet "EnhancedTestSet" begin
                 global log_message = strip(
                     @capture_err begin
-                        jltest.run_tests(test_file; name="failing tests")
+                        jltest.run_tests(test_file; desc="failing tests")
                     end
                 )
             end
@@ -109,7 +109,7 @@ output = strip(
             @testset EnhancedTestSet "EnhancedTestSet" begin
                 global log_message = strip(
                     @capture_err begin
-                        jltest.run_tests(test_file; name="nested test set tests")
+                        jltest.run_tests(test_file; desc="nested test set tests")
                     end
                 )
             end
@@ -157,7 +157,7 @@ output = strip(
             @testset EnhancedTestSet "jltest" begin
                 global log_message = strip(
                     @capture_err begin
-                        jltest.run_tests(test_file; name="utils tests")
+                        jltest.run_tests(test_file; desc="utils tests")
                     end
                 )
             end
@@ -171,41 +171,49 @@ output = strip(
 
 print("jltest/utils_tests: ")
 @testset EnhancedTestSet "jltest.utils: check for expected test failures" begin
-    @test log_message == "[ Info: For utils_tests.jl, 7 failures and 0 errors are expected."
+    @test log_message ==
+        "[ Info: For utils_tests.jl, 11 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 56 passed, 7 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 87 passed, 11 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "utils_tests")): ...............................
+        $(joinpath("jltest", "utils_tests")): ............................................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |   56     7     63
-          utils tests                                    |   56     7     63
-            jltest.run_tests(): basic tests              |   40     7     47
-                                                         |    2            2
-                                                         |    2            2
-                                                         |    6     2      8
-                                                         |    6     2      8
-                  failing tests                          |    1     1      2
-                  some tests                             |    2            2
-                                                         |    8     2     10
+        jltest                                           |   87    11     98
+          utils tests                                    |   87    11     98
+            jltest.run_tests(): basic tests              |   70    11     81
+              test set                                   |    2            2
+              test set                                   |    2            2
+              test set                                   |    8     2     10
+                failing tests                            |    1     1      2
                 some tests                               |    2            2
-                                                         |    6     2      8
-                  failing tests                          |    1     1      2
-                  some tests                             |    2            2
-                                                         |    2            2
-              test-name                                  |    1     1      2
-                                                         |    1     1      2
+                more tests                               |    2            2
+              test set                                   |   10     2     12
+                failing tests                            |    1     1      2
+                some tests                               |    2            2
+                more tests                               |    2            2
+                some tests                               |    2            2
+              test set                                   |    2            2
+              test description                           |    1     1      2
+              test set                                   |    1     1      2
                 failing tests                            |    1     1      2
               failing tests                              |    1     1      2
+              test set                                   |    6     2      8
+                failing tests                            |    1     1      2
+                some tests                               |    2            2
+              test set                                   |    8     2     10
+                failing tests                            |    1     1      2
+                some tests                               |    2            2
+                more tests                               |    2            2
             jltest.run_tests(): log message tests        |    9            9
             jltest.run_tests(): current directory checks |    4            4
-            jltest.find_tests()                          |    3            3
+            jltest.find_tests()                          |    4            4
             """
     )
 
@@ -221,7 +229,7 @@ output = strip(
             @testset EnhancedTestSet "jltest" begin
                 global log_message = strip(
                     @capture_err begin
-                        jltest.run_tests(test_file; name="cli tests")
+                        jltest.run_tests(test_file; desc="cli tests")
                     end
                 )
             end
@@ -239,7 +247,7 @@ print("jltest/cli_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 41 passed, 3 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 43 passed, 3 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
@@ -248,15 +256,16 @@ print("jltest/cli_tests: ")
 
 
         Test Summary:                     | Pass  Fail  Total
-        jltest                            |   41     3     44
-          cli tests                       |   41     3     44
+        jltest                            |   43     3     46
+          cli tests                       |   43     3     46
             jltest.cli.parse_args()       |   10           10
-            jltest.cli.run(): basic tests |   30     3     33
+            jltest.cli.run(): basic tests |   32     3     35
               All tests                   |    4            4
               failing tests               |    1     1      2
-              All tests                   |    6     2      8
+              All tests                   |    8     2     10
                 failing tests             |    1     1      2
                 some tests                |    2            2
+                more tests                |    2            2
             jltest.cli.run(): error cases |    1            1
         """
     )
