@@ -29,7 +29,7 @@ codestyle:
 	@jlcodestyle -v $(PKG_DIR)
 
 docs:
-	cd docs; julia --compile=min -O0 make.jl
+	julia --project=docs --compile=min -O0 docs/make.jl
 
 # Maintenance
 clean:
