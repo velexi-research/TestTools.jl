@@ -44,9 +44,9 @@ least save effort and keystrokes).
 
 * Compatible with `Pkg.test()`
 
-* Enhanced test set functionality: diffs for failed comparisons and fail-fast support
+* Enhanced test set functionality – diffs for failed comparisons and fail-fast support
 
-* Noninvasive -- introduces no package-level dependencies
+* Noninvasive – introduces no package-level dependencies
 
 ## Quick Start
 
