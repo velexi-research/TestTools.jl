@@ -42,6 +42,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => false,
         "no-wrapper" => false,
+        "no-recursion" => false,
         "verbose" => false,
         "version" => false,
         "tests" => Vector{String}(),
@@ -56,6 +57,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => true,
         "no-wrapper" => false,
+        "no-recursion" => false,
         "verbose" => false,
         "version" => false,
         "tests" => Vector{String}(),
@@ -68,6 +70,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => true,
         "no-wrapper" => false,
+        "no-recursion" => false,
         "verbose" => false,
         "version" => false,
         "tests" => Vector{String}(),
@@ -82,6 +85,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => false,
         "no-wrapper" => true,
+        "no-recursion" => false,
         "verbose" => false,
         "version" => false,
         "tests" => Vector{String}(),
@@ -94,6 +98,35 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => false,
         "no-wrapper" => true,
+        "no-recursion" => false,
+        "verbose" => false,
+        "version" => false,
+        "tests" => Vector{String}(),
+    )
+    @test args == expected_args
+
+    # --- no-recursion
+
+    # Case: raw_args = "--no-recursion"
+    raw_args = ["--no-recursion"]
+    args = cli.parse_args(; raw_args=raw_args)
+    expected_args = Dict(
+        "fail-fast" => false,
+        "no-wrapper" => false,
+        "no-recursion" => true,
+        "verbose" => false,
+        "version" => false,
+        "tests" => Vector{String}(),
+    )
+    @test args == expected_args
+
+    # Case: raw_args = "-R"
+    raw_args = ["-R"]
+    args = cli.parse_args(; raw_args=raw_args)
+    expected_args = Dict(
+        "fail-fast" => false,
+        "no-wrapper" => false,
+        "no-recursion" => true,
         "verbose" => false,
         "version" => false,
         "tests" => Vector{String}(),
@@ -108,6 +141,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => false,
         "no-wrapper" => false,
+        "no-recursion" => false,
         "verbose" => true,
         "version" => false,
         "tests" => Vector{String}(),
@@ -120,6 +154,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => false,
         "no-wrapper" => false,
+        "no-recursion" => false,
         "verbose" => true,
         "version" => false,
         "tests" => Vector{String}(),
@@ -134,6 +169,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => false,
         "no-wrapper" => false,
+        "no-recursion" => false,
         "verbose" => false,
         "version" => true,
         "tests" => Vector{String}(),
@@ -146,6 +182,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => false,
         "no-wrapper" => false,
+        "no-recursion" => false,
         "verbose" => false,
         "version" => true,
         "tests" => Vector{String}(),
@@ -159,6 +196,7 @@ using TestTools.jltest: cli, EnhancedTestSet
     expected_args = Dict(
         "fail-fast" => false,
         "no-wrapper" => false,
+        "no-recursion" => false,
         "verbose" => false,
         "version" => false,
         "tests" => ["test-1", "test-2.jl"],
@@ -206,6 +244,9 @@ end
         """
     )
 
+    more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
+    expected_output_more_tests = "$(joinpath(test_dir, "subdir", "more_tests")): .."
+
     # --- Tests
 
     # Case: normal operation
@@ -232,12 +273,12 @@ end
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
 
-    # Case: no_wrapper = true, fail_fast = true
+    # Case: use_wrapper = false, fail_fast = true
     tests = [failing_tests_file, some_tests_no_testset_file]
     local error = nothing
     output = strip(@capture_out begin
         try
-            cli.run(tests; fail_fast=true, no_wrapper=true)
+            cli.run(tests; fail_fast=true, use_wrapper=false)
         catch error
         end
     end)
@@ -247,18 +288,36 @@ end
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
 
-    # Case: no_wrapper = true, fail_fast = false
+    # Case: use_wrapper = false, fail_fast = false
     tests = [failing_tests_file, some_tests_no_testset_file]
     local error = nothing
     output = strip(@capture_out begin
         try
-            cli.run(tests; no_wrapper=true)
+            cli.run(tests; use_wrapper=false)
         catch error
         end
     end)
 
     @test startswith(output, expected_output_failing_tests)
     @test occursin(expected_output_some_tests_no_testset, output)
+    @test isnothing(error)
+
+    # Case: recursive = false
+    tests = [test_dir]
+    local error = nothing
+    log_msg = strip(@capture_err begin
+        output = strip(@capture_out begin
+            try
+                cli.run(tests; recursive=false)
+            catch error
+            end
+        end)
+    end)
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_some_tests, output)
+    @test occursin(expected_output_some_tests_no_testset, output)
+    @test !occursin(expected_output_more_tests, output)
     @test isnothing(error)
 
     # Case: `tests` is empty
@@ -277,6 +336,7 @@ end
     @test startswith(output, expected_output_failing_tests)
     @test occursin(expected_output_some_tests, output)
     @test occursin(expected_output_some_tests_no_testset, output)
+    @test occursin(expected_output_more_tests, output)
     @test isnothing(error)
 end
 
@@ -291,4 +351,4 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 3 failures and 0 errors are expected."
+@info "For $(basename(@__FILE__)), 5 failures and 0 errors are expected."

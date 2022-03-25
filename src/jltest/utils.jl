@@ -125,20 +125,23 @@ function reemit_log_msg(messages::AbstractString)
 end
 
 """
-    run_all_tests(test_files::OrderedDict, test_dirs::Vector{<:AbstractString})
+    run_all_tests(test_files::Vector{<:AbstractString})
 
-Run all tests contained in `test_files` and `test_dirs`.
+Run all tests contained in `test_files`.
 """
-function run_all_tests(test_files::OrderedDict, test_dirs::Vector{<:AbstractString})
+function run_all_tests(test_files::Vector{<:AbstractString})
 
     # Get current directory
     cwd = pwd()
 
     # Run tests files
     if !isempty(test_files)
-        for (module_name, file_name) in test_files
+        for test_file in test_files
             # Restore current directory before each test file is run
             cd(cwd)
+
+            # Get mdule name
+            module_name = splitext(test_file)[1]
 
             # Run test, capturing log messages
             println()
@@ -146,7 +149,7 @@ function run_all_tests(test_files::OrderedDict, test_dirs::Vector{<:AbstractStri
             mod = gensym(module_name)
             log_msg = strip(@capture_err begin
                 @eval module $mod
-                Base.include($mod, abspath($file_name))
+                Base.include($mod, abspath($test_file))
                 end
             end)
 
@@ -155,15 +158,6 @@ function run_all_tests(test_files::OrderedDict, test_dirs::Vector{<:AbstractStri
                 reemit_log_msg(log_msg)
             end
         end
-    end
-
-    # Run tests in directories
-    for dir in test_dirs
-        # Restore current directory before tests are run
-        cd(cwd)
-
-        # Run tests
-        run_tests(find_tests(dir))
     end
 end
 
@@ -179,17 +173,25 @@ with or without the `.jl` extension.
 
 # Keyword Arguments
 
-* `name::AbstractString`: name to use for test set used to group `tests`.
-    Default: empty string
+* `desc::AbstractString`: description to use for test set used to group `tests`.
+  Default: the default description set by `@testset`
 
 * `test_set_type::Type`: type of test set to use to group tests. When `test_set_type`
   is set to `nothing`, the tests are run individually.
   Default: `EnhancedTestSet{DefaultTestSet}`
+
+* `recursive::Bool`: flag indicating whether or not to run tests found in subdirectories
+  of directories in `tests`. Default: `true`
+
+* `exclude_runtests::Bool`: flag indicating whether or not to exclude files named
+  `runtests.jl` from the list of test files that are run. Default: `true`
 """
 function run_tests(
     tests::Vector;
-    name::AbstractString="",
+    desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
+    recursive::Bool=true,
+    exclude_runtests::Bool=true,
 )
     # --- Check arguments
 
@@ -202,36 +204,40 @@ function run_tests(
 
     # --- Preparations
 
-    # Separate tests into files and directories
-    test_dirs = Vector{String}()
-    test_files = OrderedDict()
+    test_files = Vector{String}()
+
     for test in tests
         if isdir(test)
-            # `test` is a directory
-            push!(test_dirs, test)
-
+            # Find tests contained in the directory
+            test_files = vcat(
+                test_files,
+                find_tests(test; recursive=recursive, exclude_runtests=exclude_runtests),
+            )
         else
-            # For test files, construct file and module names
-            if endswith(test, ".jl")
-                file_name = test
-                module_name = splitext(test)[1]
-            else
-                # `test` is a module
-                file_name = join([test, ".jl"])
-                module_name = test
+            # Get the file name
+            file_name = test
+            if !endswith(file_name, ".jl")
+                # `test` is a module, so append ".jl"
+                file_name = join([file_name, ".jl"])
             end
 
-            test_files[module_name] = file_name
+            push!(test_files, file_name)
         end
     end
 
     # --- Run tests
 
     if isnothing(test_set_type)
-        run_all_tests(test_files, test_dirs)
+        run_all_tests(test_files)
     else
-        @testset test_set_type "$name" begin
-            run_all_tests(test_files, test_dirs)
+        if isempty(desc)
+            @testset test_set_type begin
+                run_all_tests(test_files)
+            end
+        else
+            @testset test_set_type "$desc" begin
+                run_all_tests(test_files)
+            end
         end
     end
 
@@ -241,8 +247,9 @@ end
 # run_tests(tests::AbstractString) method that converts the argument to a Vector{String}
 function run_tests(
     test::AbstractString;
-    name::AbstractString="",
+    desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
+    recursive::Bool=true,
 )
     # --- Check arguments
 
@@ -252,7 +259,7 @@ function run_tests(
 
     # --- Run tests
 
-    run_tests(Vector{String}([test]); name=name, test_set_type=test_set_type)
+    run_tests(Vector{String}([test]); desc=desc, test_set_type=test_set_type)
 
     return nothing
 end
@@ -260,14 +267,20 @@ end
 """
     find_tests(dir::AbstractString), <keyword arguments>)::Vector{String}
 
-Recursively search `dir` for Julia files tests.
+Search `dir` for Julia files tests.
 
 # Keyword Arguments
 
-* `exclude_runtests::Bool`: flag that determines whether to exclude files named
+* `recursive::Bool`: flag indicating whether or not tests found in subdirectories of `dir`
+  should be included in results. Default: `true`
+
+* `exclude_runtests::Bool`: flag indicating whether or not to exclude files named
   `runtests.jl` from the list of test files. Default: `true`
 """
-function find_tests(dir::AbstractString; exclude_runtests::Bool=true)::Vector{String}
+function find_tests(
+    dir::AbstractString; recursive::Bool=true, exclude_runtests::Bool=true
+)::Vector{String}
+
     # Find test files in `dir`
     files = filter(f -> endswith(f, ".jl"), readdir(dir))
     if exclude_runtests
@@ -278,9 +291,11 @@ function find_tests(dir::AbstractString; exclude_runtests::Bool=true)::Vector{St
     tests = [joinpath(dir, file) for file in files]
 
     # Recursively search directories
-    dirs = filter(f -> isdir(f), [joinpath(dir, f) for f in readdir(dir)])
-    for dir in dirs
-        tests = vcat(tests, find_tests(dir; exclude_runtests=exclude_runtests))
+    if recursive
+        dirs = filter(f -> isdir(f), [joinpath(dir, f) for f in readdir(dir)])
+        for dir in dirs
+            tests = vcat(tests, find_tests(dir; exclude_runtests=exclude_runtests))
+        end
     end
 
     return tests

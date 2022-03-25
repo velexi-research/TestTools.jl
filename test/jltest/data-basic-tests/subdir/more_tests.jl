@@ -13,32 +13,16 @@
 #   limitations under the License.
 
 """
-main.jl contains the main program for the `jltest` CLI.
+Unit tests to test methods in `jltest/utils.jl`
 """
 
 # --- Imports
 
-using TestTools: TestTools, jltest
+using Test
 
-# --- Main program
+# --- Tests
 
-# Parse CLI arguments
-args = jltest.cli.parse_args()
-
-# Handle --version option
-if args["version"]
-    println(
-        "$(basename(PROGRAM_FILE)) $(TestTools.VERSION) " *
-        "(from $(dirname(PROGRAM_FILE)))",
-    )
-    exit(0)
+@testset "more tests" begin
+    @test 1 == 1
+    @test 2 == 2
 end
-
-# Run main program
-jltest.cli.run(
-    args["tests"];
-    fail_fast=args["fail-fast"],
-    use_wrapper=!args["no-wrapper"],
-    recursive=!args["no-recursion"],
-    verbose=args["verbose"],
-)

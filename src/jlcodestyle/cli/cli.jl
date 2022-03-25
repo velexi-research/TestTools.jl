@@ -101,10 +101,10 @@ Run code style checks for files contained in `paths`.
 # Keyword Arguments
 
 * `style::JuliaFormatter.AbstractStyle`: code style to apply.
-    Default: `BlueStyle()`
+  Default: `BlueStyle()`
 
 * `overwrite::Bool`: overwrite existing files with style-corrected versions.
-    Default: `false`
+  Default: `false`
 
 * `verbose::Bool`: print more output to the console. Default: `false`
 """
