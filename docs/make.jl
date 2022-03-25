@@ -26,6 +26,7 @@ makedocs(;
         "Home" => "index.md",
         "Installation" => "installation.md",
         "API" => "api.md",
+        "FAQ" => "faq.md",
         "Acknowledgements" => "acknowledgements.md",
         "Index" => "docs-index.md",
     ],
