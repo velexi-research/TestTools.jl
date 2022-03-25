@@ -8,8 +8,7 @@ TestTools.jl
     <td>Documentation</td>
     <td>
       <a href="https://velexi-corporation.github.io/TestTools.jl/dev/"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/docs-dev-blue.svg"/></a>
-      <!--<a href="https://velexi-corporation.github.io/TestTools.jl/stable/"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/docs-stable-blue.svg"/></a>
-      -->
+      <a href="https://velexi-corporation.github.io/TestTools.jl/stable/"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/docs-stable-blue.svg"/></a>
     </td>
   </tr>
 
