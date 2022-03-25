@@ -110,7 +110,10 @@ jobs:
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
 
       - name: Build documentation
-        run: cd docs; julia --project=@. --compile=min -O0 make.jl
+        run: julia --project=docs --compile=min -O0 docs/make.jl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
         #run: |
         #  julia --project=docs -e '
         #    using Documenter: DocMeta, doctest
