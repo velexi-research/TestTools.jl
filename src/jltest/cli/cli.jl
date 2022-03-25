@@ -66,6 +66,10 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
                """
         action = :store_true
 
+        "--no-recursion", "-R"
+        help = "do not recursively search directories for tests"
+        action = :store_true
+
         "--verbose", "-v"
         help = "display more output to the console"
         action = :store_true
@@ -96,16 +100,17 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 
 # Keyword Arguments
 
-* `fail_fast::Bool`: stop testing at first failure. Default: `false`
+* `fail_fast::Bool`: flag indicating whether or not to stop testing at first failure.
+    Default: `false`
 
-* `no_wrapper::Bool`: run tests without wrapping them in an EnhancedTestSet.
-  Default: `false`
+* `use_wrapper::Bool`: flag indicating whether or not to run tests without first wrapping
+    them in an EnhancedTestSet. Default: `true`
 
   !!! note
       Ignored if `fail_fast` is set to `true`.
 
   !!! note
-      Setting `no_wrapper` to `true` will disable EnhancedTestSet functionality within
+      Setting `use_wrapper` to `false` will disable EnhancedTestSet functionality within
       each test files unless the test file
 
       * explicitly sets the test set when using the `@testset` macro or
@@ -113,10 +118,17 @@ Run unit tests defined in the list of files or modules provided in `tests`.
       * calls `jltest.run_tests()` (without setting the `test_set_type` keyword argument
         to `nothing`).
 
+* `recursive::Bool`: flag indicating whether or not to run tests found in subdirectories
+    of directories in `tests`. Default: `true`
+
 * `verbose::Bool`: print more output to the console. Default: `false`
 """
 function run(
-    tests::Vector; fail_fast::Bool=false, no_wrapper::Bool=false, verbose::Bool=false
+    tests::Vector;
+    fail_fast::Bool=false,
+    use_wrapper::Bool=true,
+    recursive::Bool=true,
+    verbose::Bool=false,
 )
     # --- Check arguments
 
@@ -129,7 +141,7 @@ function run(
     if fail_fast
         test_set_type = EnhancedTestSet{Test.FallbackTestSet}
     else
-        if !no_wrapper
+        if use_wrapper
             test_set_type = EnhancedTestSet{Test.DefaultTestSet}
         else
             test_set_type = nothing
@@ -151,7 +163,7 @@ function run(
         tests = find_tests(pwd())
     end
 
-    run_tests(tests; desc="All tests", test_set_type=test_set_type)
+    run_tests(tests; desc="All tests", test_set_type=test_set_type, recursive=recursive)
 
     return nothing
 end

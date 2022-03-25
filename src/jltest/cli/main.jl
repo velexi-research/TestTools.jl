@@ -38,6 +38,7 @@ end
 jltest.cli.run(
     args["tests"];
     fail_fast=args["fail-fast"],
-    no_wrapper=args["no-wrapper"],
+    use_wrapper=!args["no-wrapper"],
+    recursive=!args["no-recursion"],
     verbose=args["verbose"],
 )
