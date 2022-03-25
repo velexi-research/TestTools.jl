@@ -1,7 +1,3 @@
-```@meta
-CurrentModule = TestTools
-```
-
 # TestTools.jl
 
 [TestTools.jl](https://github.com/velexi-corporation/TestTools.jl)
@@ -18,7 +14,7 @@ TestTools provides the following core components.
 
 --------------------------------------------------------------------------------------------
 
-## Why Use TestTools.jl?
+## Why TestTools.jl?
 
 * Easy-to-use (and fast) CLI tools for testing
 
@@ -26,7 +22,7 @@ TestTools provides the following core components.
 
 * Enhanced test set functionality: diffs for failed comparisons and fail-fast support
 
-* Adds zero package dependencies
+* Noninvasive -- introduces no package-level dependencies
 
 --------------------------------------------------------------------------------------------
 
@@ -41,26 +37,26 @@ TestTools provides the following core components.
 
 Run unit tests in a single file.
 
-```julia
+```shell
 $ jltest test/tests.jl
 ```
 
 Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
 test).
 
-```julia
+```shell
 $ jltest -x test/tests.jl
 ```
 
 Run all unit tests contained in a directory.
 
-```julia
+```shell
 $ jltest test
 ```
 
 Display all command-line options.
 
-```julia
+```shell
 $ jltest --help
 ```
 
@@ -68,7 +64,7 @@ $ jltest --help
 
 Generate a coverage report (after running unit tests while collecting coverage data).
 
-```julia
+```shell
 $ julia -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'  # run unit tests
 
 $ jlcoverage  # generate coverage report
@@ -85,7 +81,7 @@ TOTAL                                           289          7      97.6%
 
 Display all command-line options.
 
-```julia
+```shell
 $ jlcoverage --help
 ```
 
@@ -93,24 +89,43 @@ $ jlcoverage --help
 
 Basic code style check (reformatting of source file disabled).
 
-```julia
+```shell
 $ jlcodestyle src/TestTools.jl
-No style errors found.
 
 $ jlcodestyle examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files not modified.
 ```
 
+!!! note
+    No output is displayed when there are no style errors. To display a status message, use
+    the `-v` or `--verbose` command-line option.
+
+    ```shell
+    $ jlcodestyle -v src/TestTools.jl
+    [ Info: Style = BlueStyle
+    [ Info: Overwrite = false
+    Formatting src/TestTools.jl
+
+    No style errors found.
+    ```
+
 Code style check with reformatting of source file enabled.
 
-```julia
+```shell
 $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files modified to correct errors.
 ```
 
+Code style check using YAS style.
+
+```shell
+$ jlcodestyle -s yas examples/jlcodestyle/not-yas-style.jl
+Style errors found. Files not modified.
+```
+
 Display all command-line options.
 
-```julia
+```shell
 $ jlcodestyle --help
 ```
 
@@ -162,7 +177,7 @@ which augments the `DefaultTestSet` with the following functionality:
 
 --------------------------------------------------------------------------------------------
 
-## Zero Dependency
+## Noninvasive
 
 Using the TestTools CLI utilities within a Julia project _does not_ require the addition
 of TestTools as a dependency for the project.
@@ -173,4 +188,4 @@ of TestTools as a dependency for the project.
     TestTools as a dependency.
 
 !!! note
-    For zero dependency, TestTools must be installed in the default (global) environment.
+    To be noninvasive, TestTools must be installed in the default (global) environment.

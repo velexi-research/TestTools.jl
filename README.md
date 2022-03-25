@@ -38,7 +38,7 @@ analysis, and style checking. Our goal is to make it a joy to do software testin
 least save effort and keystrokes).
 
 
-## Why Use TestTools.jl?
+## Why TestTools.jl?
 
 * Easy-to-use (and fast) CLI tools for testing
 
@@ -46,7 +46,7 @@ least save effort and keystrokes).
 
 * Enhanced test set functionality: diffs for failed comparisons and fail-fast support
 
-* Adds zero package dependencies
+* Noninvasive -- introduces no package-level dependencies
 
 ## Quick Start
 
@@ -75,27 +75,27 @@ least save effort and keystrokes).
 
 Run unit tests in a single file.
 
-```julia
+```shell
 $ jltest test/tests.jl
 ```
 
 Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
 test).
 
-```julia
+```shell
 $ jltest -x test/tests.jl
 ```
 
 Run unit tests contained in a directory.
 
-```julia
+```shell
 $ jltest test
 ```
 
 #### jlcoverage
 
 Generate a coverage report (after running unit tests while collecting coverage data).
-```julia
+```shell
 $ julia -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'  # run unit tests
 
 $ jlcoverage  # generate coverage report
@@ -114,8 +114,14 @@ TOTAL                                           289          7      97.6%
 
 Basic code style check (reformatting of source file disabled).
 
-```julia
+```shell
 $ jlcodestyle src/TestTools.jl
+
+$ jlcodestyle --verbose src/TestTools.jl
+[ Info: Style = BlueStyle
+[ Info: Overwrite = false
+Formatting src/TestTools.jl
+
 No style errors found.
 
 $ jlcodestyle examples/jlcodestyle/not-blue-style.jl
@@ -124,7 +130,7 @@ Style errors found. Files not modified.
 
 Code style check with reformatting of source file enabled.
 
-```julia
+```shell
 $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files modified to correct errors.
 ```
@@ -146,7 +152,7 @@ Style errors found. Files modified to correct errors.
     * The base code for `EnhancedTestSet` (which implements diffs for comparisons and
       progress dots) comes directly from `TestsetExtensions.ExtendedTestSet`.
 
-    * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
+    * The `run_tests()` and `find_tests()` methods are essentially a re-implementation
       and refactoring of the `TestsetExtensions.@includetests` macro as methods.
 
   * [SafeTestsets](https://github.com/YingboMa/SafeTestsets.jl)

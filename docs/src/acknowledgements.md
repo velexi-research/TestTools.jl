@@ -15,7 +15,7 @@
     * The base code for `EnhancedTestSet` (which implements diffs for comparisons and
       progress dots) comes directly from `TestsetExtensions.ExtendedTestSet`.
 
-    * The `run_tests()` and `autodetect_tests()` methods are essentially a re-implementation
+    * The `run_tests()` and `find_tests()` methods are essentially a re-implementation
       and refactoring of the `TestsetExtensions.@includetests` macro as methods.
 
   * [SafeTestsets](https://github.com/YingboMa/SafeTestsets.jl)
