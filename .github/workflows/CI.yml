@@ -110,12 +110,13 @@ jobs:
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
 
       - name: Build documentation
-        run: |
-          julia --project=docs -e '
-            using Documenter: DocMeta, doctest
-            using TestTools
-            DocMeta.setdocmeta!(TestTools,
-                                :DocTestSetup,
-                                :(using TestTools);
-                                recursive=true)
-            doctest(TestTools)'
+        run: cd docs; julia --compile=min -O0 make.jl
+        #run: |
+        #  julia --project=docs -e '
+        #    using Documenter: DocMeta, doctest
+        #    using TestTools
+        #    DocMeta.setdocmeta!(TestTools,
+        #                        :DocTestSetup,
+        #                        :(using TestTools);
+        #                        recursive=true)
+        #    doctest(TestTools)'
