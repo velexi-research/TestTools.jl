@@ -101,10 +101,10 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 # Keyword Arguments
 
 * `fail_fast::Bool`: flag indicating whether or not to stop testing at first failure.
-    Default: `false`
+  Default: `false`
 
 * `use_wrapper::Bool`: flag indicating whether or not to run tests without first wrapping
-    them in an EnhancedTestSet. Default: `true`
+  them in an EnhancedTestSet. Default: `true`
 
   !!! note
       Ignored if `fail_fast` is set to `true`.
@@ -119,7 +119,7 @@ Run unit tests defined in the list of files or modules provided in `tests`.
         to `nothing`).
 
 * `recursive::Bool`: flag indicating whether or not to run tests found in subdirectories
-    of directories in `tests`. Default: `true`
+  of directories in `tests`. Default: `true`
 
 * `verbose::Bool`: print more output to the console. Default: `false`
 """

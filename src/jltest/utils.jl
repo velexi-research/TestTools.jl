@@ -174,11 +174,11 @@ with or without the `.jl` extension.
 # Keyword Arguments
 
 * `desc::AbstractString`: description to use for test set used to group `tests`.
-    Default: the default description set by `@testset`
+  Default: the default description set by `@testset`
 
 * `test_set_type::Type`: type of test set to use to group tests. When `test_set_type`
   is set to `nothing`, the tests are run individually.
-    Default: `EnhancedTestSet{DefaultTestSet}`
+  Default: `EnhancedTestSet{DefaultTestSet}`
 
 * `recursive::Bool`: flag indicating whether or not to run tests found in subdirectories
   of directories in `tests`. Default: `true`
