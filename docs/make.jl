@@ -34,9 +34,7 @@ makedocs(;
 
 # --- Deploy documentation
 
-devurl = "dev"
 deploydocs(;
     repo="github.com/velexi-corporation/TestTools.jl",
     devbranch="main",
-    versions=["stable" => "v^", "v#.#", devurl => devurl],
 )
