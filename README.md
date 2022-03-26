@@ -78,22 +78,22 @@ Run unit tests in a single file.
 $ jltest test/tests.jl
 ```
 
-Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
-test).
+Run unit tests contained in a directory.
+
+```shell
+$ jltest test/
+```
+
+Run unit tests with fail-fast enabled (i.e., halt testing after the first failing test).
 
 ```shell
 $ jltest -x test/tests.jl
 ```
 
-Run unit tests contained in a directory.
-
-```shell
-$ jltest test
-```
-
 #### jlcoverage
 
 Generate a coverage report (after running unit tests while collecting coverage data).
+
 ```shell
 $ julia -e 'import Pkg; Pkg.test("TestTools"; coverage=true)'  # run unit tests
 
@@ -111,7 +111,7 @@ TOTAL                                           289          7      97.6%
 
 #### jlcodestyle
 
-Basic code style check (reformatting of source file disabled).
+Run basic code style check (reformatting of source file disabled).
 
 ```shell
 $ jlcodestyle src/TestTools.jl
@@ -127,7 +127,7 @@ $ jlcodestyle examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files not modified.
 ```
 
-Code style check with reformatting of source file enabled.
+Run code style check with reformatting of source file enabled.
 
 ```shell
 $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl

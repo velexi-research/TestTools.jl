@@ -10,7 +10,7 @@ TestTools provides the following core components.
   [`jlcodestyle`](@ref jlcodestyle-cli)
 
 * API: functions and types to support unit testing (e.g. enhanced test sets and
-  auto-detection of tests).
+  auto-detection of tests) and code coverage analysis.
 
 --------------------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ TestTools provides the following core components.
 ## CLI Tools
 
 !!! note
-    Because they are are configured to eliminate unnecessary compiler optimizations, the
+    Because they have been configured to eliminate unnecessary compiler optimizations, the
     TestTools CLI utilities often run faster than calling the functions they rely on from
     the Julia REPL.
 
@@ -41,24 +41,34 @@ Run unit tests in a single file.
 $ jltest test/tests.jl
 ```
 
-Run unit tests in a single file with fail-fast enabled (i.e., stop after first failing
-test).
-
-```shell
-$ jltest -x test/tests.jl
-```
-
 Run all unit tests contained in a directory.
 
 ```shell
-$ jltest test
+$ jltest test/
 ```
 
-Display all command-line options.
+Run unit tests with fail-fast enabled (i.e., halt testing after first failing test).
 
 ```shell
-$ jltest --help
+$ jltest -x test/tests.jl  # short option
+
+$ jltest --fail-fast test/tests.jl  # long option
 ```
+
+Display help and usage messages.
+
+```shell
+$ jltest -h  # short option
+
+$ jltest --help  # long option
+```
+
+!!! warning "Can't turn off fail-fast?"
+    When the `JLTEST_FAIL_FAST` environment variable is set to `true`, fail-fast is always
+    enabled (even if `jltest` is run without the fail-fast option or the `test_set_type`
+    keyword argument of `jltest.run_tests()` is set to a non-fail-fast test set type). If
+    fail-fast mode seems to be permanently enabled, check to make sure the
+    `JLTEST_FAIL_FAST` environment variable has not been accidentally set to `true`.
 
 ### [`jlcoverage`](@id jlcoverage-cli)
 
@@ -79,15 +89,17 @@ src/pkg.jl                                       42          3      92.9%
 TOTAL                                           289          7      97.6%
 ```
 
-Display all command-line options.
+Display help and usage messages.
 
 ```shell
-$ jlcoverage --help
+$ jlcoverage -h  # short option
+
+$ jlcoverage --help  # long option
 ```
 
 ### [`jlcodestyle`](@id jlcodestyle-cli)
 
-Basic code style check (reformatting of source file disabled).
+Run basic code style check (reformatting of source file disabled).
 
 ```shell
 $ jlcodestyle src/TestTools.jl
@@ -109,24 +121,26 @@ Style errors found. Files not modified.
     No style errors found.
     ```
 
-Code style check with reformatting of source file enabled.
+Run code style check with reformatting of source file enabled.
 
 ```shell
 $ jlcodestyle --overwrite examples/jlcodestyle/not-blue-style.jl
 Style errors found. Files modified to correct errors.
 ```
 
-Code style check using YAS style.
+Run code style check with an explicitly selected style.
 
 ```shell
 $ jlcodestyle -s yas examples/jlcodestyle/not-yas-style.jl
 Style errors found. Files not modified.
 ```
 
-Display all command-line options.
+Display help and usage messages.
 
 ```shell
-$ jlcodestyle --help
+$ jlcodestyle -h  # short option
+
+$ jlcodestyle --help  # long option
 ```
 
 --------------------------------------------------------------------------------------------
@@ -150,6 +164,10 @@ jltest.run_test(@__DIR__)
     tests. For more details, please refer to the documentation for the
     [`jltest.run_tests()`](@ref TestTools.jltest.run_tests) method.
 
+!!! tip
+    When running tests using `Pkg.test()`, enable fail-fast mode by setting the
+    `JLTEST_FAIL_FAST` environment variable to `true`.
+
 --------------------------------------------------------------------------------------------
 
 ## [`EnhancedTestSet`](@ref TestTools.jltest.EnhancedTestSet) Functionality
@@ -159,7 +177,7 @@ which augments the `DefaultTestSet` with the following functionality:
 
 * display diffs for failed comparison tests (when possible),
 
-* support fail-fast (i.e., stop testing at first failure), and
+* support fail-fast (i.e., halt testing at first failure), and
 
 * display progress dots.
 
