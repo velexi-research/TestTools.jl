@@ -180,6 +180,11 @@ with or without the `.jl` extension.
   is set to `nothing`, the tests are run individually.
   Default: `EnhancedTestSet{DefaultTestSet}`
 
+  !!! note
+      When the `JLTEST_FAIL_FAST` environment variable is set to "true", the `test_set_type`
+      argument is overridden and set to `EnhancedTestSet{Test.FallbackTestSet}` so that
+      tests are run in fail-fast mode.
+
 * `recursive::Bool`: flag indicating whether or not to run tests found in subdirectories
   of directories in `tests`. Default: `true`
 
@@ -195,12 +200,18 @@ function run_tests(
 )
     # --- Check arguments
 
+    # Ensure that `tests` is not empty
     if isempty(tests)
         throw(ArgumentError("`tests` may not be empty"))
     end
 
     # Ensure that `tests` contains strings
     tests = convert(Vector{String}, tests)
+
+    # Enable fail-fast if JLTEST_FAIL_FAST environment variable is set to "true"
+    if lowercase(get(ENV, "JLTEST_FAIL_FAST", "false")) == "true"
+        test_set_type = EnhancedTestSet{Test.FallbackTestSet}
+    end
 
     # --- Preparations
 
@@ -253,6 +264,7 @@ function run_tests(
 )
     # --- Check arguments
 
+    # Ensure that `tests` is not an empty string
     if isempty(test)
         throw(ArgumentError("`test` may not be empty"))
     end

@@ -172,21 +172,21 @@ output = strip(
 print("jltest/utils_tests: ")
 @testset EnhancedTestSet "jltest.utils: check for expected test failures" begin
     @test log_message ==
-        "[ Info: For utils_tests.jl, 11 failures and 0 errors are expected."
+        "[ Info: For utils_tests.jl, 13 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 87 passed, 11 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 103 passed, 13 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "utils_tests")): ............................................
+        $(joinpath("jltest", "utils_tests")): ......................................................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |   87    11     98
-          utils tests                                    |   87    11     98
+        jltest                                           |  103    13    116
+          utils tests                                    |  103    13    116
             jltest.run_tests(): basic tests              |   70    11     81
               test set                                   |    2            2
               test set                                   |    2            2
@@ -213,8 +213,15 @@ print("jltest/utils_tests: ")
                 more tests                               |    2            2
             jltest.run_tests(): log message tests        |    9            9
             jltest.run_tests(): current directory checks |    4            4
+            jltest.run_tests(): JLTEST_FAIL_FAST tests   |   16     2     18
+              test set                                   |    3     1      4
+                failing tests                            |    1     1      2
+                some tests                               |    2            2
+              test set                                   |    3     1      4
+                failing tests                            |    1     1      2
+                some tests                               |    2            2
             jltest.find_tests()                          |    4            4
-            """
+            """,
     )
 
     @test output == expected_output
