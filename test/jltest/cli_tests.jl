@@ -210,6 +210,9 @@ end
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
 
+    # Save original value of JLTEST_FAIL_FAST environment variable
+    env_jltest_fail_fast_original = get(ENV, "JLTEST_FAIL_FAST", nothing)
+
     # Precompute commonly used values
     some_tests_file = joinpath(test_dir, "some_tests.jl")
     expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
@@ -272,6 +275,118 @@ end
     @test !occursin(expected_output_some_tests_no_testset, output)
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
+
+    # Case: fail_fast = true, ENV["JLTEST_FAIL_FAST"] = false
+    # Expect: same behavior as when fail_fast = true
+    ENV["JLTEST_FAIL_FAST"] = "false"
+    tests = [failing_tests_file, some_tests_no_testset_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=true)
+        catch error
+        end
+    end)
+
+    if isnothing(env_jltest_fail_fast_original)  # Restore ENV["JLTEST_FAIL_FAST"]
+        delete!(ENV, "JLTEST_FAIL_FAST")
+    else
+        ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
+    end
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin(expected_output_some_tests_no_testset, output)
+    @test error isa Test.FallbackTestSetException
+    @test error.msg == "There was an error during testing"
+
+    # Case: fail_fast = true, ENV["JLTEST_FAIL_FAST"] is undefined
+    # Expect: same behavior as when fail_fast = true
+    delete!(ENV, "JLTEST_FAIL_FAST")
+    tests = [failing_tests_file, some_tests_no_testset_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=true)
+        catch error
+        end
+    end)
+
+    if isnothing(env_jltest_fail_fast_original)  # Restore ENV["JLTEST_FAIL_FAST"]
+        delete!(ENV, "JLTEST_FAIL_FAST")
+    else
+        ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
+    end
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin(expected_output_some_tests_no_testset, output)
+    @test error isa Test.FallbackTestSetException
+    @test error.msg == "There was an error during testing"
+
+    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] = true
+    # Expect: same behavior as when fail_fast = true
+    ENV["JLTEST_FAIL_FAST"] = "true"
+    tests = [failing_tests_file, some_tests_no_testset_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=false)
+        catch error
+        end
+    end)
+
+    if isnothing(env_jltest_fail_fast_original)  # Restore ENV["JLTEST_FAIL_FAST"]
+        delete!(ENV, "JLTEST_FAIL_FAST")
+    else
+        ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
+    end
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin(expected_output_some_tests_no_testset, output)
+    @test error isa Test.FallbackTestSetException
+    @test error.msg == "There was an error during testing"
+
+    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] = false
+    ENV["JLTEST_FAIL_FAST"] = false
+    tests = [failing_tests_file, some_tests_no_testset_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=false)
+        catch error
+        end
+    end)
+
+    if isnothing(env_jltest_fail_fast_original)  # Restore ENV["JLTEST_FAIL_FAST"]
+        delete!(ENV, "JLTEST_FAIL_FAST")
+    else
+        ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
+    end
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_some_tests_no_testset, output)
+    @test isnothing(error)
+
+    # Case: fail_fast = false, ENV["JLTEST_FAIL_FAST"] is undefined
+    # Expect: same behavior as when fail_fast = false
+    delete!(ENV, "JLTEST_FAIL_FAST")
+    tests = [failing_tests_file, some_tests_no_testset_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=false)
+        catch error
+        end
+    end)
+
+    if isnothing(env_jltest_fail_fast_original)  # Restore ENV["JLTEST_FAIL_FAST"]
+        delete!(ENV, "JLTEST_FAIL_FAST")
+    else
+        ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
+    end
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_some_tests_no_testset, output)
+    @test isnothing(error)
 
     # Case: use_wrapper = false, fail_fast = true
     tests = [failing_tests_file, some_tests_no_testset_file]
@@ -351,4 +466,4 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 5 failures and 0 errors are expected."
+@info "For $(basename(@__FILE__)), 7 failures and 0 errors are expected."

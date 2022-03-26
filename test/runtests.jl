@@ -243,24 +243,28 @@ output = strip(
 
 print("jltest/cli_tests: ")
 @testset EnhancedTestSet "jltest.cli: check for expected test failures" begin
-    @test log_message == "[ Info: For cli_tests.jl, 5 failures and 0 errors are expected."
+    @test log_message == "[ Info: For cli_tests.jl, 7 failures and 0 errors are expected."
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 57 passed, 5 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 81 passed, 7 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "cli_tests")): ....................................
+        $(joinpath("jltest", "cli_tests")): ......................................................
 
 
         Test Summary:                     | Pass  Fail  Total
-        jltest                            |   57     5     62
-          cli tests                       |   57     5     62
+        jltest                            |   81     7     88
+          cli tests                       |   81     7     88
             jltest.cli.parse_args()       |   12           12
-            jltest.cli.run(): basic tests |   44     5     49
+            jltest.cli.run(): basic tests |   68     7     75
               All tests                   |    4            4
+              All tests                   |    3     1      4
+                failing tests             |    1     1      2
+              All tests                   |    3     1      4
+                failing tests             |    1     1      2
               failing tests               |    1     1      2
               All tests                   |    6     2      8
                 failing tests             |    1     1      2
@@ -270,7 +274,7 @@ print("jltest/cli_tests: ")
                 some tests                |    2            2
                 more tests                |    2            2
             jltest.cli.run(): error cases |    1            1
-        """
+        """,
     )
     @test output == expected_output
 end
