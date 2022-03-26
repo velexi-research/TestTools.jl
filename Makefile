@@ -14,6 +14,7 @@ export JULIA_PROJECT = @.
 # Default target
 all: test
 
+# Code quality
 test:
 	@echo Removing old coverage files
 	find . -name "*.jl.*.cov" -exec rm -f {} \;
@@ -28,6 +29,7 @@ codestyle:
 	@echo Checking code style
 	@jlcodestyle -v $(PKG_DIR)
 
+# Documentation
 docs:
 	julia --project=docs --compile=min -O0 docs/make.jl
 
