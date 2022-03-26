@@ -361,6 +361,117 @@ end
     cd(cwd)
 end
 
+@testset EnhancedTestSet "jltest.run_tests(): JLTEST_FAIL_FAST tests" begin
+    # --- Preparations
+
+    # Construct path to test directory
+    test_dir = joinpath(@__DIR__, "data-basic-tests")
+
+    # Save original value of JLTEST_FAIL_FAST environment variable
+    env_jltest_fail_fast_original = get(ENV, "JLTEST_FAIL_FAST", nothing)
+
+    # Precompute commonly used values
+    some_tests_file = joinpath(test_dir, "some_tests.jl")
+    expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
+
+    failing_tests_file = joinpath(test_dir, "failing_tests.jl")
+    expected_output_failing_tests = strip(
+        """
+        $(joinpath(test_dir, "failing_tests")): .
+        =====================================================
+        failing tests: Test Failed at $(failing_tests_file):27
+          Expression: 2 == 1
+           Evaluated: 2 == 1
+
+        Stacktrace:
+         [1]
+        """
+    )
+
+    expected_output_failing_tests_fail_fast = strip(
+        """
+        $(joinpath(test_dir, "failing_tests")): .
+        =====================================================
+        Test Failed at $(failing_tests_file):27
+          Expression: 2 == 1
+           Evaluated: 2 == 1
+
+        =====================================================
+        Error During Test at
+        """
+    )
+
+    more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
+    expected_output_more_tests = "$(joinpath(test_dir, "subdir", "more_tests")): .."
+
+    # --- Tests
+
+    # Case: ENV["JLTEST_FAIL_FAST"] = false
+    ENV["JLTEST_FAIL_FAST"] = false
+    tests = [failing_tests_file, some_tests_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            jltest.run_tests(tests)
+        catch error
+        end
+    end)
+
+    if isnothing(env_jltest_fail_fast_original)  # Restore ENV["JLTEST_FAIL_FAST"]
+        delete!(ENV, "JLTEST_FAIL_FAST")
+    else
+        ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
+    end
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_some_tests, output)
+    @test isnothing(error)
+
+    # Case: ENV["JLTEST_FAIL_FAST"] is undefined
+    # Expect: same behavior as ENV["JLTEST_FAIL_FAST"] = false
+    delete!(ENV, "JLTEST_FAIL_FAST")
+    tests = [failing_tests_file, some_tests_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            jltest.run_tests(tests)
+        catch error
+        end
+    end)
+
+    if isnothing(env_jltest_fail_fast_original)  # Restore ENV["JLTEST_FAIL_FAST"]
+        delete!(ENV, "JLTEST_FAIL_FAST")
+    else
+        ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
+    end
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_some_tests, output)
+    @test isnothing(error)
+
+    # Case: ENV["JLTEST_FAIL_FAST"] = true
+    ENV["JLTEST_FAIL_FAST"] = "true"
+    tests = [failing_tests_file, some_tests_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            jltest.run_tests(tests)
+        catch error
+        end
+    end)
+
+    if isnothing(env_jltest_fail_fast_original)  # Restore ENV["JLTEST_FAIL_FAST"]
+        delete!(ENV, "JLTEST_FAIL_FAST")
+    else
+        ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
+    end
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin(expected_output_some_tests, output)
+    @test error isa Test.FallbackTestSetException
+    @test error.msg == "There was an error during testing"
+end
+
 @testset EnhancedTestSet "jltest.find_tests()" begin
 
     # --- directory without subdirectories
@@ -405,4 +516,4 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 11 failures and 0 errors are expected."
+@info "For $(basename(@__FILE__)), 13 failures and 0 errors are expected."

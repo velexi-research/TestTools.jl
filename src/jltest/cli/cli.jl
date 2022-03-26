@@ -101,21 +101,7 @@ Run unit tests defined in the list of files or modules provided in `tests`.
 # Keyword Arguments
 
 * `fail_fast::Bool`: flag indicating whether or not to stop testing at first failure.
-  When `fail_fast` is `false`, the environment variable `JLTEST_FAIL_FAST` is used to
-  enable or disable fail-fast functionality. Default: `false`
-
-  !!! note
-      Summary of cases when fail-fast is enabled.
-
-      * `fail_fast` is `true`
-
-      * `fail_fast` is `false` and `JLTEST_FAIL_FAST` is `true`
-
-      Summary of cases when fail-fast is disabled.
-
-      * `fail_fast` is `false` and `JLTEST_FAIL_FAST` is `false`
-
-      * `fail_fast` is `false` and `JLTEST_FAIL_FAST` is not set
+  Default: `false`
 
 * `use_wrapper::Bool`: flag indicating whether or not to run tests without first wrapping
   them in an EnhancedTestSet. Default: `true`
@@ -148,11 +134,6 @@ function run(
 
     # Ensure that `tests` contains strings
     tests = convert(Vector{String}, tests)
-
-    # Check JLTEST_FAIL_FAST environment variable
-    if !fail_fast
-        fail_fast = get(ENV, "JLTEST_FAIL_FAST", "false") == "true"
-    end
 
     # --- Preparations
 
