@@ -2,7 +2,7 @@
 
 * Start Julia in the default (global) environment.
 
-  !!! note
+  !!! tip
 
       Installation in the default environment makes the CLI tools available from within
       all projects.
