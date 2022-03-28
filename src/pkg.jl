@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 """
-The `pkg.jl` file defines package management functions.
+pkg.jl defines package management functions.
 """
 
 # --- Constants
