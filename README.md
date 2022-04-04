@@ -1,5 +1,4 @@
-TestTools.jl
-============
+# TestTools.jl
 
 [------------------------------------ BADGES: BEGIN ------------------------------------]: #
 
@@ -70,7 +69,7 @@ least save effort and keystrokes).
 
 ### CLI Utilities
 
-#### jltest
+#### `jltest`
 
 Run unit tests in a single file.
 
@@ -78,7 +77,7 @@ Run unit tests in a single file.
 $ jltest test/tests.jl
 ```
 
-Run unit tests contained in a directory.
+Run all unit tests contained in a directory.
 
 ```shell
 $ jltest test/
@@ -90,7 +89,7 @@ Run unit tests with fail-fast enabled (i.e., halt testing after the first failin
 $ jltest -x test/tests.jl
 ```
 
-#### jlcoverage
+#### `jlcoverage`
 
 Generate a coverage report (after running unit tests while collecting coverage data).
 
@@ -109,7 +108,7 @@ src/pkg.jl                                       42          3      92.9%
 TOTAL                                           289          7      97.6%
 ```
 
-#### jlcodestyle
+#### `jlcodestyle`
 
 Run basic code style check (reformatting of source file disabled).
 
