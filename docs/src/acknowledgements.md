@@ -1,4 +1,4 @@
-# Acknowledegments
+# Acknowledgements
 
 * TestTools leverages several excellent Julia packages to support its core capabilities.
 

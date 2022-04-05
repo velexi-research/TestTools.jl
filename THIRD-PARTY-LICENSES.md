@@ -1,3 +1,9 @@
+Third-Party Licenses
+====================
+
+Code from the following third-party Julia packages have been included (with modification)
+in the TestTools package.
+
 --------------------------------------------------------------------------------------------
 TestSetExtensions.jl
 --------------------

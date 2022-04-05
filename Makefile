@@ -43,5 +43,5 @@ spotless: clean
 	find . -name "Manifest.toml" -exec rm -rf {} \;  # Manifest.toml files
 
 # Phony Targets
-.PHONY: all test docs \
+.PHONY: all test codestyle docs \
 		clean spotless
