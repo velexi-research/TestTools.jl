@@ -209,18 +209,19 @@ end
 
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
+    test_dir_relpath = relpath(test_dir)
 
     # Precompute commonly used values
     some_tests_file = joinpath(test_dir, "some_tests.jl")
-    expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
+    expected_output_some_tests = "$(joinpath(test_dir_relpath, "some_tests")): .."
 
     some_tests_no_testset_file = joinpath(test_dir, "some_tests_no_testset.jl")
-    expected_output_some_tests_no_testset = "$(joinpath(test_dir, "some_tests_no_testset")): .."
+    expected_output_some_tests_no_testset = "$(joinpath(test_dir_relpath, "some_tests_no_testset")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
     expected_output_failing_tests = strip(
         """
-        $(joinpath(test_dir, "failing_tests")): .
+        $(joinpath(test_dir_relpath, "failing_tests")): .
         =====================================================
         failing tests: Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
@@ -233,7 +234,7 @@ end
 
     expected_output_failing_tests_fail_fast = strip(
         """
-        $(joinpath(test_dir, "failing_tests")): .
+        $(joinpath(test_dir_relpath, "failing_tests")): .
         =====================================================
         Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
@@ -244,8 +245,22 @@ end
         """
     )
 
+    failing_tests_no_testset_file = joinpath(test_dir, "failing_tests_no_testset.jl")
+    expected_output_failing_tests_no_testset = strip(
+        """
+        $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
+        =====================================================
+        All tests: Test Failed at $(failing_tests_no_testset_file):26
+          Expression: 2 == 1
+           Evaluated: 2 == 1
+
+        Stacktrace:
+          [1]
+        """
+    )
+
     more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
-    expected_output_more_tests = "$(joinpath(test_dir, "subdir", "more_tests")): .."
+    expected_output_more_tests = "$(joinpath(test_dir_relpath, "subdir", "more_tests")): .."
 
     # --- Tests
 
@@ -268,10 +283,11 @@ end
         end
     end)
 
-    @test startswith(output, expected_output_failing_tests_fail_fast)
-    @test !occursin(expected_output_some_tests_no_testset, output)
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin("some_tests_no_testset", output)
 
     # Case: use_wrapper = false, fail_fast = true
     tests = [failing_tests_file, some_tests_no_testset_file]
@@ -283,10 +299,11 @@ end
         end
     end)
 
-    @test startswith(output, expected_output_failing_tests_fail_fast)
-    @test !occursin(expected_output_some_tests_no_testset, output)
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin("some_tests_no_testset", output)
 
     # Case: use_wrapper = false, fail_fast = false
     tests = [failing_tests_file, some_tests_no_testset_file]
@@ -298,9 +315,10 @@ end
         end
     end)
 
+    @test isnothing(error)
+
     @test startswith(output, expected_output_failing_tests)
     @test occursin(expected_output_some_tests_no_testset, output)
-    @test isnothing(error)
 
     # Case: recursive = false
     tests = [test_dir]
@@ -314,11 +332,13 @@ end
         end)
     end)
 
+    @test isnothing(error)
+
     @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_failing_tests_no_testset, output)
     @test occursin(expected_output_some_tests, output)
     @test occursin(expected_output_some_tests_no_testset, output)
-    @test !occursin(expected_output_more_tests, output)
-    @test isnothing(error)
+    @test !occursin("more_tests", output)
 
     # Case: `tests` is empty
     cd(test_dir)
@@ -333,11 +353,44 @@ end
         end)
     end)
 
-    @test startswith(output, expected_output_failing_tests)
-    @test occursin(expected_output_some_tests, output)
-    @test occursin(expected_output_some_tests_no_testset, output)
-    @test occursin(expected_output_more_tests, output)
     @test isnothing(error)
+
+    expected_output_failing_tests = strip(
+        """
+        failing_tests: .
+        =====================================================
+        failing tests: Test Failed at $(failing_tests_file):27
+          Expression: 2 == 1
+           Evaluated: 2 == 1
+
+        Stacktrace:
+         [1]
+        """
+    )
+    @test startswith(output, expected_output_failing_tests)
+
+    expected_output_failing_tests_no_testset = strip(
+        """
+        failing_tests_no_testset: .
+        =====================================================
+        All tests: Test Failed at $(failing_tests_no_testset_file):26
+          Expression: 2 == 1
+           Evaluated: 2 == 1
+
+        Stacktrace:
+          [1]
+        """
+    )
+    @test occursin(expected_output_failing_tests_no_testset, output)
+
+    expected_output_some_tests = "some_tests: .."
+    @test occursin(expected_output_some_tests, output)
+
+    expected_output_some_tests_no_testset = "some_tests_no_testset: .."
+    @test occursin(expected_output_some_tests_no_testset, output)
+
+    expected_output_more_tests = "$(joinpath("subdir", "more_tests")): .."
+    @test occursin(expected_output_more_tests, output)
 end
 
 @testset EnhancedTestSet "jltest.cli.run(): error cases" begin

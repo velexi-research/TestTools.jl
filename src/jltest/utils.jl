@@ -140,8 +140,8 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Restore current directory before each test file is run
             cd(cwd)
 
-            # Get mdule name
-            module_name = splitext(test_file)[1]
+            # Construct module name
+            module_name = splitext(relpath(test_file, cwd))[1]
 
             # Run test, capturing log messages
             println()
@@ -279,7 +279,7 @@ end
 """
     find_tests(dir::AbstractString), <keyword arguments>)::Vector{String}
 
-Search `dir` for Julia files tests.
+Construct a list of absolute paths to Julia test files contained in `dir`.
 
 # Keyword Arguments
 
@@ -292,6 +292,13 @@ Search `dir` for Julia files tests.
 function find_tests(
     dir::AbstractString; recursive::Bool=true, exclude_runtests::Bool=true
 )::Vector{String}
+
+    # --- Check arguments
+
+    # Ensure `dir` is an absolute path
+    dir = abspath(dir)
+
+    # --- Find test files
 
     # Find test files in `dir`
     files = filter(f -> endswith(f, ".jl"), readdir(dir))

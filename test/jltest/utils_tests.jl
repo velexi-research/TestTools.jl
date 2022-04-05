@@ -41,18 +41,19 @@ using TestTools.jltest
 
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
+    test_dir_relpath = relpath(test_dir)
 
     # Precompute commonly used values
     some_tests_file = joinpath(test_dir, "some_tests.jl")
-    expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
+    expected_output_some_tests = "$(joinpath(test_dir_relpath, "some_tests")): .."
 
     some_tests_no_testset_file = joinpath(test_dir, "some_tests_no_testset.jl")
-    expected_output_some_tests_no_testset = "$(joinpath(test_dir, "some_tests_no_testset")): .."
+    expected_output_some_tests_no_testset = "$(joinpath(test_dir_relpath, "some_tests_no_testset")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
     expected_output_failing_tests = strip(
         """
-        $(joinpath(test_dir, "failing_tests")): .
+        $(joinpath(test_dir_relpath, "failing_tests")): .
         =====================================================
         failing tests: Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
@@ -66,7 +67,7 @@ using TestTools.jltest
     failing_tests_no_testset_file = joinpath(test_dir, "failing_tests_no_testset.jl")
     expected_output_failing_tests_no_testset = strip(
         """
-        $(joinpath(test_dir, "failing_tests_no_testset")): .
+        $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
         =====================================================
         test set: Test Failed at $(failing_tests_no_testset_file):26
           Expression: 2 == 1
@@ -78,7 +79,7 @@ using TestTools.jltest
     )
 
     more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
-    expected_output_more_tests = "$(joinpath(test_dir, "subdir", "more_tests")): .."
+    expected_output_more_tests = "$(joinpath(test_dir_relpath, "subdir", "more_tests")): .."
 
     # --- Tests for run_tests(tests::Vector{<:AbstractString})
 
@@ -169,7 +170,7 @@ using TestTools.jltest
         run_tests(tests; test_set_type=DefaultTestSet)
     end)
     expected_prefix =
-        "$(joinpath(test_dir, "failing_tests")): failing tests" *
+        "$(joinpath(test_dir_relpath, "failing_tests")): failing tests" *
         ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):27"
     @test startswith(output, expected_prefix)
 
@@ -208,7 +209,7 @@ using TestTools.jltest
         expected_output_some_tests_no_testset,
         expected_output_failing_tests,
         expected_output_failing_tests_no_testset,
-        "$(joinpath(test_dir, "failing_tests")):",
+        "$(joinpath(test_dir_relpath, "failing_tests")):",
     ]
     for line in expected_output_lines
         @test occursin(line, output)
@@ -220,6 +221,7 @@ end
 
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-log-message-tests")
+    test_dir_relpath = relpath(test_dir)
 
     # Set up Julia environment
     push!(LOAD_PATH, test_dir)
@@ -230,10 +232,10 @@ end
 
     # Precompute commonly used values
     log_message_tests_file = joinpath(test_dir, "log_message_tests.jl")
-    expected_output_log_message_tests = "$(joinpath(test_dir, "log_message_tests")):"
+    expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
 
     location_prefix =
-        "TestTools.jltest.##$(joinpath(test_dir, "log_message_tests"))#[0-9]+ " *
+        "TestTools.jltest.##$(joinpath(test_dir_relpath, "log_message_tests"))#[0-9]+ " *
         "$(Base.contractuser(log_message_tests_file))"
     if Sys.iswindows()
         location_prefix = replace(location_prefix, "\\" => "\\\\")
@@ -263,7 +265,7 @@ end
     ]
 
     missing_deps_tests_file = joinpath(test_dir, "missing_deps_tests.jl")
-    expected_output_missing_deps_tests = "$(joinpath(test_dir, "missing_deps_tests")):"
+    expected_output_missing_deps_tests = "$(joinpath(test_dir_relpath, "missing_deps_tests")):"
     expected_log_messages_missing_deps_tests = "[ Info: Non-missing dependency log message"
 
     # --- Tests
@@ -316,13 +318,15 @@ end
     # Get current directory
     cwd = pwd()
 
-    # Change to test directory
+    # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-directory-change-tests")
+
+    # Change to test directory
     cd(test_dir)
 
     # Precompute commonly used values
     change_dir_file = joinpath(test_dir, "change_dir.jl")
-    expected_output_change_dir = "$(joinpath(test_dir, "change_dir")): "
+    expected_output_change_dir = "$(relpath(joinpath(test_dir, "change_dir"), test_dir)): "
 
     # Delete old coverage data files
     @suppress begin
@@ -339,7 +343,11 @@ end
     end)
 
     expected_output = join(
-        [expected_output_change_dir, "$(joinpath(test_dir, "check_dir")): ."], '\n'
+        [
+            expected_output_change_dir,
+            "$(relpath(joinpath(test_dir, "check_dir"), test_dir)): .",
+        ],
+        '\n',
     )
     @test output == expected_output
 
@@ -350,7 +358,10 @@ end
     end)
 
     expected_output = join(
-        [expected_output_change_dir, "$(joinpath(test_dir, "subdir", "check_dir")): ."],
+        [
+            expected_output_change_dir,
+            "$(relpath(joinpath(test_dir, "subdir", "check_dir"), test_dir)): .",
+        ],
         '\n',
     )
     @test output == expected_output
@@ -366,18 +377,19 @@ end
 
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
+    test_dir_relpath = relpath(test_dir)
 
     # Save original value of JLTEST_FAIL_FAST environment variable
     env_jltest_fail_fast_original = get(ENV, "JLTEST_FAIL_FAST", nothing)
 
     # Precompute commonly used values
     some_tests_file = joinpath(test_dir, "some_tests.jl")
-    expected_output_some_tests = "$(joinpath(test_dir, "some_tests")): .."
+    expected_output_some_tests = "$(joinpath(test_dir_relpath, "some_tests")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
     expected_output_failing_tests = strip(
         """
-        $(joinpath(test_dir, "failing_tests")): .
+        $(joinpath(test_dir_relpath, "failing_tests")): .
         =====================================================
         failing tests: Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
@@ -390,7 +402,7 @@ end
 
     expected_output_failing_tests_fail_fast = strip(
         """
-        $(joinpath(test_dir, "failing_tests")): .
+        $(joinpath(test_dir_relpath, "failing_tests")): .
         =====================================================
         Test Failed at $(failing_tests_file):27
           Expression: 2 == 1
@@ -402,7 +414,7 @@ end
     )
 
     more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
-    expected_output_more_tests = "$(joinpath(test_dir, "subdir", "more_tests")): .."
+    expected_output_more_tests = "$(joinpath(test_dir_relpath, "subdir", "more_tests")): .."
 
     # --- Tests
 

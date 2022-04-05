@@ -30,17 +30,20 @@ using TestTools.jltest
 # --- Preparations
 
 # Change to test directory
+#
+# Note: this is needed for consistency of results when tests are run via
+# `jltest runtests.jl` and `import Pkg; Pkg.test()`
 cd(@__DIR__)
 
 # --- Normal unit tests
 
 tests = [
-    "pkg_tests.jl",
-    joinpath("jltest", "EnhancedTestSet_passing_tests.jl"),
-    joinpath("jltest", "EnhancedTestSet_fail_fast_tests.jl"),
-    joinpath("jlcodestyle", "cli_tests.jl"),
-    joinpath("jlcoverage", "cli_tests.jl"),
-    joinpath("jlcoverage", "utils_tests.jl"),
+    joinpath(@__DIR__, "pkg_tests.jl"),
+    joinpath(@__DIR__, "jltest", "EnhancedTestSet_passing_tests.jl"),
+    joinpath(@__DIR__, "jltest", "EnhancedTestSet_fail_fast_tests.jl"),
+    joinpath(@__DIR__, "jlcodestyle", "cli_tests.jl"),
+    joinpath(@__DIR__, "jlcoverage", "cli_tests.jl"),
+    joinpath(@__DIR__, "jlcoverage", "utils_tests.jl"),
 ]
 jltest.run_tests(tests; desc="jltest")
 
@@ -51,7 +54,7 @@ local error_type, error_message
 
 # EnhancedTestSet with failing tests
 println()
-test_file = joinpath("jltest", "EnhancedTestSet_failing_tests.jl")
+test_file = joinpath(@__DIR__, "jltest", "EnhancedTestSet_failing_tests.jl")
 output = strip(
     @capture_out begin
         try
@@ -102,7 +105,7 @@ end
 
 # EnhancedTestSet with nested test sets
 println()
-test_file = joinpath("jltest", "EnhancedTestSet_nested_test_set_tests.jl")
+test_file = joinpath(@__DIR__, "jltest", "EnhancedTestSet_nested_test_set_tests.jl")
 output = strip(
     @capture_out begin
         try
@@ -150,7 +153,7 @@ end
 
 # utils.jl
 println()
-test_file = joinpath("jltest", "utils_tests.jl")
+test_file = joinpath(@__DIR__, "jltest", "utils_tests.jl")
 output = strip(
     @capture_out begin
         try
@@ -229,7 +232,7 @@ end
 
 # cli.jl
 println()
-test_file = joinpath("jltest", "cli_tests.jl")
+test_file = joinpath(@__DIR__, "jltest", "cli_tests.jl")
 output = strip(
     @capture_out begin
         try
@@ -254,19 +257,19 @@ print("jltest/cli_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 57 passed, 5 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 59 passed, 5 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "cli_tests")): ....................................
+        $(joinpath("jltest", "cli_tests")): ......................................
 
 
         Test Summary:                     | Pass  Fail  Total
-        jltest                            |   57     5     62
-          cli tests                       |   57     5     62
+        jltest                            |   59     5     64
+          cli tests                       |   59     5     64
             jltest.cli.parse_args()       |   12           12
-            jltest.cli.run(): basic tests |   44     5     49
+            jltest.cli.run(): basic tests |   46     5     51
               All tests                   |    4            4
               failing tests               |    1     1      2
               All tests                   |    6     2      8
