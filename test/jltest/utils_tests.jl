@@ -557,11 +557,11 @@ end
         =====================================================
         test set: Error During Test at $(src_error_file):285
           Got exception outside of a @test
-          LoadError: ArgumentError: The test environment is missing InteractiveUtils from its dependencies.
+          The test environment is missing InteractiveUtils from its dependencies.
           Error occurred at $(test_error_file):22
           Stacktrace:
             [1]
-        """,
+        """
     )
     @test startswith(test_error, expected_test_error)
 
