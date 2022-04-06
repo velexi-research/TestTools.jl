@@ -145,7 +145,7 @@ function handle_test_exception(error::Exception)
                 Error occurred at $(error.file):$(error.line)
                 """
             )
-            return LoadError(error.file, error.line, ArgumentError(message))
+            return ErrorException(message)
         end
     end
 
