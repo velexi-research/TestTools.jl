@@ -75,7 +75,7 @@ function reemit_log_msg(messages::AbstractString)
             # --- Skip missing dependency warning
 
             if occursin(
-                r"^┌ Warning: Package TestTools does not have [^\s]+ in its dependencies:",
+                r"^┌ Warning: Package TestTools does not have \S* in its dependencies:",
                 message_lines[1],
             )
                 continue
@@ -125,6 +125,37 @@ function reemit_log_msg(messages::AbstractString)
 end
 
 """
+    handle_test_exception(error::Base.error)
+
+Handle exception thrown when running a test file. If `error` is a missing package
+dependency, construct a LoadError to throw outside of the catch block. Otherwise, rethrow
+the error.
+"""
+function handle_test_exception(error::Exception)
+    if error isa LoadError && error.error isa ArgumentError
+        match_results = match(
+            r".*Package TestTools does not have (.*?) in its dependencies:.*",
+            error.error.msg,
+        )
+
+        if !isnothing(match_results)
+            message = strip(
+                """
+                The test environment is missing $(match_results[1]) from its dependencies.
+                Error occurred at $(error.file):$(error.line)
+                """
+            )
+            return LoadError(error.file, error.line, ArgumentError(message))
+        end
+    end
+
+    # Not a missing dependency error, so rethrow it.
+    rethrow()
+
+    return nothing
+end
+
+"""
     run_all_tests(test_files::Vector{<:AbstractString})
 
 Run all tests contained in `test_files`.
@@ -147,11 +178,20 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             println()
             print(module_name, ": ")
             mod = gensym(module_name)
+            missing_dependency_error = nothing
             log_msg = strip(@capture_err begin
-                @eval module $mod
-                Base.include($mod, abspath($test_file))
+                try
+                    @eval module $mod
+                    Base.include($mod, abspath($test_file))
+                    end
+                catch error
+                    missing_dependency_error = handle_test_exception(error)
                 end
             end)
+
+            if !isnothing(missing_dependency_error)
+                throw(missing_dependency_error)
+            end
 
             # Suppress warnings about missing TestTools dependencies
             if !isempty(log_msg)
