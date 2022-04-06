@@ -553,7 +553,7 @@ end
     test_error_file = joinpath(test_pkg_dir, "test", "missing_dependency_tests.jl")
     expected_test_error = strip(
         """
-        missing_dependency_tests:
+        missing_dependency_tests: 
         =====================================================
         test set: Error During Test at $(src_error_file):285
           Got exception outside of a @test
