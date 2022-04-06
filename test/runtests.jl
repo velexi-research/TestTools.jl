@@ -179,17 +179,17 @@ print("jltest/utils_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 103 passed, 13 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 105 passed, 13 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     expected_output = strip(
         """
-        $(joinpath("jltest", "utils_tests")): ......................................................
+        $(joinpath("jltest", "utils_tests")): .......................................................
 
 
         Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |  103    13    116
-          utils tests                                    |  103    13    116
+        jltest                                           |  105    13    118
+          utils tests                                    |  105    13    118
             jltest.run_tests(): basic tests              |   70    11     81
               test set                                   |    2            2
               test set                                   |    2            2
@@ -224,6 +224,7 @@ print("jltest/utils_tests: ")
                 failing tests                            |    1     1      2
                 some tests                               |    2            2
             jltest.find_tests()                          |    4            4
+            jltest: Pkg.test() tests                     |    2            2
             """,
     )
 

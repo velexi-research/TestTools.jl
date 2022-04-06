@@ -264,23 +264,23 @@ end
                     """)),
     ]
 
-    missing_deps_tests_file = joinpath(test_dir, "missing_deps_tests.jl")
-    expected_output_missing_deps_tests = "$(joinpath(test_dir_relpath, "missing_deps_tests")):"
-    expected_log_messages_missing_deps_tests = "[ Info: Non-missing dependency log message"
+    missing_dependencies_tests_file = joinpath(test_dir, "missing_dependencies_tests.jl")
+    expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+    expected_log_messages_missing_dependencies_tests = "[ Info: Non-missing dependency log message"
 
     # --- Tests
 
     local output
 
     # Case: "Package TestTools does not have ... in its dependencies" warning suppressed
-    tests = [missing_deps_tests_file]
+    tests = [missing_dependencies_tests_file]
     log_msg = strip(@capture_err begin
         output = strip(@capture_out begin
             run_tests(tests)
         end)
     end)
-    @test output == expected_output_missing_deps_tests
-    @test occursin(expected_log_messages_missing_deps_tests, log_msg)
+    @test output == expected_output_missing_dependencies_tests
+    @test occursin(expected_log_messages_missing_dependencies_tests, log_msg)
 
     # Case: only non-missing dependency log messages
     tests = [log_message_tests_file]
@@ -523,6 +523,52 @@ end
         ]
     ])
     @test tests == expected_tests
+end
+
+@testset EnhancedTestSet "jltest: Pkg.test() tests" begin
+    # --- Preparations
+
+    # Get current directory
+    cwd = pwd()
+
+    test_pkg_dir = joinpath(@__DIR__, "data-missing-package-dependency", "TestPackage")
+    cmd_options = `--startup-file=no --project=@. -O0`
+    cmd = `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`
+
+    # --- Tests
+
+    test_error = strip(@capture_out begin
+        try
+            @suppress_err begin
+                Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+            end
+        catch process_error
+            @test process_error isa ProcessFailedException
+        end
+    end)
+
+    src_error_file = abspath(
+        joinpath(dirname(dirname(@__DIR__)), "src", "jltest", "utils.jl")
+    )
+    test_error_file = joinpath(test_pkg_dir, "test", "missing_dependency_tests.jl")
+    expected_test_error = strip(
+        """
+        missing_dependency_tests: 
+        =====================================================
+        test set: Error During Test at $(src_error_file):285
+          Got exception outside of a @test
+          LoadError: ArgumentError: The test environment is missing InteractiveUtils from its dependencies.
+          Error occurred at $(test_error_file):22
+          Stacktrace:
+            [1]
+        """,
+    )
+    @test startswith(test_error, expected_test_error)
+
+    # --- Clean up
+
+    # Remove Manifest.toml
+    rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
 
 # --- Emit message about expected failures and errors
