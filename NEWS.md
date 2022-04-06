@@ -2,6 +2,20 @@ TestTools.jl Release Notes
 ==========================
 
 --------------------------------------------------------------------------------------------
+v0.3.1 (2022-04-05)
+===================
+
+### Enhancements
+
+* Improved error messages (e.g., when the test environment has missing dependencies).
+* Switched to using relative paths when displaying testing status.
+* Polished package documentation.
+
+### Developer Updates
+* Added GPG configuration for GitHub Actions.
+* Fixed bugs in Makefile.
+
+--------------------------------------------------------------------------------------------
 v0.3.0 (2022-03-26)
 ===================
 
