@@ -1,10 +1,15 @@
-Third-Party Licenses
-====================
+TestTools.jl
+============
 
-Code from the following third-party Julia packages have been included (with modification)
-in the TestTools package.
+Copyright 2022 Velexi Corporation
 
 --------------------------------------------------------------------------------------------
+
+Some parts of the TestTools package are copied from, derived from, or inspired by the
+following Julia packages.
+
+--------------------------------------------------------------------------------------------
+
 TestSetExtensions.jl
 --------------------
 

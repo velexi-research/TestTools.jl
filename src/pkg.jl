@@ -1,4 +1,4 @@
-#   Copyright (c) 2022 Velexi Corporation
+#   Copyright 2022 Velexi Corporation
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ function install_cli(
                 io,
                 """
 :: -----------------------------------------------------------------------------------------
-::  Copyright (c) 2022 Velexi Corporation
+::  Copyright 2022 Velexi Corporation
 ::
 ::  Licensed under the Apache License, Version 2.0 (the "License");
 ::  you may not use this file except in compliance with the License.
@@ -161,7 +161,7 @@ $(julia) $(join(julia_flags, ' ')) $(abspath(@__DIR__, cli, "cli", "main.jl")) %
 exec $(julia) $(join(julia_flags, ' ')) "\${BASH_SOURCE[0]}" "\$@"
 =#
 
-#   Copyright (c) 2022 Velexi Corporation
+#   Copyright 2022 Velexi Corporation
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
