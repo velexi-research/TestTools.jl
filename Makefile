@@ -1,7 +1,7 @@
-# --- User Parameters
+# --- Makefile parameters
 
-
-# --- Internal Parameters
+# Default command
+.DEFAULT_GOAL := test
 
 # Package variables
 PKG_DIR=src
@@ -9,12 +9,11 @@ PKG_DIR=src
 # Julia environment
 export JULIA_PROJECT = @.
 
-# --- Targets
+# --- Testing commands
 
-# Default target
-all: test
+.PHONY: test
 
-# Testing
+## Run all tests
 test:
 	@echo Removing old coverage files
 	find . -name "*.jl.*.cov" -exec rm -f {} \;
@@ -25,23 +24,91 @@ test:
 	@echo Generating code coverage report
 	@jlcoverage
 
-# Code quality
+# --- Code quality commands
+
+.PHONY: codestyle
+
+## Check codestyle
 codestyle:
 	@echo Checking code style
 	@jlcodestyle -v $(PKG_DIR)
 
-# Documentation
+# --- Documentation commands
+
+.PHONY: docs
+
+## Generate package documentation.
 docs:
 	julia --project=docs --compile=min -O0 docs/make.jl
 
-# Maintenance
+# --- Utility commands
+
+.PHONY: clean
+
+## Clean up project directory (e.g., coverage files)
 clean:
 	@echo Removing coverage files
 	find . -name "*.jl.*.cov" -exec rm -f {} \;
+	@echo Removing Manifest.toml files
+	find . -name "Manifest.toml" -exec rm -rf {} \;
 
-spotless: clean
-	find . -name "Manifest.toml" -exec rm -rf {} \;  # Manifest.toml files
+# --- Makefile Self-Documentation
 
-# Phony Targets
-.PHONY: all test codestyle docs \
-		clean spotless
+# Inspired by
+# <http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html>
+#
+# sed script explained:
+# /^##/:
+# 	* save line in hold space
+# 	* purge line
+# 	* Loop:
+# 		* append newline + line to hold space
+# 		* go to next line
+# 		* if line starts with doc comment, strip comment character off and loop
+# 	* remove target prerequisites
+# 	* append hold space (+ newline) to line
+# 	* replace newline plus comments by `---`
+# 	* print line
+# Separate expressions are necessary because labels cannot be delimited by
+# semicolon; see <http://stackoverflow.com/a/11799865/1968>
+
+.PHONY: help
+
+help:
+	@echo "$$(tput bold)Available rules:$$(tput sgr0)"
+	@echo
+	@sed -n -e "/^## / { \
+		h; \
+		s/.*//; \
+		:doc" \
+		-e "H; \
+		n; \
+		s/^## //; \
+		t doc" \
+		-e "s/:.*//; \
+		G; \
+		s/\\n## /---/; \
+		s/\\n/ /g; \
+		p; \
+	}" ${MAKEFILE_LIST} \
+	| LC_ALL='C' sort --ignore-case \
+	| awk -F '---' \
+		-v ncol=$$(tput cols) \
+		-v indent=19 \
+		-v col_on="$$(tput setaf 6)" \
+		-v col_off="$$(tput sgr0)" \
+	'{ \
+		printf "%s%*s%s ", col_on, -indent, $$1, col_off; \
+		n = split($$2, words, " "); \
+		line_length = ncol - indent; \
+		for (i = 1; i <= n; i++) { \
+			line_length -= length(words[i]) + 1; \
+			if (line_length <= 0) { \
+				line_length = ncol - indent - length(words[i]) - 1; \
+				printf "\n%*s ", -indent, " "; \
+			} \
+			printf "%s ", words[i]; \
+		} \
+		printf "\n"; \
+	}' \
+	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
