@@ -1,6 +1,6 @@
 # --- Makefile parameters
 
-# Default command
+# Default rule
 .DEFAULT_GOAL := help
 
 # Package variables
@@ -9,7 +9,7 @@ PKG_DIR=src
 # Julia environment
 export JULIA_PROJECT = @.
 
-# --- Testing commands
+# --- Testing rules
 
 .PHONY: test
 
@@ -24,7 +24,7 @@ test:
 	@echo Generating code coverage report
 	@jlcoverage
 
-# --- Code quality commands
+# --- Code quality rules
 
 .PHONY: codestyle
 
@@ -33,7 +33,7 @@ codestyle:
 	@echo Checking code style
 	@jlcodestyle -v $(PKG_DIR)
 
-# --- Documentation commands
+# --- Documentation rules
 
 .PHONY: docs
 
@@ -41,14 +41,19 @@ codestyle:
 docs:
 	julia --project=docs --compile=min -O0 docs/make.jl
 
-# --- Utility commands
+# --- Utility rules
 
 .PHONY: clean
 
-## Clean up project directory (e.g., coverage files)
+## Remove files and directories automatically generated during development (e.g., coverage
+## files).
 clean:
 	@echo Removing coverage files
 	find . -name "*.jl.*.cov" -exec rm -f {} \;
+
+## Remove files and directories automatically generated during development
+## (e.g., coverage files) and project setup (e.g., `Manifest.toml` files).
+spotless: clean
 	@echo Removing Manifest.toml files
 	find . -name "Manifest.toml" -exec rm -rf {} \;
 
@@ -74,7 +79,10 @@ clean:
 
 .PHONY: help
 
+## Display this list of available rules
 help:
+	@echo "$$(tput bold)Default rule:$$(tput sgr0) ${.DEFAULT_GOAL}"
+	@echo
 	@echo "$$(tput bold)Available rules:$$(tput sgr0)"
 	@echo
 	@sed -n -e "/^## / { \
