@@ -51,8 +51,8 @@ clean:
 	@echo Removing coverage files
 	find . -name "*.jl.*.cov" -exec rm -f {} \;
 
-## Remove files and directories automatically generated during development
-## (e.g., coverage files) and project setup (e.g., `Manifest.toml` files).
+## Remove files and directories automatically generated during development (e.g., coverage
+## files) and project setup (e.g., `Manifest.toml` files).
 spotless: clean
 	@echo Removing Manifest.toml files
 	find . -name "Manifest.toml" -exec rm -rf {} \;
