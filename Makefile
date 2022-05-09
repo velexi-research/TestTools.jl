@@ -1,7 +1,7 @@
 # --- Makefile parameters
 
 # Default command
-.DEFAULT_GOAL := test
+.DEFAULT_GOAL := help
 
 # Package variables
 PKG_DIR=src
