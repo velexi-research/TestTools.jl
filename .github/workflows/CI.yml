@@ -17,14 +17,14 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+  run-tests:
+    name: Julia ${{ matrix.version }} (${{ matrix.os }}, ${{ matrix.arch }})
 
     strategy:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         arch: [x64, x86]
         version: ['1.6', '1.7', '1.8']
 
@@ -86,8 +86,8 @@ jobs:
           fail_ci_if_error: true
           verbose: true
 
-  docs:
-    name: Documentation
+  build-docs:
+    name: Build Documentation
 
     runs-on: ubuntu-latest
 
