@@ -7,9 +7,12 @@ v0.3.5 (2022-11-10)
 
 **Enhancements**
 - Improved formatting of coverage report.
+- Added support for Julia v1.8.
 
 **Developer Updates**
 - Improved Makefile (e.g., added "help" target)
+- Added pre-commit hooks.
+- Added unit tests for Julia v1.8.
 - Reformatted NEWS.md to use same format as TagBot for release notes.
 
 --------------------------------------------------------------------------------------------
