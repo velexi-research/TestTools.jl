@@ -29,6 +29,9 @@ using TestTools.jltest
 
 # --- Preparations
 
+# Determine if Julia testset shows timing
+testset_shows_timing = VERSION > v"1.8-"
+
 # Change to test directory
 #
 # Note: this is needed for consistency of results when tests are run via
@@ -83,24 +86,45 @@ print("jltest/EnhancedTestSet_failing_tests: ")
         "Some tests did not pass: 7 passed, 6 failed, 1 errored, 0 broken."
 
     # Check output from EnhancedTestSet
-    expected_output = strip(
-        """
-        $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......
+    if testset_shows_timing
+        expected_output = Regex(strip(
+            r"""
+            $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......
 
 
-        Test Summary:                                | Pass  Fail  Error  Total
-        EnhancedTestSet                              |    7     6      1     14
-          failing tests                              |    7     6      1     14
-            EnhancedTestSet: Array equality test     |          1             1
-            EnhancedTestSet: Dict equality test      |          1             1
-            EnhancedTestSet: String equality test    |          1             1
-            EnhancedTestSet: Boolean expression test |          1             1
-            EnhancedTestSet: Exception test          |                 1      1
-            EnhancedTestSet: inequality test         |          1             1
-            EnhancedTestSet: Matrix equality test    |          1             1
-        """
-    )
-    @test output == expected_output
+            Test Summary:                                | Pass  Fail  Error  Total  Time
+            EnhancedTestSet                              |    7     6      1     14  (\d*\.)?\d+s
+              failing tests                              |    7     6      1     14  (\d*\.)?\d+s
+                EnhancedTestSet: Array equality test     |          1             1  (\d*\.)?\d+s
+                EnhancedTestSet: Dict equality test      |          1             1  (\d*\.)?\d+s
+                EnhancedTestSet: String equality test    |          1             1  (\d*\.)?\d+s
+                EnhancedTestSet: Boolean expression test |          1             1  (\d*\.)?\d+s
+                EnhancedTestSet: Exception test          |                 1      1  (\d*\.)?\d+s
+                EnhancedTestSet: inequality test         |          1             1  (\d*\.)?\d+s
+                EnhancedTestSet: Matrix equality test    |          1             1
+            """
+       ))
+        @test occursin(expected_output, output)
+    else
+        expected_output = strip(
+            """
+            $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......
+
+
+            Test Summary:                                | Pass  Fail  Error  Total
+            EnhancedTestSet                              |    7     6      1     14
+              failing tests                              |    7     6      1     14
+                EnhancedTestSet: Array equality test     |          1             1
+                EnhancedTestSet: Dict equality test      |          1             1
+                EnhancedTestSet: String equality test    |          1             1
+                EnhancedTestSet: Boolean expression test |          1             1
+                EnhancedTestSet: Exception test          |                 1      1
+                EnhancedTestSet: inequality test         |          1             1
+                EnhancedTestSet: Matrix equality test    |          1             1
+            """
+        )
+        @test output == expected_output
+    end
 end
 
 # EnhancedTestSet with nested test sets
