@@ -49,9 +49,9 @@ function display_coverage(coverage_data::Vector; startpath::AbstractString=pwd()
     # --- Generate coverage report
 
     # Line formats
-    header_line_format = "%-35s %15s %10s %10s\n"
-    results_line_format = "%-35s %15d %10d %10s\n"
-    horizontal_rule = "-"^79
+    header_line_format = "%-44s%15s%10s%10s\n"
+    results_line_format = "%-44s%15d%10d%10s\n"
+    horizontal_rule = "-"^80
 
     # Print header line
     println(horizontal_rule)
