@@ -77,6 +77,7 @@ output = strip(
 )
 
 print("jltest/EnhancedTestSet_failing_tests: ")
+
 @testset EnhancedTestSet "EnhancedTestSet: check for expected test failures" begin
     @test log_message ==
         "[ Info: For EnhancedTestSet_failing_tests.jl, 6 failures and 1 error are expected."
@@ -88,23 +89,23 @@ print("jltest/EnhancedTestSet_failing_tests: ")
     # Check output from EnhancedTestSet
     if testset_shows_timing
         expected_output = Regex(strip(
-            r"""
-            $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......
-
-
-            Test Summary:                                | Pass  Fail  Error  Total  Time
-            EnhancedTestSet                              |    7     6      1     14  (\d*\.)?\d+s
-              failing tests                              |    7     6      1     14  (\d*\.)?\d+s
-                EnhancedTestSet: Array equality test     |          1             1  (\d*\.)?\d+s
-                EnhancedTestSet: Dict equality test      |          1             1  (\d*\.)?\d+s
-                EnhancedTestSet: String equality test    |          1             1  (\d*\.)?\d+s
-                EnhancedTestSet: Boolean expression test |          1             1  (\d*\.)?\d+s
-                EnhancedTestSet: Exception test          |                 1      1  (\d*\.)?\d+s
-                EnhancedTestSet: inequality test         |          1             1  (\d*\.)?\d+s
-                EnhancedTestSet: Matrix equality test    |          1             1
             """
-       ))
-        @test occursin(expected_output, output)
+            $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......\\n
+            \\n
+            \\n
+            Test Summary:                                | Pass  Fail  Error  Total  Time\\n
+            EnhancedTestSet                              |    7     6      1     14  (\\d*\\.)?\\d+s\\n
+              failing tests                              |    7     6      1     14  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: Array equality test     |          1             1  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: Dict equality test      |          1             1  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: String equality test    |          1             1  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: Boolean expression test |          1             1  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: Exception test          |                 1      1  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: inequality test         |          1             1  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: Matrix equality test    |          1             1  (\\d*\\.)?\\d+s\\n
+            """
+        ))
+        @test !isnothing(match(expected_output, output))
     else
         expected_output = strip(
             """
