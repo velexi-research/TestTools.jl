@@ -2,12 +2,13 @@ TestTools.jl Release Notes
 ==========================
 
 --------------------------------------------------------------------------------------------
-v0.3.5 (2022-11-10)
+v0.4.0 (2022-11-12)
 -------------------
 
 **Enhancements**
 - Improved formatting of coverage report.
 - Added support for Julia v1.8.
+- Removed legacy code (breaks compatiblity with Julia <= v1.3).
 
 **Developer Updates**
 - Improved Makefile (e.g., added "help" target)
