@@ -230,13 +230,41 @@ end
     env_julia_debug_save = get(ENV, "JULIA_DEBUG", nothing)
     ENV["JULIA_DEBUG"] = "all"
 
-    # Precompute commonly used values
+    # --- Tests
+
+    local output
+    local log_msg
+
+    # Case: "Package TestTools does not have ... in its dependencies" warning suppressed
+    tests = [joinpath(test_dir, "missing_dependencies_tests.jl")]
+    log_msg = strip(@capture_err begin
+        output = strip(@capture_out begin
+            run_tests(tests)
+        end)
+    end)
+
+    expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+    @test output == expected_output_missing_dependencies_tests
+
+    expected_log_messages_missing_dependencies_tests = "[ Info: Log message that isn't about a missing dependency"
+    @test occursin(expected_log_messages_missing_dependencies_tests, log_msg)
+
+    # Case: only non-missing dependency log messages
     log_message_tests_file = joinpath(test_dir, "log_message_tests.jl")
     expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
 
-    location_prefix =
-        "TestTools.jltest.##$(joinpath(test_dir_relpath, "log_message_tests"))#[0-9]+ " *
-        "$(Base.contractuser(log_message_tests_file))"
+    if VERSION < v"1.8-"
+        location_prefix =
+            "TestTools.jltest" *
+            ".##$(joinpath(test_dir_relpath, "log_message_tests"))#[0-9]+ " *
+            "$(Base.contractuser(log_message_tests_file))"
+    else
+        location_prefix =
+            "TestTools.jltest.var" *
+            "\"##$(joinpath(test_dir_relpath, "log_message_tests"))#[0-9]+\" " *
+            "$(Base.contractuser(log_message_tests_file))"
+    end
+
     if Sys.iswindows()
         location_prefix = replace(location_prefix, "\\" => "\\\\")
     end
@@ -264,25 +292,6 @@ end
                     """)),
     ]
 
-    missing_dependencies_tests_file = joinpath(test_dir, "missing_dependencies_tests.jl")
-    expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
-    expected_log_messages_missing_dependencies_tests = "[ Info: Non-missing dependency log message"
-
-    # --- Tests
-
-    local output
-
-    # Case: "Package TestTools does not have ... in its dependencies" warning suppressed
-    tests = [missing_dependencies_tests_file]
-    log_msg = strip(@capture_err begin
-        output = strip(@capture_out begin
-            run_tests(tests)
-        end)
-    end)
-    @test output == expected_output_missing_dependencies_tests
-    @test occursin(expected_log_messages_missing_dependencies_tests, log_msg)
-
-    # Case: only non-missing dependency log messages
     tests = [log_message_tests_file]
     log_msg = strip(@capture_err begin
         output = strip(@capture_out begin
@@ -537,33 +546,49 @@ end
 
     # --- Tests
 
-    test_error = strip(@capture_out begin
-        try
-            @suppress_err begin
-                Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
-            end
-        catch process_error
-            @test process_error isa ProcessFailedException
-        end
-    end)
-
     src_error_file = abspath(
         joinpath(dirname(dirname(@__DIR__)), "src", "jltest", "utils.jl")
     )
     test_error_file = joinpath(test_pkg_dir, "test", "missing_dependency_tests.jl")
+
     expected_test_error = strip(
         """
         missing_dependency_tests: 
         =====================================================
-        test set: Error During Test at $(src_error_file):285
+        test set: Error During Test at $(src_error_file):288
           Got exception outside of a @test
           The test environment is missing InteractiveUtils from its dependencies.
           Error occurred at $(test_error_file):22
           Stacktrace:
-            [1]
+            [1] run_all_tests(test_files::Vector{String})
         """
     )
-    @test startswith(test_error, expected_test_error)
+
+    local test_error
+    if VERSION < v"1.8-"
+        test_error = strip(@capture_out begin
+            try
+                @suppress_err begin
+                    Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+                end
+            catch process_error
+                @test process_error isa ProcessFailedException
+            end
+        end)
+
+        @test startswith(test_error, expected_test_error)
+    else
+        test_error = strip(@capture_err begin
+            try
+                Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+            catch process_error
+                @test process_error isa ProcessFailedException
+            end
+        end)
+
+
+        @test occursin(expected_test_error, test_error)
+    end
 
     # --- Clean up
 
