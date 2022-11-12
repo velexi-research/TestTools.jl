@@ -235,7 +235,9 @@ end
     local output
     local log_msg
 
-    # Case: "Package TestTools does not have ... in its dependencies" warning suppressed
+    # ------ Case: "Package TestTools does not have ... in its dependencies" warning
+    #        suppressed
+
     tests = [joinpath(test_dir, "missing_dependencies_tests.jl")]
     log_msg = strip(@capture_err begin
         output = strip(@capture_out begin
@@ -243,13 +245,26 @@ end
         end)
     end)
 
-    expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
-    @test output == expected_output_missing_dependencies_tests
+    if VERSION < v"1.8-"
+        expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+        @test output == expected_output_missing_dependencies_tests
 
-    expected_log_messages_missing_dependencies_tests = "[ Info: Log message that isn't about a missing dependency"
-    @test occursin(expected_log_messages_missing_dependencies_tests, log_msg)
+        expected_log_messages_missing_dependencies_tests = "[ Info: Log message that isn't about a missing dependency"
+        @test occursin(expected_log_messages_missing_dependencies_tests, log_msg)
 
-    # Case: only non-missing dependency log messages
+    else
+        expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+        @test startswith(output, expected_output_missing_dependencies_tests)
+        @test occursin("""
+                         Got exception outside of a @test
+                         The test environment is missing Pkg from its dependencies.
+                       """, output)
+
+        @test isempty(log_msg)
+    end
+
+    # ------ Case: only non-missing dependency log messages
+
     log_message_tests_file = joinpath(test_dir, "log_message_tests.jl")
     expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
 

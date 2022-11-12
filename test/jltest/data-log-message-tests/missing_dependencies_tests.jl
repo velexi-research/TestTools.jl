@@ -21,4 +21,4 @@ Unit tests to test methods in `jltest/utils.jl`
 using Logging
 using Pkg: Pkg
 
-@info "Non-missing dependency log message"
+@info "Log message that isn't about a missing dependency"
