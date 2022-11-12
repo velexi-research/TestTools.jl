@@ -94,6 +94,22 @@ function Test.record(ts::EnhancedTestSet{T}, res::Fail) where {T}
     return nothing
 end
 
+# When recording DefaultTestSet results to an EnhancedTestSet{FallbackTestSet},
+# throw an exception if there are any failures or errors in the DefaultTestSet.
+function Test.record(ts::EnhancedTestSet{FallbackTestSet}, res::DefaultTestSet)
+    # Check for failures and errors
+    passes, fails, errors, broken, _, _, _, _ = Test.get_test_counts(res)
+    if (fails > 0) || (errors > 0)
+        throw(
+            EnhancedTestSetException(
+                "Failure or error occurred in DefaultTestSet nested within FallbackTestSet."
+            ),
+        )
+    end
+
+    return res
+ end
+
 function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Fail)
     if Distributed.myid() == 1
         println("\n=====================================================")
