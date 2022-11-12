@@ -88,23 +88,26 @@ print("jltest/EnhancedTestSet_failing_tests: ")
 
     # Check output from EnhancedTestSet
     if testset_shows_timing
-        expected_output = Regex(strip(
-            """
-            $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......\\n
-            \\n
-            \\n
-            Test Summary:                                | Pass  Fail  Error  Total  Time\\n
-            EnhancedTestSet                              |    7     6      1     14  (\\d*\\.)?\\d+s\\n
-              failing tests                              |    7     6      1     14  (\\d*\\.)?\\d+s\\n
-                EnhancedTestSet: Array equality test     |          1             1  (\\d*\\.)?\\d+s\\n
-                EnhancedTestSet: Dict equality test      |          1             1  (\\d*\\.)?\\d+s\\n
-                EnhancedTestSet: String equality test    |          1             1  (\\d*\\.)?\\d+s\\n
-                EnhancedTestSet: Boolean expression test |          1             1  (\\d*\\.)?\\d+s\\n
-                EnhancedTestSet: Exception test          |                 1      1  (\\d*\\.)?\\d+s\\n
-                EnhancedTestSet: inequality test         |          1             1  (\\d*\\.)?\\d+s\\n
-                EnhancedTestSet: Matrix equality test    |          1             1  (\\d*\\.)?\\d+s\\n
-            """
-        ))
+        expected_output = Regex(
+            strip(
+                """
+                $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......\\n
+                \\n
+                \\n
+                Test Summary:                                | Pass  Fail  Error  Total  Time\\n
+                EnhancedTestSet                              |    7     6      1     14  (\\d*\\.)?\\d+s\\n
+                  failing tests                              |    7     6      1     14  (\\d*\\.)?\\d+s\\n
+                    EnhancedTestSet: Array equality test     |          1             1  (\\d*\\.)?\\d+s\\n
+                    EnhancedTestSet: Dict equality test      |          1             1  (\\d*\\.)?\\d+s\\n
+                    EnhancedTestSet: String equality test    |          1             1  (\\d*\\.)?\\d+s\\n
+                    EnhancedTestSet: Boolean expression test |          1             1  (\\d*\\.)?\\d+s\\n
+                    EnhancedTestSet: Exception test          |                 1      1  (\\d*\\.)?\\d+s\\n
+                    EnhancedTestSet: inequality test         |          1             1  (\\d*\\.)?\\d+s\\n
+                    EnhancedTestSet: Matrix equality test    |          1             1  (\\d*\\.)?\\d+s\\n
+                """,
+            ),
+        )
+
         @test !isnothing(match(expected_output, output))
     else
         expected_output = strip(
@@ -124,6 +127,7 @@ print("jltest/EnhancedTestSet_failing_tests: ")
                 EnhancedTestSet: Matrix equality test    |          1             1
             """
         )
+
         @test output == expected_output
     end
 end
@@ -159,21 +163,43 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
         "Some tests did not pass: 2 passed, 2 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
-    expected_output = strip(
-        """
-        $(joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")): ..
+    if testset_shows_timing
+        expected_output = Regex(
+            strip(
+                """
+                $(joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")): ..\\n
+                \\n
+                \\n
+                Test Summary:                                         | Pass  Fail  Total  Time\\n
+                EnhancedTestSet                                       |    2     2      4  (\\d*\\.)?\\d+s\\n
+                nested test set tests                               |    2     2      4  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: nested inherited EnhancedTestSet |          1      1  (\\d*\\.)?\\d+s\\n
+                Nested Inherited Test Set                       |          1      1  (\\d*\\.)?\\d+s\\n
+                EnhancedTestSet: nested DefaultTestSet            |          1      1  (\\d*\\.)?\\d+s\\n
+                DefaultTestSet Nested in EnhancedTestSet        |          1      1  (\\d*\\.)?\\d+s\\n
+                """,
+            ),
+        )
+
+        @test !isnothing(match(expected_output, output))
+    else
+        expected_output = strip(
+            """
+            $(joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")): ..
 
 
-        Test Summary:                                         | Pass  Fail  Total
-        EnhancedTestSet                                       |    2     2      4
-          nested test set tests                               |    2     2      4
-            EnhancedTestSet: nested inherited EnhancedTestSet |          1      1
-              Nested Inherited Test Set                       |          1      1
-            EnhancedTestSet: nested DefaultTestSet            |          1      1
-              DefaultTestSet Nested in EnhancedTestSet        |          1      1
-        """
-    )
-    @test output == expected_output
+            Test Summary:                                         | Pass  Fail  Total
+            EnhancedTestSet                                       |    2     2      4
+              nested test set tests                               |    2     2      4
+                EnhancedTestSet: nested inherited EnhancedTestSet |          1      1
+                  Nested Inherited Test Set                       |          1      1
+                EnhancedTestSet: nested DefaultTestSet            |          1      1
+                  DefaultTestSet Nested in EnhancedTestSet        |          1      1
+            """
+        )
+
+        @test output == expected_output
+    end
 end
 
 # utils.jl
@@ -207,53 +233,105 @@ print("jltest/utils_tests: ")
         "Some tests did not pass: 105 passed, 13 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
-    expected_output = strip(
-        """
-        $(joinpath("jltest", "utils_tests")): .......................................................
+    if testset_shows_timing
+        expected_output = Regex(
+            strip(
+                """
+                $(joinpath("jltest", "utils_tests")): .......................................................\\n
+                \\n
+                \\n
+                Test Summary:                                    | Pass  Fail  Total  Time\\n
+                jltest                                           |  105    13    118  (\\d*\\.)?\\d+s\\n
+                  utils tests                                    |  105    13    118  (\\d*\\.)?\\d+s\\n
+                    jltest.run_tests(): basic tests              |   70    11     81  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    2            2  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    2            2  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    8     2     10  (\\d*\\.)?\\d+s\\n
+                        failing tests                            |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        some tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                        more tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                      test set                                   |   10     2     12  (\\d*\\.)?\\d+s\\n
+                        failing tests                            |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        some tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                        more tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                        some tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    2            2  (\\d*\\.)?\\d+s\\n
+                      test description                           |    1     1      2  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        failing tests                            |    1     1      2  (\\d*\\.)?\\d+s\\n
+                      failing tests                              |    1     1      2  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    6     2      8  (\\d*\\.)?\\d+s\\n
+                        failing tests                            |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        some tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    8     2     10  (\\d*\\.)?\\d+s\\n
+                        failing tests                            |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        some tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                        more tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                    jltest.run_tests(): log message tests        |    9            9  (\\d*\\.)?\\d+s\\n
+                    jltest.run_tests(): current directory checks |    4            4  (\\d*\\.)?\\d+s\\n
+                    jltest.run_tests(): JLTEST_FAIL_FAST tests   |   16     2     18  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    3     1      4  (\\d*\\.)?\\d+s\\n
+                        failing tests                            |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        some tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                      test set                                   |    3     1      4  (\\d*\\.)?\\d+s\\n
+                        failing tests                            |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        some tests                               |    2            2  (\\d*\\.)?\\d+s\\n
+                    jltest.find_tests()                          |    4            4  (\\d*\\.)?\\d+s\\n
+                    jltest: Pkg.test() tests                     |    2            2  (\\d*\\.)?\\d+s\\n
+                """,
+            ),
+        )
+
+        @test !isnothing(match(expected_output, output))
+    else
+        expected_output = strip(
+            """
+            $(joinpath("jltest", "utils_tests")): .......................................................
 
 
-        Test Summary:                                    | Pass  Fail  Total
-        jltest                                           |  105    13    118
-          utils tests                                    |  105    13    118
-            jltest.run_tests(): basic tests              |   70    11     81
-              test set                                   |    2            2
-              test set                                   |    2            2
-              test set                                   |    8     2     10
-                failing tests                            |    1     1      2
-                some tests                               |    2            2
-                more tests                               |    2            2
-              test set                                   |   10     2     12
-                failing tests                            |    1     1      2
-                some tests                               |    2            2
-                more tests                               |    2            2
-                some tests                               |    2            2
-              test set                                   |    2            2
-              test description                           |    1     1      2
-              test set                                   |    1     1      2
-                failing tests                            |    1     1      2
-              failing tests                              |    1     1      2
-              test set                                   |    6     2      8
-                failing tests                            |    1     1      2
-                some tests                               |    2            2
-              test set                                   |    8     2     10
-                failing tests                            |    1     1      2
-                some tests                               |    2            2
-                more tests                               |    2            2
-            jltest.run_tests(): log message tests        |    9            9
-            jltest.run_tests(): current directory checks |    4            4
-            jltest.run_tests(): JLTEST_FAIL_FAST tests   |   16     2     18
-              test set                                   |    3     1      4
-                failing tests                            |    1     1      2
-                some tests                               |    2            2
-              test set                                   |    3     1      4
-                failing tests                            |    1     1      2
-                some tests                               |    2            2
-            jltest.find_tests()                          |    4            4
-            jltest: Pkg.test() tests                     |    2            2
+            Test Summary:                                    | Pass  Fail  Total
+            jltest                                           |  105    13    118
+              utils tests                                    |  105    13    118
+                jltest.run_tests(): basic tests              |   70    11     81
+                  test set                                   |    2            2
+                  test set                                   |    2            2
+                  test set                                   |    8     2     10
+                    failing tests                            |    1     1      2
+                    some tests                               |    2            2
+                    more tests                               |    2            2
+                  test set                                   |   10     2     12
+                    failing tests                            |    1     1      2
+                    some tests                               |    2            2
+                    more tests                               |    2            2
+                    some tests                               |    2            2
+                  test set                                   |    2            2
+                  test description                           |    1     1      2
+                  test set                                   |    1     1      2
+                    failing tests                            |    1     1      2
+                  failing tests                              |    1     1      2
+                  test set                                   |    6     2      8
+                    failing tests                            |    1     1      2
+                    some tests                               |    2            2
+                  test set                                   |    8     2     10
+                    failing tests                            |    1     1      2
+                    some tests                               |    2            2
+                    more tests                               |    2            2
+                jltest.run_tests(): log message tests        |    9            9
+                jltest.run_tests(): current directory checks |    4            4
+                jltest.run_tests(): JLTEST_FAIL_FAST tests   |   16     2     18
+                  test set                                   |    3     1      4
+                    failing tests                            |    1     1      2
+                    some tests                               |    2            2
+                  test set                                   |    3     1      4
+                    failing tests                            |    1     1      2
+                    some tests                               |    2            2
+                jltest.find_tests()                          |    4            4
+                jltest: Pkg.test() tests                     |    2            2
             """,
-    )
+        )
 
-    @test output == expected_output
+        @test output == expected_output
+    end
 end
 
 # cli.jl
@@ -286,27 +364,57 @@ print("jltest/cli_tests: ")
         "Some tests did not pass: 59 passed, 5 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
-    expected_output = strip(
-        """
-        $(joinpath("jltest", "cli_tests")): ......................................
+    if testset_shows_timing
+        expected_output = Regex(
+            strip(
+                """
+                $(joinpath("jltest", "cli_tests")): ......................................\\n
+                \\n
+                \\n
+                Test Summary:                     | Pass  Fail  Total  Time\\n
+                jltest                            |   59     5     64  (\\d*\\.)?\\d+s\\n
+                  cli tests                       |   59     5     64  (\\d*\\.)?\\d+s\\n
+                    jltest.cli.parse_args()       |   12           12  (\\d*\\.)?\\d+s\\n
+                    jltest.cli.run(): basic tests |   46     5     51  (\\d*\\.)?\\d+s\\n
+                      All tests                   |    4            4  (\\d*\\.)?\\d+s\\n
+                      failing tests               |    1     1      2  (\\d*\\.)?\\d+s\\n
+                      All tests                   |    6     2      8  (\\d*\\.)?\\d+s\\n
+                        failing tests             |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        some tests                |    2            2  (\\d*\\.)?\\d+s\\n
+                      All tests                   |    8     2     10  (\\d*\\.)?\\d+s\\n
+                        failing tests             |    1     1      2  (\\d*\\.)?\\d+s\\n
+                        some tests                |    2            2  (\\d*\\.)?\\d+s\\n
+                        more tests                |    2            2  (\\d*\\.)?\\d+s\\n
+                    jltest.cli.run(): error cases |    1            1  (\\d*\\.)?\\d+s\\n
+                """,
+            ),
+        )
+
+        @test !isnothing(match(expected_output, output))
+    else
+        expected_output = strip(
+            """
+            $(joinpath("jltest", "cli_tests")): ......................................
 
 
-        Test Summary:                     | Pass  Fail  Total
-        jltest                            |   59     5     64
-          cli tests                       |   59     5     64
-            jltest.cli.parse_args()       |   12           12
-            jltest.cli.run(): basic tests |   46     5     51
-              All tests                   |    4            4
-              failing tests               |    1     1      2
-              All tests                   |    6     2      8
-                failing tests             |    1     1      2
-                some tests                |    2            2
-              All tests                   |    8     2     10
-                failing tests             |    1     1      2
-                some tests                |    2            2
-                more tests                |    2            2
-            jltest.cli.run(): error cases |    1            1
-        """
-    )
-    @test output == expected_output
+            Test Summary:                     | Pass  Fail  Total
+            jltest                            |   59     5     64
+              cli tests                       |   59     5     64
+                jltest.cli.parse_args()       |   12           12
+                jltest.cli.run(): basic tests |   46     5     51
+                  All tests                   |    4            4
+                  failing tests               |    1     1      2
+                  All tests                   |    6     2      8
+                    failing tests             |    1     1      2
+                    some tests                |    2            2
+                  All tests                   |    8     2     10
+                    failing tests             |    1     1      2
+                    some tests                |    2            2
+                    more tests                |    2            2
+                jltest.cli.run(): error cases |    1            1
+            """
+        )
+
+        @test output == expected_output
+    end
 end
