@@ -34,11 +34,17 @@ using Suppressor: @capture_err
 # --- Private utility functions
 
 """
-    reemit_log_msg(messages::AbstractString)
+    emit_log_msg(messages::AbstractString)
 
 Remove missing dependency warnings from log messages and reemit them.
 """
-function reemit_log_msg(messages::AbstractString)
+function emit_log_msg(messages::AbstractString)
+
+    # --- No-op if `messages` is empty
+
+    if isempty(messages)
+        return
+    end
 
     # --- Preparations
 
@@ -193,10 +199,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
                 throw(missing_dependency_error)
             end
 
-            # Suppress warnings about missing TestTools dependencies
-            if !isempty(log_msg)
-                reemit_log_msg(log_msg)
-            end
+            emit_log_msg(log_msg)
         end
     end
 end
