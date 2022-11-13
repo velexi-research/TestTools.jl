@@ -179,17 +179,15 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             cd(cwd)
 
             # Prepare a clean copy of Main module for current test set
-            main_module = copy(Main)
-            println(main_module == Main)
-            println(main_module === Main)
+            println()
+            print(module_name, ": ")
+            test_module = Module(module_name, false, false)
+            Core.eval(test_module, Main)
 
             # Construct module name
             module_name = splitext(relpath(test_file, cwd))[1]
 
             # Run test, capturing log messages
-            println()
-            print(module_name, ": ")
-            mod = gensym(module_name)
             missing_dependency_error = nothing
             log_msg = strip(@capture_err begin
                 try
@@ -197,7 +195,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
                     #Base.include($mod, abspath($test_file))
                     #end
                     #@eval module $pkg
-                    Base.include(main_module, abspath(test_file))
+                    Base.include(test_module, abspath(test_file))
                     #end
                 catch error
                     missing_dependency_error = handle_test_exception(error)
