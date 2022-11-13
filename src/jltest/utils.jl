@@ -191,9 +191,9 @@ function run_all_tests(pkg::Module, test_files::Vector{<:AbstractString})
                     #@eval module $mod
                     #Base.include($mod, abspath($test_file))
                     #end
-                    @eval module $pkg
-                    Base.include($pkg, abspath($test_file))
-                    end
+                    #@eval module $pkg
+                    Base.include(pkg, abspath(test_file))
+                    #end
                 catch error
                     missing_dependency_error = handle_test_exception(error)
                 end
