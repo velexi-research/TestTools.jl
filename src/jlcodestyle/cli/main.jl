@@ -35,6 +35,12 @@ if args["version"]
 end
 
 # Run main program
-jlcodestyle.cli.run(
+check_passed = jlcodestyle.cli.run(
     args["paths"]; style=args["style"], overwrite=args["overwrite"], verbose=args["verbose"]
 )
+
+if check_passed
+    exit(0)
+else
+    exit(1)
+end
