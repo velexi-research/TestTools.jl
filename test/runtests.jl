@@ -27,6 +27,16 @@ using Suppressor
 # Local package
 using TestTools.jltest
 
+# --- Helper functions
+
+function make_windows_safe_regex(s::AbstractString)
+    if Sys.iswindows()
+        s = replace(s, "\\" => "\\\\")
+    end
+
+    return s
+end
+
 # --- Preparations
 
 # Change to test directory
@@ -105,11 +115,9 @@ print("jltest/EnhancedTestSet_failing_tests: ")
 
         @test output == expected_output
     else
-        test_path = joinpath("jltest", "EnhancedTestSet_failing_tests")
-        if Sys.iswindows()
-            test_path = replace(test_path, "\\" => "\\\\")
-        end
-
+        test_path = make_windows_safe_regex(
+            joinpath("jltest", "EnhancedTestSet_failing_tests")
+        )
         expected_output = Regex(
             strip(
                 """
@@ -130,7 +138,7 @@ print("jltest/EnhancedTestSet_failing_tests: ")
             ),
         )
 
-        @test !isnothing(match(expected_output, output))
+        @test occursin(expected_output, output)
     end
 end
 
@@ -183,11 +191,9 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
 
         @test output == expected_output
     else
-        test_path = joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")
-        if Sys.iswindows()
-            test_path = replace(test_path, "\\" => "\\\\")
-        end
-
+        test_path = make_windows_safe_regex(
+            joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")
+        )
         expected_output = Regex(
             strip(
                 """
@@ -205,7 +211,7 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
             ),
         )
 
-        @test !isnothing(match(expected_output, output))
+        @test occursin(expected_output, output)
     end
 end
 
@@ -234,25 +240,17 @@ print("jltest/utils_tests: ")
 @testset EnhancedTestSet "jltest.utils: check for expected test failures" begin
     @test error_type == TestSetException
 
-    if VERSION < v"1.8-"
-        @test log_message ==
-            "[ Info: For utils_tests.jl, 13 failures and 0 errors are expected."
+    @test log_message ==
+        "[ Info: For utils_tests.jl, 13 failures and 0 errors are expected."
 
-        @test error_message ==
-            "Some tests did not pass: 105 passed, 13 failed, 0 errored, 0 broken."
-    else
-        @test log_message ==
-            "[ Info: For utils_tests.jl, 13 failures and 1 error are expected."
-
-        @test error_message ==
-            "Some tests did not pass: 106 passed, 13 failed, 1 errored, 0 broken."
-    end
+    @test error_message ==
+        "Some tests did not pass: 105 passed, 13 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     if VERSION < v"1.8-"
         expected_output = strip(
             """
-            $(joinpath("jltest", "utils_tests")): .......................................................
+            $(joinpath("jltest", "utils_tests")): ........................................................
 
 
             Test Summary:                                    | Pass  Fail  Total
@@ -298,62 +296,56 @@ print("jltest/utils_tests: ")
 
         @test output == expected_output
     else
-        test_path = joinpath("jltest", "utils_tests")
-        if Sys.iswindows()
-            test_path = replace(test_path, "\\" => "\\\\")
-        end
-
+        test_path = make_windows_safe_regex(joinpath("jltest", "utils_tests"))
         expected_output = Regex(
             strip(
                 """
-                $(test_path): .........................................................
+                $(test_path): ........................................................
 
 
-                Test Summary:                                    \\| Pass  Fail  Error  Total\\s+Time
-                jltest                                           \\|  106    13      1    120\\s+\\d+\\.\\d+s
-                  utils tests                                    \\|  106    13      1    120\\s+\\d+\\.\\d+s
-                    jltest\\.run_tests\\(\\): basic tests              \\|   70    11            81\\s+\\d+\\.\\d+s
-                      test set                                   \\|    2                   2\\s+\\d+\\.\\d+s
-                      test set                                   \\|    2                   2\\s+\\d+\\.\\d+s
-                      test set                                   \\|    8     2            10\\s+\\d+\\.\\d+s
-                        failing tests                            \\|    1     1             2\\s+\\d+\\.\\d+s
-                        some tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                        more tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                      test set                                   \\|   10     2            12\\s+\\d+\\.\\d+s
-                        failing tests                            \\|    1     1             2\\s+\\d+\\.\\d+s
-                        some tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                        more tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                        some tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                      test set                                   \\|    2                   2\\s+\\d+\\.\\d+s
-                      test description                           \\|    1     1             2\\s+\\d+\\.\\d+s
-                      test set                                   \\|    1     1             2\\s+\\d+\\.\\d+s
-                        failing tests                            \\|    1     1             2\\s+\\d+\\.\\d+s
-                      failing tests                              \\|    1     1             2\\s+\\d+\\.\\d+s
-                      test set                                   \\|    6     2             8\\s+\\d+\\.\\d+s
-                        failing tests                            \\|    1     1             2\\s+\\d+\\.\\d+s
-                        some tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                      test set                                   \\|    8     2            10\\s+\\d+\\.\\d+s
-                        failing tests                            \\|    1     1             2\\s+\\d+\\.\\d+s
-                        some tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                        more tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                    jltest\\.run_tests\\(\\): log message tests        \\|   10            1     11\\s+\\d+\\.\\d+s
-                      test set                                   \\|                 1      1\\s+\\d+\\.\\d+s
-                      test set                                   \\|                     None\\s+\\d+\\.\\d+s
-                    jltest\\.run_tests\\(\\): current directory checks \\|    4                   4\\s+\\d+\\.\\d+s
-                    jltest\\.run_tests\\(\\): JLTEST_FAIL_FAST tests   \\|   16     2            18\\s+\\d+\\.\\d+s
-                      test set                                   \\|    3     1             4\\s+\\d+\\.\\d+s
-                        failing tests                            \\|    1     1             2\\s+\\d+\\.\\d+s
-                        some tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                      test set                                   \\|    3     1             4\\s+\\d+\\.\\d+s
-                        failing tests                            \\|    1     1             2\\s+\\d+\\.\\d+s
-                        some tests                               \\|    2                   2\\s+\\d+\\.\\d+s
-                    jltest\\.find_tests\\(\\)                          \\|    4                   4\\s+\\d+\\.\\d+s
-                    jltest: Pkg\\.test\\(\\) tests                     \\|    2                   2\\s+\\d+\\.\\d+s
+                Test Summary:                                    \\| Pass  Fail  Total\\s+Time
+                jltest                                           \\|  105    13    118\\s+\\d+\\.\\d+s
+                  utils tests                                    \\|  105    13    118\\s+\\d+\\.\\d+s
+                    jltest\\.run_tests\\(\\): basic tests              \\|   70    11     81\\s+\\d+\\.\\d+s
+                      test set                                   \\|    2            2\\s+\\d+\\.\\d+s
+                      test set                                   \\|    2            2\\s+\\d+\\.\\d+s
+                      test set                                   \\|    8     2     10\\s+\\d+\\.\\d+s
+                        failing tests                            \\|    1     1      2\\s+\\d+\\.\\d+s
+                        some tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                        more tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                      test set                                   \\|   10     2     12\\s+\\d+\\.\\d+s
+                        failing tests                            \\|    1     1      2\\s+\\d+\\.\\d+s
+                        some tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                        more tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                        some tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                      test set                                   \\|    2            2\\s+\\d+\\.\\d+s
+                      test description                           \\|    1     1      2\\s+\\d+\\.\\d+s
+                      test set                                   \\|    1     1      2\\s+\\d+\\.\\d+s
+                        failing tests                            \\|    1     1      2\\s+\\d+\\.\\d+s
+                      failing tests                              \\|    1     1      2\\s+\\d+\\.\\d+s
+                      test set                                   \\|    6     2      8\\s+\\d+\\.\\d+s
+                        failing tests                            \\|    1     1      2\\s+\\d+\\.\\d+s
+                        some tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                      test set                                   \\|    8     2     10\\s+\\d+\\.\\d+s
+                        failing tests                            \\|    1     1      2\\s+\\d+\\.\\d+s
+                        some tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                        more tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                    jltest\\.run_tests\\(\\): log message tests        \\|    9            9\\s+\\d+\\.\\d+s
+                    jltest\\.run_tests\\(\\): current directory checks \\|    4            4\\s+\\d+\\.\\d+s
+                    jltest\\.run_tests\\(\\): JLTEST_FAIL_FAST tests   \\|   16     2     18\\s+\\d+\\.\\d+s
+                      test set                                   \\|    3     1      4\\s+\\d+\\.\\d+s
+                        failing tests                            \\|    1     1      2\\s+\\d+\\.\\d+s
+                        some tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                      test set                                   \\|    3     1      4\\s+\\d+\\.\\d+s
+                        failing tests                            \\|    1     1      2\\s+\\d+\\.\\d+s
+                        some tests                               \\|    2            2\\s+\\d+\\.\\d+s
+                    jltest\\.find_tests\\(\\)                          \\|    4            4\\s+\\d+\\.\\d+s
+                    jltest: Pkg\\.test\\(\\) tests                     \\|    2            2\\s+\\d+\\.\\d+s
                 """,
             ),
         )
 
-        @test !isnothing(match(expected_output, output))
+        @test occursin(expected_output, output)
     end
 end
 
@@ -413,11 +405,7 @@ print("jltest/cli_tests: ")
 
         @test output == expected_output
     else
-        test_path = joinpath("jltest", "cli_tests")
-        if Sys.iswindows()
-            test_path = replace(test_path, "\\" => "\\\\")
-        end
-
+        test_path = make_windows_safe_regex(joinpath("jltest", "cli_tests"))
         expected_output = Regex(
             strip(
                 """
@@ -443,6 +431,6 @@ print("jltest/cli_tests: ")
             ),
         )
 
-        @test !isnothing(match(expected_output, output))
+        @test occursin(expected_output, output)
     end
 end
