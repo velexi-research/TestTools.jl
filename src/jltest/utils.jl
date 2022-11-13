@@ -167,7 +167,7 @@ end
 
 Run all tests contained in `test_files`.
 """
-function run_all_tests(pkg::Module, test_files::Vector{<:AbstractString})
+function run_all_tests(test_files::Vector{<:AbstractString})
 
     # Get current directory
     cwd = pwd()
@@ -239,7 +239,6 @@ with or without the `.jl` extension.
   `runtests.jl` from the list of test files that are run. Default: `true`
 """
 function run_tests(
-    pkg::Module,
     tests::Vector;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
@@ -287,15 +286,15 @@ function run_tests(
     # --- Run tests
 
     if isnothing(test_set_type)
-        run_all_tests(pkg, test_files)
+        run_all_tests(test_files)
     else
         if isempty(desc)
             @testset test_set_type begin
-                run_all_tests(pkg, test_files)
+                run_all_tests(test_files)
             end
         else
             @testset test_set_type "$desc" begin
-                run_all_tests(pkg, test_files)
+                run_all_tests(test_files)
             end
         end
     end
@@ -305,7 +304,6 @@ end
 
 # run_tests(tests::AbstractString) method that converts the argument to a Vector{String}
 function run_tests(
-    pkg::Module,
     test::AbstractString;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
@@ -320,7 +318,7 @@ function run_tests(
 
     # --- Run tests
 
-    run_tests(pkg, Vector{String}([test]); desc=desc, test_set_type=test_set_type)
+    run_tests(Vector{String}([test]); desc=desc, test_set_type=test_set_type)
 
     return nothing
 end
