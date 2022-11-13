@@ -178,19 +178,17 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Restore current directory before each test file is run
             cd(cwd)
 
-            # Construct module name
+            # Construct an isolated module to run the tests contained in test_file
             module_name = splitext(relpath(test_file, cwd))[1]
+            testing_module = Module(gensym(module_name))
 
-            # Prepare a clean copy of Main module for current test set
-            test_module = Module(gensym(module_name))
-
-            # Run test, capturing log messages
+            # Run tests, capturing log messages
             println()
             print(module_name, ": ")
             missing_dependency_error = nothing
             log_msg = strip(@capture_err begin
                 try
-                    Base.include(test_module, abspath(test_file))
+                    Base.include(testing_module, abspath(test_file))
                 catch error
                     missing_dependency_error = handle_test_exception(error)
                 end
