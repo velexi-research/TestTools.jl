@@ -303,9 +303,9 @@ function run_tests(
     return nothing
 end
 
-#=
 # run_tests(tests::AbstractString) method that converts the argument to a Vector{String}
 function run_tests(
+    pkg::Module,
     test::AbstractString;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
@@ -320,11 +320,10 @@ function run_tests(
 
     # --- Run tests
 
-    run_tests(Vector{String}([test]); desc=desc, test_set_type=test_set_type)
+    run_tests(pkg, Vector{String}([test]); desc=desc, test_set_type=test_set_type)
 
     return nothing
 end
-=#
 
 """
     find_tests(dir::AbstractString), <keyword arguments>)::Vector{String}
