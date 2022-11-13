@@ -183,7 +183,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
 
             # Prepare a clean copy of Main module for current test set
             test_module = Module(gensym(module_name))
-            Core.eval(test_module, Main)
+            #Core.eval(test_module, Main)
 
             # Run test, capturing log messages
             println()
@@ -191,12 +191,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             missing_dependency_error = nothing
             log_msg = strip(@capture_err begin
                 try
-                    #@eval module $mod
-                    #Base.include($mod, abspath($test_file))
-                    #end
-                    #@eval module $pkg
                     Base.include(test_module, abspath(test_file))
-                    #end
                 catch error
                     missing_dependency_error = handle_test_exception(error)
                 end
