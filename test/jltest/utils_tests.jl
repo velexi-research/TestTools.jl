@@ -274,14 +274,14 @@ end
             ".##$(joinpath(test_dir_relpath, "log_message_tests"))#[0-9]+ " *
             "$(Base.contractuser(log_message_tests_file))"
     else
-        location_prefix =
-            "TestTools.jltest.var" *
-            "\"##$(joinpath(test_dir_relpath, "log_message_tests"))#[0-9]+\" " *
-            "$(Base.contractuser(log_message_tests_file))"
-    end
+        test_path = joinpath(test_dir_relpath, "log_message_tests")
+        if Sys.iswindows()
+            test_path = replace(test_path, "\\" => "\\\\")
+        end
 
-    if Sys.iswindows()
-        location_prefix = replace(location_prefix, "\\" => "\\\\\\\\")
+        location_prefix =
+            "TestTools.jltest.var\"##$(test_path)#[0-9]+\" " *
+            "$(Base.contractuser(log_message_tests_file))"
     end
 
     expected_log_messages_log_message_tests = [
