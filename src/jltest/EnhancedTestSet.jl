@@ -33,7 +33,6 @@ export EnhancedTestSet, EnhancedTestSetException
 # Standard library
 using Test: Test
 using Test: AbstractTestSet, DefaultTestSet, FallbackTestSet
-using Test: Result, Fail, Error, Pass
 
 # External Packages
 using DeepDiffs
@@ -87,7 +86,7 @@ function EnhancedTestSet(
     return EnhancedTestSet{wrap}(description)
 end
 
-function Test.record(ts::EnhancedTestSet{T}, res::Fail) where {T}
+function Test.record(ts::EnhancedTestSet{T}, res::Test.Fail) where {T}
     println("\n=====================================================")
     Test.record(ts.wrapped, res)
 
@@ -110,7 +109,7 @@ function Test.record(ts::EnhancedTestSet{FallbackTestSet}, res::DefaultTestSet)
     return res
  end
 
-function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Fail)
+function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Test.Fail)
     if Distributed.myid() == 1
         println("\n=====================================================")
         printstyled(ts.wrapped.description, ": "; color=:white)
@@ -170,7 +169,7 @@ function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Fail)
     return res, backtrace()
 end
 
-function Test.record(ts::EnhancedTestSet{T}, res::Error) where {T}
+function Test.record(ts::EnhancedTestSet{T}, res::Test.Error) where {T}
     # Ignore errors generated from failed FallbackTestSet
     if occursin(r"^(Test.)*FallbackTestSetException", res.value) || (
         occursin(r"^(TestTools.jltest.)*EnhancedTestSetException", res.value) &&
@@ -185,7 +184,7 @@ function Test.record(ts::EnhancedTestSet{T}, res::Error) where {T}
     return nothing
 end
 
-function Test.record(ts::EnhancedTestSet{T}, res::Pass) where {T}
+function Test.record(ts::EnhancedTestSet{T}, res::Test.Pass) where {T}
     printstyled("."; color=:green)
     Test.record(ts.wrapped, res)
     return res
