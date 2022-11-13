@@ -183,6 +183,10 @@ end
 @testset EnhancedTestSet "jlcodestyle.cli.run()" begin
     # --- Preparations
 
+    # Local variables
+    local check_passed
+    local output
+
     # Get current directory
     cwd = pwd()
 
@@ -195,8 +199,10 @@ end
     cd(test_file_dir)
 
     error = @capture_err begin
-        cli.run([])
+        check_passed = cli.run([])
     end
+
+    @test !check_passed
 
     expected_error = """
                      Style errors found. Files not modified.
@@ -209,8 +215,10 @@ end
     cd(test_file_dir)
 
     output = @capture_out begin
-        cli.run([joinpath(test_file_dir, "blue-style.jl")])
+        check_passed = cli.run([joinpath(test_file_dir, "blue-style.jl")])
     end
+
+    @test check_passed
 
     expected_output = """
                       No style errors found.
@@ -220,12 +228,13 @@ end
     # Case: verbose = true
     cd(test_file_dir)
 
-    local output
     error = @capture_err begin
         output = @capture_out begin
-            cli.run([joinpath(test_file_dir, "blue-style.jl")]; verbose=true)
+            check_passed = cli.run([joinpath(test_file_dir, "blue-style.jl")]; verbose=true)
         end
     end
+
+    @test check_passed
 
     expected_error = """
                      [ Info: Style = BlueStyle
@@ -243,14 +252,15 @@ end
     # Case: `paths` contains only source files without style errors, overwrite = true
     cd(test_file_dir)
 
-    local output
     error = @capture_err begin
         output = @capture_out begin
-            cli.run(
+            check_passed = cli.run(
                 [joinpath(test_file_dir, "blue-style.jl")]; overwrite=true, verbose=true
             )
         end
     end
+
+    @test check_passed
 
     expected_error = """
                      [ Info: Style = BlueStyle
@@ -271,10 +281,9 @@ end
     yasstyle_fail_file = joinpath(test_file_dir, "yasstyle-fail.jl")
     cp(bluestyle_pass_file, yasstyle_fail_file; force=true)
 
-    local output
     error = @capture_err begin
         output = @capture_out begin
-            cli.run(
+            check_passed = cli.run(
                 [yasstyle_fail_file];
                 style=JuliaFormatter.YASStyle(),
                 overwrite=true,
@@ -282,6 +291,8 @@ end
             )
         end
     end
+
+    @test !check_passed
 
     expected_error = """
                      [ Info: Style = YASStyle
