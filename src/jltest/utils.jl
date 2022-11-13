@@ -174,7 +174,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
 
     # Resolve package dependencies required for tests
     @suppress_err begin
-        Pkg.resolve()
+        Pkg.instantiate()
     end
 
     # Run tests files
