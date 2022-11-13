@@ -5,6 +5,7 @@ repos:
       name: jlcodestyle
       entry: jlcodestyle
       language: system
+      args: [--overwrite]
       files: .jl
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.5.0
