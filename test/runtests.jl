@@ -105,8 +105,11 @@ print("jltest/EnhancedTestSet_failing_tests: ")
 
         @test output == expected_output
     else
-        test_path = replace(joinpath("jltest", "EnhancedTestSet_failing_tests"),
-                            "\\" => "\\\\")
+        test_path = joinpath("jltest", "EnhancedTestSet_failing_tests")
+        if Sys.iswindows()
+            test_path = replace(test_path, "\\" => "\\\\")
+        end
+
         expected_output = Regex(
             strip(
                 """
@@ -180,8 +183,11 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
 
         @test output == expected_output
     else
-        test_path = replace(joinpath("jltest", "EnhancedTestSet_nested_test_set_tests"),
-                            "\\" => "\\\\")
+        test_path = joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")
+        if Sys.iswindows()
+            test_path = replace(test_path, "\\" => "\\\\")
+        end
+
         expected_output = Regex(
             strip(
                 """
@@ -292,7 +298,11 @@ print("jltest/utils_tests: ")
 
         @test output == expected_output
     else
-        test_path = replace(joinpath("jltest", "utils_tests"), "\\" => "\\\\")
+        test_path = joinpath("jltest", "utils_tests")
+        if Sys.iswindows()
+            test_path = replace(test_path, "\\" => "\\\\")
+        end
+
         expected_output = Regex(
             strip(
                 """
@@ -405,7 +415,11 @@ print("jltest/cli_tests: ")
 
         @test output == expected_output
     else
-        test_path = replace(joinpath("jltest", "cli_tests"), "\\" => "\\\\")
+        test_path = joinpath("jltest", "cli_tests")
+        if Sys.iswindows()
+            test_path = replace(test_path, "\\" => "\\\\")
+        end
+
         expected_output = Regex(
             strip(
                 """
