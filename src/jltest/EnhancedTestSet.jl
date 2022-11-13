@@ -90,7 +90,7 @@ function Test.record(ts::EnhancedTestSet{T}, res::Test.Fail) where {T}
     println("\n=====================================================")
     Test.record(ts.wrapped, res)
 
-    return nothing
+    return ts
 end
 
 # When recording DefaultTestSet results to an EnhancedTestSet{FallbackTestSet},
@@ -106,8 +106,8 @@ function Test.record(ts::EnhancedTestSet{FallbackTestSet}, res::DefaultTestSet)
         )
     end
 
-    return res
- end
+    return ts
+end
 
 function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Test.Fail)
     if Distributed.myid() == 1
@@ -166,7 +166,7 @@ function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Test.Fail)
         println("\n=====================================================")
     end
     push!(ts.wrapped.results, res)
-    return res, backtrace()
+    return ts, backtrace()
 end
 
 function Test.record(ts::EnhancedTestSet{T}, res::Test.Error) where {T}
@@ -181,13 +181,14 @@ function Test.record(ts::EnhancedTestSet{T}, res::Test.Error) where {T}
     println("\n=====================================================")
     Test.record(ts.wrapped, res)
     println("=====================================================")
-    return nothing
+
+    return ts
 end
 
 function Test.record(ts::EnhancedTestSet{T}, res::Test.Pass) where {T}
     printstyled("."; color=:green)
     Test.record(ts.wrapped, res)
-    return res
+    return ts
 end
 
 Test.record(ts::EnhancedTestSet{T}, res) where {T} = Test.record(ts.wrapped, res)
@@ -195,5 +196,5 @@ Test.record(ts::EnhancedTestSet{T}, res) where {T} = Test.record(ts.wrapped, res
 function Test.finish(ts::EnhancedTestSet{T}) where {T}
     Test.get_testset_depth() == 0 && print("\n\n")
     Test.finish(ts.wrapped)
-    return nothing
+    return ts
 end
