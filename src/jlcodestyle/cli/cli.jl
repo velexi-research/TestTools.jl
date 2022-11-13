@@ -96,8 +96,9 @@ end
 """
     run(paths::Vector; <keyword arguments>)
 
-Run code style checks for files contained in `paths`. Returns `true` if style checks pass;
-; returns `false` otherwise.
+Run code style checks for files contained in `paths`.
+
+Returns `true` if style checks pass; returns `false` otherwise.
 
 # Keyword Arguments
 
