@@ -283,6 +283,9 @@ end
             "TestTools.jltest.var\"##$(test_path)#[0-9]+\" " *
             "$(Base.contractuser(log_message_tests_file))"
     end
+    if Sys.iswindows()
+        location_prefix = replace(location_prefix, "\\" => "\\\\")
+    end
 
     expected_log_messages_log_message_tests = [
         "[ Warning: Single line @warn message test",
