@@ -314,6 +314,8 @@ end
         end)
     end)
 
+    println(output)
+    println(expected_output_log_message_tests)
     @test output == expected_output_log_message_tests
 
     for message in expected_log_messages_log_message_tests
