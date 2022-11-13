@@ -183,7 +183,6 @@ function run_all_tests(test_files::Vector{<:AbstractString})
 
             # Prepare a clean copy of Main module for current test set
             test_module = Module(gensym(module_name))
-            #Core.eval(test_module, Main)
 
             # Run test, capturing log messages
             println()
