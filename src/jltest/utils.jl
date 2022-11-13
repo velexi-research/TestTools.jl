@@ -178,16 +178,16 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Restore current directory before each test file is run
             cd(cwd)
 
-            # Prepare a clean copy of Main module for current test set
-            println()
-            print(module_name, ": ")
-            test_module = Module(module_name, false, false)
-            Core.eval(test_module, Main)
-
             # Construct module name
             module_name = splitext(relpath(test_file, cwd))[1]
 
+            # Prepare a clean copy of Main module for current test set
+            test_module = Module(gensym(module_name), false, false)
+            Core.eval(test_module, Main)
+
             # Run test, capturing log messages
+            println()
+            print(module_name, ": ")
             missing_dependency_error = nothing
             log_msg = strip(@capture_err begin
                 try
