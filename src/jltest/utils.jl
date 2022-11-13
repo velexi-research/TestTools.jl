@@ -24,12 +24,13 @@ export find_tests, run_tests
 
 # Standard library
 using Logging
+import Pkg
 using Test
 using Test: AbstractTestSet
 
 # External packages
 using OrderedCollections: OrderedDict
-using Suppressor: @capture_err
+using Suppressor: @capture_err, @suppress_err
 
 # --- Private utility functions
 
@@ -170,6 +171,11 @@ function run_all_tests(test_files::Vector{<:AbstractString})
 
     # Get current directory
     cwd = pwd()
+
+    # Resolve package dependencies required for tests
+    @suppress_err begin
+        Pkg.resolve()
+    end
 
     # Run tests files
     if !isempty(test_files)
