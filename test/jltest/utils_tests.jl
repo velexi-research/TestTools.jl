@@ -281,7 +281,7 @@ end
     end
 
     if Sys.iswindows()
-        location_prefix = replace(location_prefix, "\\" => "\\\\")
+        location_prefix = replace(location_prefix, "\\" => "\\\\\\\\")
     end
 
     expected_log_messages_log_message_tests = [
@@ -314,8 +314,6 @@ end
         end)
     end)
 
-    println(output)
-    println(expected_output_log_message_tests)
     @test output == expected_output_log_message_tests
 
     for message in expected_log_messages_log_message_tests
