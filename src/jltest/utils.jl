@@ -167,15 +167,10 @@ end
 
 Run all tests contained in `test_files`.
 """
-function run_all_tests(test_files::Vector{<:AbstractString})
+function run_all_tests(pkg::Module, test_files::Vector{<:AbstractString})
 
     # Get current directory
     cwd = pwd()
-
-    # Resolve package dependencies required for tests
-    @suppress_err begin
-        Pkg.instantiate()
-    end
 
     # Run tests files
     if !isempty(test_files)
@@ -193,8 +188,11 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             missing_dependency_error = nothing
             log_msg = strip(@capture_err begin
                 try
-                    @eval module $mod
-                    Base.include($mod, abspath($test_file))
+                    #@eval module $mod
+                    #Base.include($mod, abspath($test_file))
+                    #end
+                    @eval module $pkg
+                    Base.include($pkg, abspath($test_file))
                     end
                 catch error
                     missing_dependency_error = handle_test_exception(error)
@@ -241,6 +239,7 @@ with or without the `.jl` extension.
   `runtests.jl` from the list of test files that are run. Default: `true`
 """
 function run_tests(
+    pkg::Module,
     tests::Vector;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
@@ -288,15 +287,15 @@ function run_tests(
     # --- Run tests
 
     if isnothing(test_set_type)
-        run_all_tests(test_files)
+        run_all_tests(pkg, test_files)
     else
         if isempty(desc)
             @testset test_set_type begin
-                run_all_tests(test_files)
+                run_all_tests(pkg, test_files)
             end
         else
             @testset test_set_type "$desc" begin
-                run_all_tests(test_files)
+                run_all_tests(pkg, test_files)
             end
         end
     end
@@ -304,6 +303,7 @@ function run_tests(
     return nothing
 end
 
+#=
 # run_tests(tests::AbstractString) method that converts the argument to a Vector{String}
 function run_tests(
     test::AbstractString;
@@ -324,6 +324,7 @@ function run_tests(
 
     return nothing
 end
+=#
 
 """
     find_tests(dir::AbstractString), <keyword arguments>)::Vector{String}
