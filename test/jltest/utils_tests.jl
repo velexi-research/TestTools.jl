@@ -614,4 +614,8 @@ end
 # --- Emit message about expected failures and errors
 
 println()
-@info "For $(basename(@__FILE__)), 13 failures and 0 errors are expected."
+if VERSION < v"1.8-"
+    @info "For $(basename(@__FILE__)), 13 failures and 0 errors are expected."
+else
+    @info "For $(basename(@__FILE__)), 13 failures and 1 error are expected."
+end
