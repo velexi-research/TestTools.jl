@@ -105,10 +105,12 @@ print("jltest/EnhancedTestSet_failing_tests: ")
 
         @test output == expected_output
     else
+        test_path = replace(joinpath("jltest", "EnhancedTestSet_failing_tests"),
+                            "\\" => "\\\\")
         expected_output = Regex(
             strip(
                 """
-                $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......
+                $(test_path): .......
 
 
                 Test Summary:                                \\| Pass  Fail  Error  Total\\s+Time
@@ -180,10 +182,12 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
 
         @test output == expected_output
     else
+        test_path = replace(joinpath("jltest", "EnhancedTestSet_nested_test_set_tests"),
+                            "\\" => "\\\\")
         expected_output = Regex(
             strip(
                 """
-                $(joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")): ..
+                $(test_path): ..
 
 
                 Test Summary:                                         \\| Pass  Fail  Total\\s+Time
@@ -290,10 +294,11 @@ print("jltest/utils_tests: ")
 
         @test output == expected_output
     else
+        test_path = replace(joinpath("jltest", "utils_tests"), "\\" => "\\\\")
         expected_output = Regex(
             strip(
                 """
-                $(joinpath("jltest", "utils_tests")): .........................................................
+                $(test_path): .........................................................
 
 
                 Test Summary:                                    \\| Pass  Fail  Error  Total\\s+Time
@@ -400,10 +405,11 @@ print("jltest/cli_tests: ")
 
         @test output == expected_output
     else
+        test_path = replace(joinpath("jltest", "cli_tests"), "\\" => "\\\\")
         expected_output = Regex(
             strip(
                 """
-                $(joinpath("jltest", "cli_tests")): ......................................
+                $(test_path): ......................................
 
 
                 Test Summary:                     \\| Pass  Fail  Total\\s+Time
