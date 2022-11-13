@@ -125,6 +125,8 @@ print("jltest/EnhancedTestSet_failing_tests: ")
             ),
         )
 
+        println(output)
+        println(expected_output)
         @test !isnothing(match(expected_output, output))
     end
 end
