@@ -178,6 +178,11 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Restore current directory before each test file is run
             cd(cwd)
 
+            # Prepare a clean copy of Main module for current test set
+            main_module = copy(Main)
+            println(main_module == Main)
+            println(main_module === Main)
+
             # Construct module name
             module_name = splitext(relpath(test_file, cwd))[1]
 
@@ -192,7 +197,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
                     #Base.include($mod, abspath($test_file))
                     #end
                     #@eval module $pkg
-                    Base.include(Main, abspath(test_file))
+                    Base.include(main_module, abspath(test_file))
                     #end
                 catch error
                     missing_dependency_error = handle_test_exception(error)
