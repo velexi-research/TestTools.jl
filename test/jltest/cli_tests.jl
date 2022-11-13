@@ -219,44 +219,42 @@ end
     expected_output_some_tests_no_testset = "$(joinpath(test_dir_relpath, "some_tests_no_testset")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
-    expected_output_failing_tests = strip(
-        """
-        $(joinpath(test_dir_relpath, "failing_tests")): .
-        =====================================================
-        failing tests: Test Failed at $(failing_tests_file):27
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests = Regex(
+        strip("""
+              $(joinpath(test_dir_relpath, "failing_tests")): .
+              =====================================================
+              failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                Expression: 2 == 1
+                 Evaluated: 2 == 1
 
-        Stacktrace:
-         [1]
-        """
+              Stacktrace:
+              """)
     )
 
-    expected_output_failing_tests_fail_fast = strip(
-        """
-        $(joinpath(test_dir_relpath, "failing_tests")): .
-        =====================================================
-        Test Failed at $(failing_tests_file):27
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests_fail_fast = Regex(
+        strip("""
+              $(joinpath(test_dir_relpath, "failing_tests")): .
+              =====================================================
+              Test Failed at $(failing_tests_file):[0-9]+
+                Expression: 2 == 1
+                 Evaluated: 2 == 1
 
-        =====================================================
-        Error During Test at
-        """
+              =====================================================
+              Error During Test at
+              """)
     )
 
     failing_tests_no_testset_file = joinpath(test_dir, "failing_tests_no_testset.jl")
-    expected_output_failing_tests_no_testset = strip(
-        """
-        $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
-        =====================================================
-        All tests: Test Failed at $(failing_tests_no_testset_file):26
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests_no_testset = Regex(
+        strip("""
+              $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
+              =====================================================
+              All tests: Test Failed at $(failing_tests_no_testset_file):[0-9]+
+                Expression: 2 == 1
+                 Evaluated: 2 == 1
 
-        Stacktrace:
-          [1]
-        """
+              Stacktrace:
+              """)
     )
 
     more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
@@ -355,31 +353,29 @@ end
 
     @test isnothing(error)
 
-    expected_output_failing_tests = strip(
-        """
-        failing_tests: .
-        =====================================================
-        failing tests: Test Failed at $(failing_tests_file):27
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests = Regex(
+        strip("""
+              failing_tests: .
+              =====================================================
+              failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                Expression: 2 == 1
+                 Evaluated: 2 == 1
 
-        Stacktrace:
-         [1]
-        """
+              Stacktrace:
+              """)
     )
     @test startswith(output, expected_output_failing_tests)
 
-    expected_output_failing_tests_no_testset = strip(
-        """
-        failing_tests_no_testset: .
-        =====================================================
-        All tests: Test Failed at $(failing_tests_no_testset_file):26
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests_no_testset = Regex(
+        strip("""
+              failing_tests_no_testset: .
+              =====================================================
+              All tests: Test Failed at $(failing_tests_no_testset_file):[0-9]+
+                Expression: 2 == 1
+                 Evaluated: 2 == 1
 
-        Stacktrace:
-          [1]
-        """
+              Stacktrace:
+              """)
     )
     @test occursin(expected_output_failing_tests_no_testset, output)
 
