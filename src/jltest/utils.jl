@@ -85,7 +85,7 @@ function get_test_statistics(test_set::DefaultTestSet)
     stats = get_test_statistics(nothing)
 
     # Get cumulative statistics for `test_set`
-    counts = Test.get_test_counts(test_set.wrapped)
+    counts = Test.get_test_counts(test_set)
     stats[:pass] = counts[5]
     stats[:fail] = counts[6]
     stats[:error] = counts[7]
