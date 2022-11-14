@@ -29,131 +29,9 @@ using Test: AbstractTestSet
 
 # External packages
 using OrderedCollections: OrderedDict
-using Suppressor: @capture_err
+using Suppressor: @capture_err, @suppress_err
 
 # --- Private utility functions
-
-"""
-    reemit_log_msg(messages::AbstractString)
-
-Remove missing dependency warnings from log messages and reemit them.
-"""
-function reemit_log_msg(messages::AbstractString)
-
-    # --- Preparations
-
-    # Get lines of message
-    lines = split(messages, '\n')
-
-    # --- Extract, reformat, and re-emit messages
-
-    message_finished = true
-    message_lines = nothing
-    for i in 1:length(lines)
-
-        # --- Extract next log message
-
-        if message_finished
-            message_lines = [lines[i]]
-
-            # Check for multi-line message
-            if startswith(lines[i], "┌ ")
-                message_finished = false
-            end
-
-        else
-            push!(message_lines, lines[i])
-
-            # Check for end of multi-line message
-            if startswith(lines[i], "└ ")
-                message_finished = true
-            end
-        end
-
-        if message_finished
-
-            # --- Skip missing dependency warning
-
-            if occursin(
-                r"^┌ Warning: Package TestTools does not have \S* in its dependencies:",
-                message_lines[1],
-            )
-                continue
-            end
-
-            # --- Preparations
-
-            # Get log level
-            log_level = Logging.Warn
-            if occursin("Info", message_lines[1])
-                log_level = Logging.Info
-            elseif occursin("Debug", message_lines[1])
-                log_level = Logging.Debug
-            end
-
-            # --- Reformat message
-
-            # Reformat first line
-            if startswith(message_lines[1], "┌ Warning: ")
-                message_lines[1] = replace(message_lines[1], "┌ Warning: " => "")
-            elseif startswith(message_lines[1], "[ Warning: ")
-                message_lines[1] = replace(message_lines[1], "[ Warning: " => "")
-            elseif startswith(message_lines[1], "┌ Info: ")
-                message_lines[1] = replace(message_lines[1], "┌ Info: " => "")
-            elseif startswith(message_lines[1], "[ Info: ")
-                message_lines[1] = replace(message_lines[1], "[ Info: " => "")
-            elseif startswith(message_lines[1], "┌ Debug: ")
-                message_lines[1] = replace(message_lines[1], "┌ Debug: " => "")
-            elseif startswith(message_lines[1], "[ Debug: ")
-                message_lines[1] = replace(message_lines[1], "[ Debug: " => "")
-            end
-
-            # Reformat middle lines
-            for i in 2:(length(message_lines) - 1)
-                message_lines[i] = replace(message_lines[i], "│ " => "")
-            end
-
-            # Reformat last line of message
-            message_lines[end] = replace(message_lines[end], "└ " => "")
-
-            # --- Emit message
-
-            message = join(message_lines, '\n')
-            @logmsg log_level message _module = nothing _file = nothing _group = nothing
-        end
-    end
-end
-
-"""
-    handle_test_exception(error::Base.error)
-
-Handle exception thrown when running a test file. If `error` is a missing package
-dependency, construct a LoadError to throw outside of the catch block. Otherwise, rethrow
-the error.
-"""
-function handle_test_exception(error::Exception)
-    if error isa LoadError && error.error isa ArgumentError
-        match_results = match(
-            r".*Package TestTools does not have (.*?) in its dependencies:.*",
-            error.error.msg,
-        )
-
-        if !isnothing(match_results)
-            message = strip(
-                """
-                The test environment is missing $(match_results[1]) from its dependencies.
-                Error occurred at $(error.file):$(error.line)
-                """
-            )
-            return ErrorException(message)
-        end
-    end
-
-    # Not a missing dependency error, so rethrow it.
-    rethrow()
-
-    return nothing
-end
 
 """
     run_all_tests(test_files::Vector{<:AbstractString})
@@ -171,34 +49,53 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Restore current directory before each test file is run
             cd(cwd)
 
-            # Construct module name
+            # Construct an isolated module to run the tests contained in test_file
             module_name = splitext(relpath(test_file, cwd))[1]
+            testing_module = Module(gensym(module_name))
 
-            # Run test, capturing log messages
+            # Run tests, capturing log messages
             println()
             print(module_name, ": ")
-            mod = gensym(module_name)
-            missing_dependency_error = nothing
-            log_msg = strip(@capture_err begin
-                try
-                    @eval module $mod
-                    Base.include($mod, abspath($test_file))
-                    end
-                catch error
-                    missing_dependency_error = handle_test_exception(error)
-                end
-            end)
-
-            if !isnothing(missing_dependency_error)
-                throw(missing_dependency_error)
-            end
-
-            # Suppress warnings about missing TestTools dependencies
-            if !isempty(log_msg)
-                reemit_log_msg(log_msg)
-            end
+            Base.include(testing_module, abspath(test_file))
         end
     end
+end
+
+"""
+    get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
+
+Compute test statistics for `test_set`.
+"""
+function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
+    # Initialize test statistics
+    stats = get_test_statistics(nothing)
+
+    # Get cumulative statistics for `test_set`
+    counts = Test.get_test_counts(test_set.wrapped)
+    stats[:pass] = counts[1] + counts[5]
+    stats[:fail] = counts[2] + counts[6]
+    stats[:error] = counts[3] + counts[7]
+    stats[:broken] = counts[4] + counts[8]
+
+    return stats
+end
+
+function get_test_statistics(test_set::DefaultTestSet)
+    # Initialize test statistics
+    stats = get_test_statistics(nothing)
+
+    # Get cumulative statistics for `test_set`
+    counts = Test.get_test_counts(test_set)
+    stats[:pass] = counts[1] + counts[5]
+    stats[:fail] = counts[2] + counts[6]
+    stats[:error] = counts[3] + counts[7]
+    stats[:broken] = counts[4] + counts[8]
+
+    return stats
+end
+
+function get_test_statistics(test_set::Nothing)
+    return Dict(:pass => 0, :fail => 0, :error => 0, :broken => 0)
 end
 
 # --- Functions/Methods
@@ -210,6 +107,9 @@ end
 Run tests in the list of files or modules provided in `tests`. If `tests` is an empty list
 or an empty string, an `ArgumentError` is thrown. File names in `tests` may be specified
 with or without the `.jl` extension.
+
+Returns a Dict containing statistis test statistics: total number of passed tests,
+failed tests, errors, and broken tests.
 
 # Keyword Arguments
 
@@ -280,19 +180,22 @@ function run_tests(
 
     if isnothing(test_set_type)
         run_all_tests(test_files)
+        test_results = nothing
     else
         if isempty(desc)
-            @testset test_set_type begin
+            test_results = @testset test_set_type begin
                 run_all_tests(test_files)
             end
         else
-            @testset test_set_type "$desc" begin
+            test_results = @testset test_set_type "$desc" begin
                 run_all_tests(test_files)
             end
         end
     end
 
-    return nothing
+    test_stats = get_test_statistics(test_results)
+
+    return test_stats
 end
 
 # run_tests(tests::AbstractString) method that converts the argument to a Vector{String}
@@ -311,9 +214,7 @@ function run_tests(
 
     # --- Run tests
 
-    run_tests(Vector{String}([test]); desc=desc, test_set_type=test_set_type)
-
-    return nothing
+    return run_tests(Vector{String}([test]); desc=desc, test_set_type=test_set_type)
 end
 
 """

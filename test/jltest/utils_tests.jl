@@ -34,6 +34,16 @@ using Suppressor
 # Local modules
 using TestTools.jltest
 
+# --- Helper functions
+
+function make_windows_safe_regex(s::AbstractString)
+    if Sys.iswindows()
+        s = replace(s, "\\" => "\\\\")
+    end
+
+    return s
+end
+
 # --- Tests
 
 @testset EnhancedTestSet "jltest.run_tests(): basic tests" begin
@@ -51,31 +61,31 @@ using TestTools.jltest
     expected_output_some_tests_no_testset = "$(joinpath(test_dir_relpath, "some_tests_no_testset")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
-    expected_output_failing_tests = strip(
-        """
-        $(joinpath(test_dir_relpath, "failing_tests")): .
-        =====================================================
-        failing tests: Test Failed at $(failing_tests_file):27
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests = Regex(
+        make_windows_safe_regex(strip("""
+                            $(joinpath(test_dir_relpath, "failing_tests")): .
+                            =====================================================
+                            failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                              Expression: 2 == 1
+                               Evaluated: 2 == 1
 
-        Stacktrace:
-         [1]
-        """
+                            Stacktrace:
+                            """))
     )
 
     failing_tests_no_testset_file = joinpath(test_dir, "failing_tests_no_testset.jl")
-    expected_output_failing_tests_no_testset = strip(
-        """
-        $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
-        =====================================================
-        test set: Test Failed at $(failing_tests_no_testset_file):26
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests_no_testset = Regex(
+        make_windows_safe_regex(
+            strip("""
+                  $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
+                  =====================================================
+                  test set: Test Failed at $(failing_tests_no_testset_file):[0-9]+
+                    Expression: 2 == 1
+                     Evaluated: 2 == 1
 
-        Stacktrace:
-          [1]
-        """
+                  Stacktrace:
+                  """)
+        ),
     )
 
     more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
@@ -85,24 +95,39 @@ using TestTools.jltest
 
     # `tests` contains tests named with ".jl" extension
     tests = [some_tests_file]
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 2, :fail => 0, :error => 0, :broken => 0)
     @test output == expected_output_some_tests
 
     # `tests` contains tests named without ".jl" extension
     some_tests_no_testset_file_without_extension = some_tests_no_testset_file[1:(end - 3)]
     tests = [some_tests_no_testset_file_without_extension]
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 2, :fail => 0, :error => 0, :broken => 0)
     @test output == expected_output_some_tests_no_testset
 
     # `tests` contains only a directory
     tests = [test_dir]
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 8, :fail => 2, :error => 0, :broken => 0)
 
     expected_output_lines = [
         expected_output_some_tests,
@@ -117,9 +142,16 @@ using TestTools.jltest
 
     # `tests` contains both directories and files
     tests = [test_dir, some_tests_file]
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
+
+    # Note: if the file appears in `tests` multiple times, its test statistics are counted
+    #       multiple times
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 10, :fail => 2, :error => 0, :broken => 0)
 
     expected_output_lines = [
         expected_output_some_tests,
@@ -143,10 +175,14 @@ using TestTools.jltest
 
     # `tests` is a string
     tests = some_tests_file
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
 
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 2, :fail => 0, :error => 0, :broken => 0)
     @test output == expected_output_some_tests
 
     # `tests` is empty string
@@ -166,26 +202,48 @@ using TestTools.jltest
 
     # test_set_type
     tests = [failing_tests_file]
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests; test_set_type=DefaultTestSet)
+        test_stats = run_tests(tests; test_set_type=DefaultTestSet)
     end)
-    expected_prefix =
-        "$(joinpath(test_dir_relpath, "failing_tests")): failing tests" *
-        ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):27"
+    expected_prefix = Regex(
+        make_windows_safe_regex(
+            strip(
+                "$(joinpath(test_dir_relpath, "failing_tests")): failing tests" *
+                ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):[0-9]+",
+            ),
+        ),
+    )
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 1, :fail => 1, :error => 0, :broken => 0)
+
     @test startswith(output, expected_prefix)
 
     # test_set_type = nothing
     tests = [failing_tests_file]
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests; test_set_type=nothing)
+        test_stats = run_tests(tests; test_set_type=nothing)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 0, :fail => 0, :error => 0, :broken => 0)
+
     @test startswith(output, expected_output_failing_tests)
 
     # recursive = false
     tests = [test_dir]
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests; recursive=false)
+        test_stats = run_tests(tests; recursive=false)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 6, :fail => 2, :error => 0, :broken => 0)
 
     expected_output_lines = [
         expected_output_some_tests,
@@ -200,9 +258,14 @@ using TestTools.jltest
 
     # exclude_runtests = false
     tests = [test_dir]
+    local test_stats = nothing
     output = strip(@capture_out begin
-        run_tests(tests; exclude_runtests=false)
+        test_stats = run_tests(tests; exclude_runtests=false)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 8, :fail => 2, :error => 0, :broken => 0)
 
     expected_output_lines = [
         expected_output_some_tests,
@@ -230,16 +293,39 @@ end
     env_julia_debug_save = get(ENV, "JULIA_DEBUG", nothing)
     ENV["JULIA_DEBUG"] = "all"
 
-    # Precompute commonly used values
+    # --- Tests
+
+    # ------ Case: "Package TestTools does not have ... in its dependencies" warning
+    #        suppressed
+
+    local output = ""
+    local log_msg = ""
+    tests = [joinpath(test_dir, "missing_dependencies_tests.jl")]
+    log_msg = strip(@capture_err begin
+        output = strip(@capture_out begin
+            run_tests(tests)
+        end)
+    end)
+
+    expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+    @test output == expected_output_missing_dependencies_tests
+
+    expected_log_messages_missing_dependencies_tests = "[ Info: Log message that isn't about a missing dependency"
+    @test occursin(expected_log_messages_missing_dependencies_tests, log_msg)
+
+    # ------ Case: only non-missing dependency log messages
+
     log_message_tests_file = joinpath(test_dir, "log_message_tests.jl")
     expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
 
-    location_prefix =
-        "TestTools.jltest.##$(joinpath(test_dir_relpath, "log_message_tests"))#[0-9]+ " *
-        "$(Base.contractuser(log_message_tests_file))"
-    if Sys.iswindows()
-        location_prefix = replace(location_prefix, "\\" => "\\\\")
+    test_path = joinpath(test_dir_relpath, "log_message_tests")
+    if VERSION < v"1.8-"
+        location_prefix = "Main.##$(test_path)#[0-9]+ $(Base.contractuser(log_message_tests_file))"
+    else
+        test_path = make_windows_safe_regex(test_path)
+        location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(Base.contractuser(log_message_tests_file))"
     end
+    location_prefix = make_windows_safe_regex(location_prefix)
 
     expected_log_messages_log_message_tests = [
         "[ Warning: Single line @warn message test",
@@ -264,25 +350,8 @@ end
                     """)),
     ]
 
-    missing_dependencies_tests_file = joinpath(test_dir, "missing_dependencies_tests.jl")
-    expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
-    expected_log_messages_missing_dependencies_tests = "[ Info: Non-missing dependency log message"
-
-    # --- Tests
-
-    local output
-
-    # Case: "Package TestTools does not have ... in its dependencies" warning suppressed
-    tests = [missing_dependencies_tests_file]
-    log_msg = strip(@capture_err begin
-        output = strip(@capture_out begin
-            run_tests(tests)
-        end)
-    end)
-    @test output == expected_output_missing_dependencies_tests
-    @test occursin(expected_log_messages_missing_dependencies_tests, log_msg)
-
-    # Case: only non-missing dependency log messages
+    local output = ""
+    local log_msg = ""
     tests = [log_message_tests_file]
     log_msg = strip(@capture_err begin
         output = strip(@capture_out begin
@@ -387,30 +456,29 @@ end
     expected_output_some_tests = "$(joinpath(test_dir_relpath, "some_tests")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
-    expected_output_failing_tests = strip(
-        """
-        $(joinpath(test_dir_relpath, "failing_tests")): .
-        =====================================================
-        failing tests: Test Failed at $(failing_tests_file):27
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests = Regex(
+        make_windows_safe_regex(strip("""
+                            $(joinpath(test_dir_relpath, "failing_tests")): .
+                            =====================================================
+                            failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                              Expression: 2 == 1
+                               Evaluated: 2 == 1
 
-        Stacktrace:
-         [1]
-        """
+                            Stacktrace:
+                            """))
     )
 
-    expected_output_failing_tests_fail_fast = strip(
-        """
-        $(joinpath(test_dir_relpath, "failing_tests")): .
-        =====================================================
-        Test Failed at $(failing_tests_file):27
-          Expression: 2 == 1
-           Evaluated: 2 == 1
+    expected_output_failing_tests_fail_fast = Regex(
+        make_windows_safe_regex(strip("""
+                            $(joinpath(test_dir_relpath, "failing_tests")): .
+                            =====================================================
+                            Test Failed at $(failing_tests_file):[0-9]+
+                              Expression: 2 == 1
+                               Evaluated: 2 == 1
 
-        =====================================================
-        Error During Test at
-        """
+                            =====================================================
+                            Error During Test at
+                            """))
     )
 
     more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
@@ -457,7 +525,7 @@ end
         ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
     end
 
-    @test startswith(output, expected_output_failing_tests)
+    @test occursin(r"^" * expected_output_failing_tests, output)
     @test occursin(expected_output_some_tests, output)
     @test isnothing(error)
 
@@ -537,33 +605,47 @@ end
 
     # --- Tests
 
-    test_error = strip(@capture_out begin
-        try
-            @suppress_err begin
-                Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
-            end
-        catch process_error
-            @test process_error isa ProcessFailedException
-        end
-    end)
-
     src_error_file = abspath(
         joinpath(dirname(dirname(@__DIR__)), "src", "jltest", "utils.jl")
     )
-    test_error_file = joinpath(test_pkg_dir, "test", "missing_dependency_tests.jl")
-    expected_test_error = strip(
-        """
-        missing_dependency_tests: 
-        =====================================================
-        test set: Error During Test at $(src_error_file):285
-          Got exception outside of a @test
-          The test environment is missing InteractiveUtils from its dependencies.
-          Error occurred at $(test_error_file):22
-          Stacktrace:
-            [1]
-        """
+    expected_test_error = Regex(
+        make_windows_safe_regex(
+            strip(
+                """
+                missing_dependency_tests: 
+                =====================================================
+                test set: Error During Test at $(src_error_file):[0-9]+
+                  Got exception outside of a @test
+                  LoadError: ArgumentError: Package InteractiveUtils not found in current path.
+                """,
+            ),
+        ),
     )
-    @test startswith(test_error, expected_test_error)
+
+    local test_error = ""
+    if VERSION < v"1.8-"
+        test_error = strip(@capture_out begin
+            try
+                @suppress_err begin
+                    Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+                end
+            catch process_error
+                @test process_error isa ProcessFailedException
+            end
+        end)
+
+        @test startswith(test_error, expected_test_error)
+    else
+        test_error = strip(@capture_err begin
+            try
+                Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+            catch process_error
+                @test process_error isa ProcessFailedException
+            end
+        end)
+
+        @test occursin(expected_test_error, test_error)
+    end
 
     # --- Clean up
 

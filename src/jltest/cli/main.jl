@@ -35,10 +35,16 @@ if args["version"]
 end
 
 # Run main program
-jltest.cli.run(
+tests_passed = jltest.cli.run(
     args["tests"];
     fail_fast=args["fail-fast"],
     use_wrapper=!args["no-wrapper"],
     recursive=!args["no-recursion"],
     verbose=args["verbose"],
 )
+
+if tests_passed
+    exit(0)
+else
+    exit(1)
+end

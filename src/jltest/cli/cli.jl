@@ -98,6 +98,8 @@ end
 
 Run unit tests defined in the list of files or modules provided in `tests`.
 
+Returns `true` if all tests pass; returns `false` otherwise.
+
 # Keyword Arguments
 
 * `fail_fast::Bool`: flag indicating whether or not to stop testing at first failure.
@@ -163,9 +165,11 @@ function run(
         tests = find_tests(pwd())
     end
 
-    run_tests(tests; desc="All tests", test_set_type=test_set_type, recursive=recursive)
+    test_stats = run_tests(
+        tests; desc="All tests", test_set_type=test_set_type, recursive=recursive
+    )
 
-    return nothing
+    return (test_stats[:fail] == 0 && test_stats[:error] == 0 && test_stats[:broken] == 0)
 end
 
 end  # End of jltest.cli module

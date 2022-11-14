@@ -34,4 +34,3 @@
     * Performance
         * `jlcodestyle`: faster startup through the use of tuned Julia command-line options
         * `format.jl`: no command-line option tuning to reduce startup time
-

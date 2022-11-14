@@ -33,7 +33,6 @@ export EnhancedTestSet, EnhancedTestSetException
 # Standard library
 using Test: Test
 using Test: AbstractTestSet, DefaultTestSet, FallbackTestSet
-using Test: Result, Fail, Error, Pass
 
 # External Packages
 using DeepDiffs
@@ -87,14 +86,30 @@ function EnhancedTestSet(
     return EnhancedTestSet{wrap}(description)
 end
 
-function Test.record(ts::EnhancedTestSet{T}, res::Fail) where {T}
+function Test.record(ts::EnhancedTestSet{T}, res::Test.Fail) where {T}
     println("\n=====================================================")
     Test.record(ts.wrapped, res)
 
-    return nothing
+    return ts
 end
 
-function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Fail)
+# When recording DefaultTestSet results to an EnhancedTestSet{FallbackTestSet},
+# throw an exception if there are any failures or errors in the DefaultTestSet.
+function Test.record(ts::EnhancedTestSet{FallbackTestSet}, res::DefaultTestSet)
+    # Check for failures and errors
+    passes, fails, errors, broken, _, _, _, _ = Test.get_test_counts(res)
+    if (fails > 0) || (errors > 0)
+        throw(
+            EnhancedTestSetException(
+                "Failure or error occurred in DefaultTestSet nested within FallbackTestSet."
+            ),
+        )
+    end
+
+    return ts
+end
+
+function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Test.Fail)
     if Distributed.myid() == 1
         println("\n=====================================================")
         printstyled(ts.wrapped.description, ": "; color=:white)
@@ -151,10 +166,10 @@ function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Fail)
         println("\n=====================================================")
     end
     push!(ts.wrapped.results, res)
-    return res, backtrace()
+    return ts, backtrace()
 end
 
-function Test.record(ts::EnhancedTestSet{T}, res::Error) where {T}
+function Test.record(ts::EnhancedTestSet{T}, res::Test.Error) where {T}
     # Ignore errors generated from failed FallbackTestSet
     if occursin(r"^(Test.)*FallbackTestSetException", res.value) || (
         occursin(r"^(TestTools.jltest.)*EnhancedTestSetException", res.value) &&
@@ -166,37 +181,20 @@ function Test.record(ts::EnhancedTestSet{T}, res::Error) where {T}
     println("\n=====================================================")
     Test.record(ts.wrapped, res)
     println("=====================================================")
-    return nothing
+
+    return ts
 end
 
-function Test.record(ts::EnhancedTestSet{T}, res::Pass) where {T}
+function Test.record(ts::EnhancedTestSet{T}, res::Test.Pass) where {T}
     printstyled("."; color=:green)
     Test.record(ts.wrapped, res)
-    return res
+    return ts
 end
 
 Test.record(ts::EnhancedTestSet{T}, res) where {T} = Test.record(ts.wrapped, res)
 
-# When recording DefaultTestSet results to an EnhancedTestSet{FallbackTestSet},
-# throw an exception if there are any failures or errors in the DefaultTestSet.
-#
-# Note: this method is only needed for backward compatibility with Julia<=1.3
-function Test.record(ts::EnhancedTestSet{FallbackTestSet}, res::DefaultTestSet)
-    # Check for failures and errors
-    passes, fails, errors, broken, _, _, _, _ = Test.get_test_counts(res)
-    if (fails > 0) || (errors > 0)
-        throw(
-            EnhancedTestSetException(
-                "Failure or error occurred in DefaultTestSet nested within FallbackTestSet."
-            ),
-        )
-    end
-
-    return res
-end
-
 function Test.finish(ts::EnhancedTestSet{T}) where {T}
     Test.get_testset_depth() == 0 && print("\n\n")
     Test.finish(ts.wrapped)
-    return nothing
+    return ts
 end

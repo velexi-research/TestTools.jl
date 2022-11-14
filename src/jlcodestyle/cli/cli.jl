@@ -98,6 +98,8 @@ end
 
 Run code style checks for files contained in `paths`.
 
+Returns `true` if style checks pass; returns `false` otherwise.
+
 # Keyword Arguments
 
 * `style::JuliaFormatter.AbstractStyle`: code style to apply.
@@ -155,7 +157,7 @@ function run(
         end
     end
 
-    return nothing
+    return check_passed
 end
 
 end  # End of jlcodestyle.cli module
