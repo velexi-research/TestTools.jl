@@ -36,3 +36,4 @@ end
 
 # Run main program
 jlcoverage.cli.run(args["paths"]; verbose=args["verbose"])
+exit(0)
