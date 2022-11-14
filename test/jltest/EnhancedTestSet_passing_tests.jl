@@ -32,18 +32,24 @@ using TestTools.jltest
 # --- Tests
 
 @testset EnhancedTestSet "EnhancedTestSet: Check output dots" begin
+    local test_results_level_1
+    local test_results_level_2_testset_1, test_results_level_2_testset_2
     output = @capture_out begin
-        @testset EnhancedTestSet "top-level tests" begin
-            @testset "2nd-level tests 1" begin
+        test_results_level_1 = @testset EnhancedTestSet "top-level tests" begin
+            test_results_level_2_testset_1 = @testset "2nd-level tests 1" begin
                 @test true
                 @test 1 == 1
             end
-            @testset "2nd-level tests 2" begin
+            test_results_level_2_testset_2 = @testset "2nd-level tests 2" begin
                 @test true
                 @test 1 == 1
             end
         end
     end
+
+    @test test_results_level_1 isa EnhancedTestSet
+    @test test_results_level_2_testset_1 isa EnhancedTestSet
+    @test test_results_level_2_testset_2 isa EnhancedTestSet
 
     @test output == "...."
 end
