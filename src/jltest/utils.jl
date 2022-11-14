@@ -72,10 +72,10 @@ function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
 
     # Get cumulative statistics for `test_set`
     counts = Test.get_test_counts(test_set.wrapped)
-    stats[:pass] = counts[5]
-    stats[:fail] = counts[6]
-    stats[:error] = counts[7]
-    stats[:broken] = counts[8]
+    stats[:pass] = counts[1] + counts[5]
+    stats[:fail] = counts[2] + counts[6]
+    stats[:error] = counts[3] + counts[7]
+    stats[:broken] = counts[4] + counts[8]
 
     return stats
 end
@@ -86,10 +86,10 @@ function get_test_statistics(test_set::DefaultTestSet)
 
     # Get cumulative statistics for `test_set`
     counts = Test.get_test_counts(test_set)
-    stats[:pass] = counts[5]
-    stats[:fail] = counts[6]
-    stats[:error] = counts[7]
-    stats[:broken] = counts[8]
+    stats[:pass] = counts[1] + counts[5]
+    stats[:fail] = counts[2] + counts[6]
+    stats[:error] = counts[3] + counts[7]
+    stats[:broken] = counts[4] + counts[8]
 
     return stats
 end
@@ -214,9 +214,7 @@ function run_tests(
 
     # --- Run tests
 
-    run_tests(Vector{String}([test]); desc=desc, test_set_type=test_set_type)
-
-    return nothing
+    return run_tests(Vector{String}([test]); desc=desc, test_set_type=test_set_type)
 end
 
 """
