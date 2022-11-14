@@ -49,9 +49,6 @@ end
 @testset EnhancedTestSet "jltest.run_tests(): basic tests" begin
     # --- Preparations
 
-    # Local variables
-    local test_stats
-
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
     test_dir_relpath = relpath(test_dir)
@@ -98,6 +95,7 @@ end
 
     # `tests` contains tests named with ".jl" extension
     tests = [some_tests_file]
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests)
     end)
@@ -110,6 +108,7 @@ end
     # `tests` contains tests named without ".jl" extension
     some_tests_no_testset_file_without_extension = some_tests_no_testset_file[1:(end - 3)]
     tests = [some_tests_no_testset_file_without_extension]
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests)
     end)
@@ -121,6 +120,7 @@ end
 
     # `tests` contains only a directory
     tests = [test_dir]
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests)
     end)
@@ -142,6 +142,7 @@ end
 
     # `tests` contains both directories and files
     tests = [test_dir, some_tests_file]
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests)
     end)
@@ -174,6 +175,7 @@ end
 
     # `tests` is a string
     tests = some_tests_file
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests)
     end)
@@ -200,6 +202,7 @@ end
 
     # test_set_type
     tests = [failing_tests_file]
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests; test_set_type=DefaultTestSet)
     end)
@@ -220,6 +223,7 @@ end
 
     # test_set_type = nothing
     tests = [failing_tests_file]
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests; test_set_type=nothing)
     end)
@@ -232,6 +236,7 @@ end
 
     # recursive = false
     tests = [test_dir]
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests; recursive=false)
     end)
@@ -253,6 +258,7 @@ end
 
     # exclude_runtests = false
     tests = [test_dir]
+    local test_stats = nothing
     output = strip(@capture_out begin
         test_stats = run_tests(tests; exclude_runtests=false)
     end)
@@ -289,12 +295,11 @@ end
 
     # --- Tests
 
-    local output
-    local log_msg
-
     # ------ Case: "Package TestTools does not have ... in its dependencies" warning
     #        suppressed
 
+    local output = ""
+    local log_msg = ""
     tests = [joinpath(test_dir, "missing_dependencies_tests.jl")]
     log_msg = strip(@capture_err begin
         output = strip(@capture_out begin
@@ -344,6 +349,8 @@ end
                     """)),
     ]
 
+    local output = ""
+    local log_msg = ""
     tests = [log_message_tests_file]
     log_msg = strip(@capture_err begin
         output = strip(@capture_out begin
@@ -614,7 +621,7 @@ end
         ),
     )
 
-    local test_error
+    local test_error = ""
     if VERSION < v"1.8-"
         test_error = strip(@capture_out begin
             try

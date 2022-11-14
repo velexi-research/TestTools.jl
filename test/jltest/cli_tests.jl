@@ -264,10 +264,12 @@ end
 
     # Case: normal operation
     tests = [some_tests_file, some_tests_no_testset_file]
+    local tests_passed = false
     output = strip(@capture_out begin
-        cli.run(tests)
+        tests_passed = cli.run(tests)
     end)
 
+    @test tests_passed
     @test occursin(expected_output_some_tests, output)
     @test occursin(expected_output_some_tests_no_testset, output)
 
@@ -297,6 +299,7 @@ end
         end
     end)
 
+    @test tests_passed
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
 
@@ -305,14 +308,16 @@ end
 
     # Case: use_wrapper = false, fail_fast = false
     tests = [failing_tests_file, some_tests_no_testset_file]
+    local tests_passed = false
     local error = nothing
     output = strip(@capture_out begin
         try
-            cli.run(tests; use_wrapper=false)
+            tests_passed = cli.run(tests; use_wrapper=false)
         catch error
         end
     end)
 
+    @test tests_passed
     @test isnothing(error)
 
     @test startswith(output, expected_output_failing_tests)
@@ -320,16 +325,20 @@ end
 
     # Case: recursive = false
     tests = [test_dir]
+    local tests_passed = true
     local error = nothing
-    log_msg = strip(@capture_err begin
-        output = strip(@capture_out begin
-            try
-                cli.run(tests; recursive=false)
-            catch error
-            end
-        end)
-    end)
+    log_msg = strip(
+        @capture_err begin
+            output = strip(@capture_out begin
+                try
+                    tests_passed = cli.run(tests; recursive=false)
+                catch error
+                end
+            end)
+        end
+    )
 
+    @test !tests_passed
     @test isnothing(error)
 
     @test startswith(output, expected_output_failing_tests)
@@ -341,16 +350,18 @@ end
     # Case: `tests` is empty
     cd(test_dir)
     tests = []
+    local tests_passed = true
     local error = nothing
     log_msg = strip(@capture_err begin
         output = strip(@capture_out begin
             try
-                cli.run(tests)
+                tests_passed = cli.run(tests)
             catch error
             end
         end)
     end)
 
+    @test !tests_passed
     @test isnothing(error)
 
     expected_output_failing_tests = Regex(

@@ -59,12 +59,12 @@ jltest.run_tests(tests; desc="jltest")
 
 # --- jltest unit tests that have expected failures and errors
 
-local log_message
-local error_type, error_message
-
 # EnhancedTestSet with failing tests
 println()
 test_file = joinpath(@__DIR__, "jltest", "EnhancedTestSet_failing_tests.jl")
+
+local log_message
+local error_type, error_message
 output = strip(
     @capture_out begin
         try
@@ -145,6 +145,9 @@ end
 # EnhancedTestSet with nested test sets
 println()
 test_file = joinpath(@__DIR__, "jltest", "EnhancedTestSet_nested_test_set_tests.jl")
+
+local log_message
+local error_type, error_message
 output = strip(
     @capture_out begin
         try
@@ -218,6 +221,9 @@ end
 # utils.jl
 println()
 test_file = joinpath(@__DIR__, "jltest", "utils_tests.jl")
+
+local log_message
+local error_type, error_message
 output = strip(
     @capture_out begin
         try
@@ -244,19 +250,19 @@ print("jltest/utils_tests: ")
         "[ Info: For utils_tests.jl, 13 failures and 0 errors are expected."
 
     @test error_message ==
-        "Some tests did not pass: 105 passed, 13 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 132 passed, 13 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     if VERSION < v"1.8-"
         expected_output = strip(
             """
-            $(joinpath("jltest", "utils_tests")): ........................................................
+            $(joinpath("jltest", "utils_tests")): ..................................................................................
 
 
             Test Summary:                                    | Pass  Fail  Total
-            jltest                                           |  105    13    118
-              utils tests                                    |  105    13    118
-                jltest.run_tests(): basic tests              |   70    11     81
+            jltest                                           |  132    13    145
+              utils tests                                    |  132    13    145
+                jltest.run_tests(): basic tests              |   97    11    108
                   test set                                   |    2            2
                   test set                                   |    2            2
                   test set                                   |    8     2     10
@@ -300,13 +306,13 @@ print("jltest/utils_tests: ")
         expected_output = Regex(
             strip(
                 """
-                $(test_path): ........................................................
+                $(test_path): ...................................................................................
 
 
                 Test Summary:                                    \\| Pass  Fail  Total\\s+Time
-                jltest                                           \\|  105    13    118\\s+\\d+\\.\\d+s
-                  utils tests                                    \\|  105    13    118\\s+\\d+\\.\\d+s
-                    jltest\\.run_tests\\(\\): basic tests              \\|   70    11     81\\s+\\d+\\.\\d+s
+                jltest                                           \\|  132    13    145\\s+\\d+\\.\\d+s
+                  utils tests                                    \\|  132    13    145\\s+\\d+\\.\\d+s
+                    jltest\\.run_tests\\(\\): basic tests              \\|   97    11    108\\s+\\d+\\.\\d+s
                       test set                                   \\|    2            2\\s+\\d+\\.\\d+s
                       test set                                   \\|    2            2\\s+\\d+\\.\\d+s
                       test set                                   \\|    8     2     10\\s+\\d+\\.\\d+s
@@ -352,6 +358,9 @@ end
 # cli.jl
 println()
 test_file = joinpath(@__DIR__, "jltest", "cli_tests.jl")
+
+local log_message
+local error_type, error_message
 output = strip(
     @capture_out begin
         try
@@ -376,20 +385,20 @@ print("jltest/cli_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 59 passed, 5 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 64 passed, 5 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     if VERSION < v"1.8-"
         expected_output = strip(
             """
-            $(joinpath("jltest", "cli_tests")): ......................................
+            $(joinpath("jltest", "cli_tests")): ...........................................
 
 
             Test Summary:                     | Pass  Fail  Total
-            jltest                            |   59     5     64
-              cli tests                       |   59     5     64
+            jltest                            |   64     5     69
+              cli tests                       |   64     5     69
                 jltest.cli.parse_args()       |   12           12
-                jltest.cli.run(): basic tests |   46     5     51
+                jltest.cli.run(): basic tests |   51     5     56
                   All tests                   |    4            4
                   failing tests               |    1     1      2
                   All tests                   |    6     2      8
@@ -409,14 +418,14 @@ print("jltest/cli_tests: ")
         expected_output = Regex(
             strip(
                 """
-                $(test_path): ......................................
+                $(test_path): ...........................................
 
 
                 Test Summary:                     \\| Pass  Fail  Total\\s+Time
-                jltest                            \\|   59     5     64\\s+\\d+\\.\\d+s
-                  cli tests                       \\|   59     5     64\\s+\\d+\\.\\d+s
+                jltest                            \\|   64     5     69\\s+\\d+\\.\\d+s
+                  cli tests                       \\|   64     5     69\\s+\\d+\\.\\d+s
                     jltest\\.cli\\.parse_args\\(\\)       \\|   12           12\\s+\\d+\\.\\d+s
-                    jltest\\.cli\\.run\\(\\): basic tests \\|   46     5     51\\s+\\d+\\.\\d+s
+                    jltest\\.cli\\.run\\(\\): basic tests \\|   51     5     56\\s+\\d+\\.\\d+s
                       All tests                   \\|    4            4\\s+\\d+\\.\\d+s
                       failing tests               \\|    1     1      2\\s+\\d+\\.\\d+s
                       All tests                   \\|    6     2      8\\s+\\d+\\.\\d+s
