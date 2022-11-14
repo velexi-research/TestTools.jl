@@ -61,6 +61,43 @@ function run_all_tests(test_files::Vector{<:AbstractString})
     end
 end
 
+"""
+    get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
+
+Compute test statistics for `test_set`.
+"""
+function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
+    # Initialize test statistics
+    stats = get_test_statistics(nothing)
+
+    # Get cumulative statistics for `test_set`
+    counts = Test.get_test_counts(test_set.wrapped)
+    stats[:pass] = counts[5]
+    stats[:fail] = counts[6]
+    stats[:error] = counts[7]
+    stats[:broken] = counts[8]
+
+    return stats
+end
+
+function get_test_statistics(test_set::DefaultTestSet)
+    # Initialize test statistics
+    stats = get_test_statistics(nothing)
+
+    # Get cumulative statistics for `test_set`
+    counts = Test.get_test_counts(test_set.wrapped)
+    stats[:pass] = counts[5]
+    stats[:fail] = counts[6]
+    stats[:error] = counts[7]
+    stats[:broken] = counts[8]
+
+    return stats
+end
+
+function get_test_statistics(test_set::Nothing)
+    return Dict(:pass => 0, :fail => 0, :error => 0, :broken => 0)
+end
+
 # --- Functions/Methods
 
 """
@@ -70,6 +107,9 @@ end
 Run tests in the list of files or modules provided in `tests`. If `tests` is an empty list
 or an empty string, an `ArgumentError` is thrown. File names in `tests` may be specified
 with or without the `.jl` extension.
+
+Returns a Dict containing statistis test statistics: total number of passed tests,
+failed tests, errors, and broken tests.
 
 # Keyword Arguments
 
@@ -140,19 +180,22 @@ function run_tests(
 
     if isnothing(test_set_type)
         run_all_tests(test_files)
+        test_results = nothing
     else
         if isempty(desc)
-            @testset test_set_type begin
+            test_results = @testset test_set_type begin
                 run_all_tests(test_files)
             end
         else
-            @testset test_set_type "$desc" begin
+            test_results = @testset test_set_type "$desc" begin
                 run_all_tests(test_files)
             end
         end
     end
 
-    return nothing
+    test_stats = get_test_statistics(test_results)
+
+    return test_stats
 end
 
 # run_tests(tests::AbstractString) method that converts the argument to a Vector{String}
