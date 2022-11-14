@@ -658,12 +658,15 @@ end
     @test :include in names(@__MODULE__; all=true)
 
     # Check that `include()` is functional
-    tests = [joinpath(@__DIR__, "data-include-tests", "include_tests.jl")]
+    test_dir = joinpath(@__DIR__, "data-include-tests")
+    test_dir_relpath = relpath(test_dir)
+
+    test_path = joinpath(test_dir, "include_tests.jl")
     output = strip(@capture_out begin
-        jltest.run_tests(tests)
+        jltest.run_tests(test_path)
     end)
 
-    expected_output = "data-include-tests/include_tests: .."
+    expected_output = "$(joinpath(test_dir_relpath, "include_tests")): .."
     @test output == expected_output
 end
 
