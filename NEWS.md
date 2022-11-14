@@ -2,17 +2,22 @@ TestTools.jl Release Notes
 ==========================
 
 --------------------------------------------------------------------------------------------
-v0.4.0 (2022-11-13)
+v0.4.0 (2022-11-14)
 -------------------
 
 **Enhancements**
+- Improved robustness of testing module isolation.
+- Added test statistic collection to `jltest.run_tests()`
 - Improved formatting of coverage report.
+- Added pass/fail return values for `jltest.cli.run()` and `jlcodestyle.cli.run()`
+- Add exit codes for CLI tools.
 - Added support for Julia v1.8.
 
 **Developer Updates**
 - Improved Makefile (e.g., added "help" target)
 - Added pre-commit hooks.
 - Updated unit tests to pass for Julia v1.8.
+- Improve robustness of unit tests to source code modifications.
 - Reformatted NEWS.md to use same format as TagBot for release notes.
 
 --------------------------------------------------------------------------------------------
