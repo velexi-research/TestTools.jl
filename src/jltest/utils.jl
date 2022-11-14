@@ -52,6 +52,9 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Construct an isolated module to run the tests contained in test_file
             module_name = splitext(relpath(test_file, cwd))[1]
             testing_module = Module(gensym(module_name))
+            @eval testing_module begin
+                include(p) = Base.include(testing_module, p)
+            end
 
             # Run tests, capturing log messages
             println()
