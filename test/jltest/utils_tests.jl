@@ -318,7 +318,7 @@ end
     log_message_tests_file = joinpath(test_dir, "log_message_tests.jl")
     expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
 
-    test_path = make_windows_safe_regex(joinpath(test_dir_relpath, "log_message_tests"))
+    test_path = joinpath(test_dir_relpath, "log_message_tests")
     if VERSION < v"1.8-"
         location_prefix = "Main.##$(test_path)#[0-9]+ $(Base.contractuser(log_message_tests_file))"
     else
