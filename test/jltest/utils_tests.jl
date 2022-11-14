@@ -49,6 +49,9 @@ end
 @testset EnhancedTestSet "jltest.run_tests(): basic tests" begin
     # --- Preparations
 
+    # Local variables
+    local test_stats
+
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
     test_dir_relpath = relpath(test_dir)
@@ -96,23 +99,35 @@ end
     # `tests` contains tests named with ".jl" extension
     tests = [some_tests_file]
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 2, :fail => 0, :error => 0, :broken => 0)
     @test output == expected_output_some_tests
 
     # `tests` contains tests named without ".jl" extension
     some_tests_no_testset_file_without_extension = some_tests_no_testset_file[1:(end - 3)]
     tests = [some_tests_no_testset_file_without_extension]
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 2, :fail => 0, :error => 0, :broken => 0)
     @test output == expected_output_some_tests_no_testset
 
     # `tests` contains only a directory
     tests = [test_dir]
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 8, :fail => 2, :error => 0, :broken => 0)
 
     expected_output_lines = [
         expected_output_some_tests,
@@ -128,8 +143,14 @@ end
     # `tests` contains both directories and files
     tests = [test_dir, some_tests_file]
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
+
+    # Note: if the file appears in `tests` multiple times, its test statistics are counted
+    #       multiple times
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 10, :fail => 2, :error => 0, :broken => 0)
 
     expected_output_lines = [
         expected_output_some_tests,
@@ -154,9 +175,12 @@ end
     # `tests` is a string
     tests = some_tests_file
     output = strip(@capture_out begin
-        run_tests(tests)
+        test_stats = run_tests(tests)
     end)
 
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 2, :fail => 0, :error => 0, :broken => 0)
     @test output == expected_output_some_tests
 
     # `tests` is empty string
@@ -177,7 +201,7 @@ end
     # test_set_type
     tests = [failing_tests_file]
     output = strip(@capture_out begin
-        run_tests(tests; test_set_type=DefaultTestSet)
+        test_stats = run_tests(tests; test_set_type=DefaultTestSet)
     end)
     expected_prefix = Regex(
         make_windows_safe_regex(
@@ -187,20 +211,34 @@ end
             ),
         ),
     )
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 1, :fail => 1, :error => 0, :broken => 0)
+
     @test startswith(output, expected_prefix)
 
     # test_set_type = nothing
     tests = [failing_tests_file]
     output = strip(@capture_out begin
-        run_tests(tests; test_set_type=nothing)
+        test_stats = run_tests(tests; test_set_type=nothing)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 0, :fail => 0, :error => 0, :broken => 0)
+
     @test startswith(output, expected_output_failing_tests)
 
     # recursive = false
     tests = [test_dir]
     output = strip(@capture_out begin
-        run_tests(tests; recursive=false)
+        test_stats = run_tests(tests; recursive=false)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 6, :fail => 2, :error => 0, :broken => 0)
 
     expected_output_lines = [
         expected_output_some_tests,
@@ -216,8 +254,12 @@ end
     # exclude_runtests = false
     tests = [test_dir]
     output = strip(@capture_out begin
-        run_tests(tests; exclude_runtests=false)
+        test_stats = run_tests(tests; exclude_runtests=false)
     end)
+
+    @test test_stats isa Dict
+    @test keys(test_stats) == Set([:pass, :fail, :error, :broken])
+    @test test_stats == Dict(:pass => 8, :fail => 2, :error => 0, :broken => 0)
 
     expected_output_lines = [
         expected_output_some_tests,
