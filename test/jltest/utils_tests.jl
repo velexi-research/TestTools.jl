@@ -324,7 +324,7 @@ end
     else
         location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(Base.contractuser(log_message_tests_file))"
     end
-    location_prefix = make_windows_safe_regex(replace(location_prefix, "\\" => "\\\\"))
+    location_prefix = make_windows_safe_regex(location_prefix)
 
     expected_log_messages_log_message_tests = [
         "[ Warning: Single line @warn message test",
