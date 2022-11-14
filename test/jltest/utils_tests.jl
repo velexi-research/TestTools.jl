@@ -653,6 +653,20 @@ end
     rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
 
+@testset EnhancedTestSet "jltest: `include()` works in testing module" begin
+    # Check that the testing module defines :include
+    @test :include in names(@__MODULE__; all=true)
+
+    # Check that `include()` is functional
+    tests = [joinpath(@__DIR__, "data-include-tests", "include_tests.jl")]
+    output = strip(@capture_out begin
+        jltest.run_tests(tests)
+    end)
+
+    expected_output = "data-include-tests/include_tests: .."
+    @test output == expected_output
+end
+
 # --- Emit message about expected failures and errors
 
 println()
