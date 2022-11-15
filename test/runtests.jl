@@ -49,6 +49,7 @@ cd(@__DIR__)
 
 tests = [
     joinpath(@__DIR__, "pkg_tests.jl"),
+    joinpath(@__DIR__, "jltest", "isolated_test_module_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_passing_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_fail_fast_tests.jl"),
     joinpath(@__DIR__, "jlcodestyle", "cli_tests.jl"),
