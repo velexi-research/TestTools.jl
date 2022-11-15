@@ -4,6 +4,9 @@ TestTools.jl Release Notes
 --------------------------------------------------------------------------------------------
 v0.4.1 (2022-11-15)
 -------------------
+**Enhancements:**
+- Improved robustness of testing module.
+
 **Bug Fixes:**
 - Fixed bug when using `include()` in test files.
 
