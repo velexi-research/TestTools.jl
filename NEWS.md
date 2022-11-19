@@ -2,6 +2,13 @@ TestTools.jl Release Notes
 ==========================
 
 --------------------------------------------------------------------------------------------
+v0.4.2 (2022-11-18)
+-------------------
+**Bug Fixes:**
+- Fixed bug when get_test_statistics() is called with an argument that is not a
+  DefaultTestSet, EnhancedTestSet{DefaultTestSet}, or nothing.
+
+--------------------------------------------------------------------------------------------
 v0.4.1 (2022-11-15)
 -------------------
 **Enhancements:**

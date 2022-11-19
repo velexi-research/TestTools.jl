@@ -251,18 +251,18 @@ print("jltest/utils_tests: ")
         "[ Info: For utils_tests.jl, 13 failures and 0 errors are expected."
 
     @test error_message ==
-        "Some tests did not pass: 132 passed, 13 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 140 passed, 13 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     if VERSION < v"1.8-"
         expected_output = strip(
             """
-            $(joinpath("jltest", "utils_tests")): ..................................................................................
+            $(joinpath("jltest", "utils_tests")): ......................................................................................
 
 
             Test Summary:                                    | Pass  Fail  Total
-            jltest                                           |  132    13    145
-              utils tests                                    |  132    13    145
+            jltest                                           |  140    13    153
+              utils tests                                    |  140    13    153
                 jltest.run_tests(): basic tests              |   97    11    108
                   test set                                   |    2            2
                   test set                                   |    2            2
@@ -298,6 +298,7 @@ print("jltest/utils_tests: ")
                     some tests                               |    2            2
                 jltest.find_tests()                          |    4            4
                 jltest: Pkg.test() tests                     |    2            2
+                jltest.get_test_statistics()                 |    8            8
             """,
         )
 
@@ -307,12 +308,12 @@ print("jltest/utils_tests: ")
         expected_output = Regex(
             strip(
                 """
-                $(test_path): ...................................................................................
+                $(test_path): .......................................................................................
 
 
                 Test Summary:                                    \\| Pass  Fail  Total\\s+Time
-                jltest                                           \\|  132    13    145\\s+\\d+\\.\\d+s
-                  utils tests                                    \\|  132    13    145\\s+\\d+\\.\\d+s
+                jltest                                           \\|  140    13    153\\s+\\d+\\.\\d+s
+                  utils tests                                    \\|  140    13    153\\s+\\d+\\.\\d+s
                     jltest\\.run_tests\\(\\): basic tests              \\|   97    11    108\\s+\\d+\\.\\d+s
                       test set                                   \\|    2            2\\s+\\d+\\.\\d+s
                       test set                                   \\|    2            2\\s+\\d+\\.\\d+s
@@ -348,6 +349,7 @@ print("jltest/utils_tests: ")
                         some tests                               \\|    2            2\\s+\\d+\\.\\d+s
                     jltest\\.find_tests\\(\\)                          \\|    4            4\\s+\\d+\\.\\d+s
                     jltest: Pkg\\.test\\(\\) tests                     \\|    2            2\\s+\\d+\\.\\d+s
+                    jltest\\.get_test_statistics\\(\\)                 \\|    8            8\\s+\\d+\\.\\d+s
                 """,
             ),
         )
