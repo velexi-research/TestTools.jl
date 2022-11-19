@@ -653,6 +653,43 @@ end
     rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
 
+@testset EnhancedTestSet "jltest.get_test_statistics()" begin
+    # --- Preparations
+
+    test_dir = joinpath(@__DIR__, "data-basic-tests")
+    tests = [joinpath(test_dir, "some_tests_no_testset.jl")]
+
+    # --- Exercise functionality and check results
+
+    # test_set = EnhancedTestSet{DefaultTestSet}
+    local stats = nothing
+    @suppress_out begin
+        stats = run_tests(tests; test_set_type=EnhancedTestSet{DefaultTestSet})
+    end
+    expected_stats = Dict(:fail => 0, :pass => 2, :error => 0, :broken => 0)
+    @test stats == expected_stats
+
+    # test_set = DefaultTestSet
+    local stats = nothing
+    @suppress_out begin
+        stats = run_tests(tests; test_set_type=DefaultTestSet)
+    end
+    expected_stats = Dict(:fail => 0, :pass => 2, :error => 0, :broken => 0)
+    @test stats == expected_stats
+
+    # test_set = EnhancedTestSet{Test.FallbackTestSet}
+    test_set = EnhancedTestSet{Test.FallbackTestSet}("description")
+    expected_stats = Dict(:pass => 0, :fail => 0, :error => 0, :broken => 0)
+    stats = jltest.get_test_statistics(test_set)
+    @test stats == expected_stats
+
+    # test_set = nothing
+    test_set = nothing
+    expected_stats = Dict(:pass => 0, :fail => 0, :error => 0, :broken => 0)
+    stats = jltest.get_test_statistics(test_set)
+    @test stats == expected_stats
+end
+
 # --- Emit message about expected failures and errors
 
 println()
