@@ -28,7 +28,6 @@ using Test
 using Test: AbstractTestSet
 
 # External packages
-using OrderedCollections: OrderedDict
 using Suppressor: @capture_err, @suppress_err
 
 # --- Private utility functions
