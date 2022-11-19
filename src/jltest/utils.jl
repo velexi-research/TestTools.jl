@@ -98,7 +98,7 @@ function get_test_statistics(test_set::DefaultTestSet)
     return stats
 end
 
-function get_test_statistics(test_set::Nothing)
+function get_test_statistics(test_set)
     return Dict(:pass => 0, :fail => 0, :error => 0, :broken => 0)
 end
 
