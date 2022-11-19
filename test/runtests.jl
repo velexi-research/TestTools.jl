@@ -257,7 +257,7 @@ print("jltest/utils_tests: ")
     if VERSION < v"1.8-"
         expected_output = strip(
             """
-            $(joinpath("jltest", "utils_tests")): .......................................................................................
+            $(joinpath("jltest", "utils_tests")): ......................................................................................
 
 
             Test Summary:                                    | Pass  Fail  Total
