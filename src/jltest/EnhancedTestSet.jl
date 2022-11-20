@@ -55,14 +55,28 @@ struct EnhancedTestSet{T<:AbstractTestSet} <: AbstractTestSet
     """
     Two inner constructors
 
-    * one for subtypes of AbstractTestSet that possess a constructor with a `desc` argument
+    * one when T is a DefaultTestSet
 
-    * one for subtypes of AbstractTestSet that do not possess a constructor with a `desc`
-      argument
+    * one when T is a FallbackTest
     """
-    EnhancedTestSet{T}(desc) where {T} = new(T(desc))
+    function EnhancedTestSet{DefaultTestSet}(desc; kwargs...)
+        # Get keyword arguments that are inherited from the parent test set
+        if isempty(kwargs)
+            kwargs = Dict()
+        end
+        if !(:verbose in keys(kwargs))
+            parent_ts = Test.get_testset()
+            if parent_ts isa DefaultTestSet
+                kwargs[:verbose] = parent_ts.verbose
+            elseif parent_ts isa EnhancedTestSet{DefaultTestSet}
+                kwargs[:verbose] = parent_ts.wrapped.verbose
+            end
+        end
 
-    EnhancedTestSet{FallbackTestSet}(desc) = new(FallbackTestSet())
+        return new(DefaultTestSet(desc; kwargs...))
+    end
+
+    EnhancedTestSet{FallbackTestSet}(desc; kwargs...) = new(FallbackTestSet())
 end
 
 struct EnhancedTestSetException <: Exception
@@ -81,9 +95,9 @@ Construct an EnhancedTestSet with the specified `description`.
 * `wrap::Type{<:AbstractTestSet}`: test set type to wrap. Default: `DefaultTestSet`
 """
 function EnhancedTestSet(
-    description::AbstractString; wrap::Type{<:AbstractTestSet}=DefaultTestSet
+    description::AbstractString; wrap::Type{<:AbstractTestSet}=DefaultTestSet, kwargs...
 )
-    return EnhancedTestSet{wrap}(description)
+    return EnhancedTestSet{wrap}(description; kwargs...)
 end
 
 function Test.record(ts::EnhancedTestSet{T}, res::Test.Fail) where {T}

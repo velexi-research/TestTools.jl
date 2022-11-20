@@ -151,9 +151,9 @@ function run(
     end
 
     # Set test options
-    test_set_options = ""
+    test_set_options = Dict()
     if verbose
-        test_set_options *= "verbose=true"
+        test_set_options[:verbose] = true
     end
 
     # --- Run tests

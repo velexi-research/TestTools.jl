@@ -128,7 +128,7 @@ failed tests, errors, and broken tests.
       argument is overridden and set to `EnhancedTestSet{Test.FallbackTestSet}` so that
       tests are run in fail-fast mode.
 
-* `test_set_options::String`: TODO
+* `test_set_options::Dict`: options to pass to `@testset` macro
 
 * `recursive::Bool`: flag indicating whether or not to run tests found in subdirectories
   of directories in `tests`. Default: `true`
@@ -140,7 +140,7 @@ function run_tests(
     tests::Vector;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
-    test_set_options::AbstractString="",
+    test_set_options::Dict=Dict(),
     recursive::Bool=true,
     exclude_runtests::Bool=true,
 )
@@ -188,21 +188,34 @@ function run_tests(
         run_all_tests(test_files)
         test_results = nothing
     else
+        # --- Preparations
+
+        # Get name of test set type without module name
+        test_set_type = nameof(test_set_type)
+
+        # Construct keyword arguments for @testset macro
+        kwargs = []
+        for (option, value) in test_set_options
+            push!(kwargs, :($option = $value))
+        end
+
+        # --- Construct test set and run tests
+
         if isempty(desc)
             expr = quote
-                @testset $test_set_type $test_set_options begin
+                @testset $test_set_type $(kwargs...) begin
                     run_all_tests($test_files)
                 end
             end
-            test_results = eval(expr)
         else
             expr = quote
-                @testset $test_set_type $test_set_options "$desc" begin
+                @testset $test_set_type $(kwargs...) $desc begin
                     run_all_tests($test_files)
                 end
             end
-            test_results = eval(expr)
         end
+
+        test_results = eval(expr)
     end
 
     test_stats = get_test_statistics(test_results)
@@ -215,7 +228,7 @@ function run_tests(
     test::AbstractString;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
-    test_set_options::AbstractString="",
+    test_set_options::Dict=Dict(),
     recursive::Bool=true,
 )
     # --- Check arguments
