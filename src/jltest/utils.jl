@@ -128,6 +128,8 @@ failed tests, errors, and broken tests.
       argument is overridden and set to `EnhancedTestSet{Test.FallbackTestSet}` so that
       tests are run in fail-fast mode.
 
+* `test_set_options::String`: TODO
+
 * `recursive::Bool`: flag indicating whether or not to run tests found in subdirectories
   of directories in `tests`. Default: `true`
 
@@ -138,6 +140,7 @@ function run_tests(
     tests::Vector;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
+    test_set_options::AbstractString="",
     recursive::Bool=true,
     exclude_runtests::Bool=true,
 )
@@ -186,13 +189,19 @@ function run_tests(
         test_results = nothing
     else
         if isempty(desc)
-            test_results = @testset test_set_type begin
-                run_all_tests(test_files)
+            expr = quote
+                test_results = @testset test_set_type $test_set_options begin
+                    run_all_tests(test_files)
+                end
             end
+            eval(expr)
         else
-            test_results = @testset test_set_type "$desc" begin
-                run_all_tests(test_files)
+            expr = quote
+                test_results = @testset test_set_type $test_set_options "$desc" begin
+                    run_all_tests(test_files)
+                end
             end
+            eval(expr)
         end
     end
 
@@ -206,6 +215,7 @@ function run_tests(
     test::AbstractString;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
+    test_set_options::AbstractString="",
     recursive::Bool=true,
 )
     # --- Check arguments
