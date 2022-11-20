@@ -190,18 +190,18 @@ function run_tests(
     else
         if isempty(desc)
             expr = quote
-                test_results = @testset test_set_type $test_set_options begin
-                    run_all_tests(test_files)
+                @testset $test_set_type $test_set_options begin
+                    run_all_tests($test_files)
                 end
             end
-            eval(expr)
+            test_results = eval(expr)
         else
             expr = quote
-                test_results = @testset test_set_type $test_set_options "$desc" begin
-                    run_all_tests(test_files)
+                @testset $test_set_type $test_set_options "$desc" begin
+                    run_all_tests($test_files)
                 end
             end
-            eval(expr)
+            test_results = eval(expr)
         end
     end
 
