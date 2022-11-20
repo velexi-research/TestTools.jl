@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "TestTools.jl"
+name = "TestTools"
 version = "0.4.0"
 description = ""
 license = "Apache-2.0"
