@@ -1,7 +1,8 @@
 # TestTools
 
-[TestTools](https://github.com/velexi-corporation/TestTools.jl) is a collection of CLI
-tools and APIs that simplifies code testing, coverage analysis, and style checking.
+[TestTools](https://github.com/velexi-corporation/TestTools.jl)
+is a collection of CLI tools and APIs that simplifies code testing, coverage analysis, and
+style checking.
 
 TestTools provides the following core components.
 
