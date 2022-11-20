@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 """
-Unit test runner for the TestTools.jl package.
+Unit test runner for the TestTools package.
 """
 
 # --- Imports
