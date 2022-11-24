@@ -27,6 +27,7 @@ Acknowledgements
 # --- Exports
 
 export EnhancedTestSet, EnhancedTestSetException
+export get_wrapped_test_set_type
 
 # --- Imports
 
@@ -212,3 +213,10 @@ function Test.finish(ts::EnhancedTestSet{T}) where {T}
     Test.finish(ts.wrapped)
     return ts
 end
+
+"""
+    get_wrapped_test_set_type(ts::EnhancedTestSet{T}
+
+Return type of test set wrapped by `ts`.
+"""
+get_wrapped_test_set_type(ts::Type{EnhancedTestSet{T}}) where {T} = T
