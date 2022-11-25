@@ -45,7 +45,8 @@ end
 # `jltest runtests.jl` and `import Pkg; Pkg.test()`
 cd(@__DIR__)
 
-# Get current working directory
+# Save current working directory so that it can be restored before running each set of
+# tests.
 cwd = pwd()
 
 # --- Normal unit tests
@@ -86,7 +87,6 @@ jltest.run_tests(tests; desc="jlcoverage")
 # --- jltest unit tests that have expected failures and errors
 
 # EnhancedTestSet with failing tests
-cd(cwd)
 println()
 test_file = joinpath(@__DIR__, "jltest", "EnhancedTestSet_failing_tests.jl")
 
@@ -98,6 +98,7 @@ output = strip(
             @testset EnhancedTestSet "EnhancedTestSet" begin
                 global log_message = strip(
                     @capture_err begin
+                        cd(cwd)
                         jltest.run_tests(test_file; desc="failing tests")
                     end
                 )
@@ -170,7 +171,6 @@ print("jltest/EnhancedTestSet_failing_tests: ")
 end
 
 # EnhancedTestSet with nested test sets
-cd(cwd)
 println()
 test_file = joinpath(@__DIR__, "jltest", "EnhancedTestSet_nested_test_set_tests.jl")
 
@@ -182,6 +182,7 @@ output = strip(
             @testset EnhancedTestSet "EnhancedTestSet" begin
                 global log_message = strip(
                     @capture_err begin
+                        cd(cwd)
                         jltest.run_tests(test_file; desc="nested test set tests")
                     end
                 )
@@ -247,7 +248,6 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
 end
 
 # utils.jl
-cd(cwd)
 println()
 test_file = joinpath(@__DIR__, "jltest", "utils_tests.jl")
 
@@ -259,6 +259,7 @@ output = strip(
             @testset EnhancedTestSet "jltest" begin
                 global log_message = strip(
                     @capture_err begin
+                        cd(cwd)
                         jltest.run_tests(test_file; desc="utils tests")
                     end
                 )
@@ -387,7 +388,6 @@ print("jltest/utils_tests: ")
 end
 
 # cli.jl
-cd(cwd)
 println()
 test_file = joinpath(@__DIR__, "jltest", "cli_tests.jl")
 
@@ -399,6 +399,7 @@ output = strip(
             @testset EnhancedTestSet "jltest" begin
                 global log_message = strip(
                     @capture_err begin
+                        cd(cwd)
                         jltest.run_tests(test_file; desc="cli tests")
                     end
                 )
