@@ -94,7 +94,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 end
 
 """
-    run(paths::Vector; <keyword arguments>)
+    run(paths::Vector; kwargs...)
 
 Run code style checks for files contained in `paths`.
 
@@ -102,8 +102,7 @@ Returns `true` if style checks pass; returns `false` otherwise.
 
 # Keyword Arguments
 
-* `style::JuliaFormatter.AbstractStyle`: code style to apply.
-  Default: `BlueStyle()`
+* `style::JuliaFormatter.AbstractStyle`: code style to apply. Default: `BlueStyle()`
 
 * `overwrite::Bool`: overwrite existing files with style-corrected versions.
   Default: `false`

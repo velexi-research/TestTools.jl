@@ -87,7 +87,7 @@ end
 # --- Functions/Methods
 
 """
-    EnhancedTestSet(description::AbstractString; <keyword arguments>)
+    EnhancedTestSet(description::AbstractString; kwargs...)
 
 Construct an EnhancedTestSet with the specified `description`.
 

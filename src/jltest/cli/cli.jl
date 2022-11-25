@@ -109,7 +109,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 end
 
 """
-    run(tests::Vector; <keyword arguments>)
+    run(tests::Vector; kwargs...)
 
 Run unit tests defined in the list of files or modules provided in `tests`.
 
@@ -124,9 +124,11 @@ Returns `true` if all tests pass; returns `false` otherwise.
   them in an EnhancedTestSet. Default: `true`
 
   !!! note
+
       Ignored if `fail_fast` is set to `true`.
 
   !!! note
+
       Setting `use_wrapper` to `false` will disable EnhancedTestSet functionality within
       each test files unless the test file
 

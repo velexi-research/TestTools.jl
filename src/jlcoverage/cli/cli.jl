@@ -79,7 +79,7 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 end
 
 """
-    run(paths::Vector; <keyword arguments>)
+    run(paths::Vector; kwargs...)
 
 Run code coverage analysis for files and directories in `paths`.
 
