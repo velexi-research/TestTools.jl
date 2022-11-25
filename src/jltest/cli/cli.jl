@@ -101,6 +101,10 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
     args = ArgParse.parse_args(raw_args, arg_table)
     args["tests"] = convert(Vector{String}, args["tests"])
 
+    # Remove the "code-coverage" option because it is only included in the argument table
+    # so that it appears in the usage message.
+    delete!(args, "code-coverage")
+
     return args
 end
 
