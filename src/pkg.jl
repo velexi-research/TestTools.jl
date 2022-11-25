@@ -185,7 +185,7 @@ function install_cli(
 
     # --- Emit informational message
 
-    @info "Installed $(cli) to `$(Base.contractuser(exec_path))`."
+    @info "Installed $(basename(exec_path)) to `$(Base.contractuser(exec_path))`."
 
     return nothing
 end
