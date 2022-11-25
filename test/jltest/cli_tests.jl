@@ -229,46 +229,7 @@ end
     expected_output_some_tests_no_testset = "$(joinpath(test_dir_relpath, "some_tests_no_testset")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
-    expected_output_failing_tests = Regex(
-        make_windows_safe_regex(strip("""
-              $(joinpath(test_dir_relpath, "failing_tests")): .
-              =====================================================
-              failing tests: Test Failed at $(failing_tests_file):[0-9]+
-                Expression: 2 == 1
-                 Evaluated: 2 == 1
-
-              Stacktrace:
-              """))
-    )
-
-    expected_output_failing_tests_fail_fast = Regex(
-        make_windows_safe_regex(strip("""
-              $(joinpath(test_dir_relpath, "failing_tests")): .
-              =====================================================
-              Test Failed at $(failing_tests_file):[0-9]+
-                Expression: 2 == 1
-                 Evaluated: 2 == 1
-
-              =====================================================
-              Error During Test at
-              """))
-    )
-
     failing_tests_no_testset_file = joinpath(test_dir, "failing_tests_no_testset.jl")
-    expected_output_failing_tests_no_testset = Regex(
-        make_windows_safe_regex(strip("""
-              $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
-              =====================================================
-              All tests: Test Failed at $(failing_tests_no_testset_file):[0-9]+
-                Expression: 2 == 1
-                 Evaluated: 2 == 1
-
-              Stacktrace:
-              """))
-    )
-
-    more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
-    expected_output_more_tests = "$(joinpath(test_dir_relpath, "subdir", "more_tests")): .."
 
     # --- Tests
 
@@ -282,80 +243,6 @@ end
     @test tests_passed
     @test occursin(expected_output_some_tests, output)
     @test occursin(expected_output_some_tests_no_testset, output)
-
-    # Case: fail_fast = true
-    tests = [failing_tests_file, some_tests_no_testset_file]
-    local error = nothing
-    output = strip(@capture_out begin
-        try
-            cli.run(tests; fail_fast=true)
-        catch error
-        end
-    end)
-
-    @test error isa Test.FallbackTestSetException
-    @test error.msg == "There was an error during testing"
-
-    @test startswith(output, expected_output_failing_tests_fail_fast)
-    @test !occursin("some_tests_no_testset", output)
-
-    # Case: use_wrapper = false, fail_fast = true
-    tests = [failing_tests_file, some_tests_no_testset_file]
-    local error = nothing
-    output = strip(@capture_out begin
-        try
-            cli.run(tests; fail_fast=true, use_wrapper=false)
-        catch error
-        end
-    end)
-
-    @test tests_passed
-    @test error isa Test.FallbackTestSetException
-    @test error.msg == "There was an error during testing"
-
-    @test startswith(output, expected_output_failing_tests_fail_fast)
-    @test !occursin("some_tests_no_testset", output)
-
-    # Case: use_wrapper = false, fail_fast = false
-    tests = [failing_tests_file, some_tests_no_testset_file]
-    local tests_passed = false
-    local error = nothing
-    output = strip(@capture_out begin
-        try
-            tests_passed = cli.run(tests; use_wrapper=false)
-        catch error
-        end
-    end)
-
-    @test tests_passed
-    @test isnothing(error)
-
-    @test startswith(output, expected_output_failing_tests)
-    @test occursin(expected_output_some_tests_no_testset, output)
-
-    # Case: recursive = false
-    tests = [test_dir]
-    local tests_passed = true
-    local error = nothing
-    log_msg = strip(
-        @capture_err begin
-            output = strip(@capture_out begin
-                try
-                    tests_passed = cli.run(tests; recursive=false)
-                catch error
-                end
-            end)
-        end
-    )
-
-    @test !tests_passed
-    @test isnothing(error)
-
-    @test startswith(output, expected_output_failing_tests)
-    @test occursin(expected_output_failing_tests_no_testset, output)
-    @test occursin(expected_output_some_tests, output)
-    @test occursin(expected_output_some_tests_no_testset, output)
-    @test !occursin("more_tests", output)
 
     # Case: `tests` is empty
     cd(test_dir)
@@ -408,6 +295,145 @@ end
 
     expected_output_more_tests = "$(joinpath("subdir", "more_tests")): .."
     @test occursin(expected_output_more_tests, output)
+end
+
+@testset EnhancedTestSet "jltest.cli.run(): keyword argument tests" begin
+    # --- Preparations
+
+    # Construct path to test directory
+    test_dir = joinpath(@__DIR__, "data-basic-tests")
+    test_dir_relpath = relpath(test_dir)
+
+    # Precompute commonly used values
+    some_tests_file = joinpath(test_dir, "some_tests.jl")
+    expected_output_some_tests = "some_tests: .."
+
+    some_tests_no_testset_file = joinpath(test_dir, "some_tests_no_testset.jl")
+    expected_output_some_tests_no_testset = "some_tests_no_testset: .."
+
+    failing_tests_file = joinpath(test_dir, "failing_tests.jl")
+    expected_output_failing_tests = Regex(
+        make_windows_safe_regex(strip("""
+              failing_tests: .
+              =====================================================
+              failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                Expression: 2 == 1
+                 Evaluated: 2 == 1
+
+              Stacktrace:
+              """))
+    )
+
+    expected_output_failing_tests_fail_fast = Regex(
+        make_windows_safe_regex(strip("""
+              failing_tests: .
+              =====================================================
+              Test Failed at $(failing_tests_file):[0-9]+
+                Expression: 2 == 1
+                 Evaluated: 2 == 1
+
+              =====================================================
+              Error During Test at
+              """))
+    )
+
+    failing_tests_no_testset_file = joinpath(test_dir, "failing_tests_no_testset.jl")
+    expected_output_failing_tests_no_testset = Regex(
+        make_windows_safe_regex(strip("""
+              failing_tests_no_testset: .
+              =====================================================
+              All tests: Test Failed at $(failing_tests_no_testset_file):[0-9]+
+                Expression: 2 == 1
+                 Evaluated: 2 == 1
+
+              Stacktrace:
+              """))
+    )
+
+    more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
+    expected_output_more_tests = "$(joinpath("subdir", "more_tests")): .."
+
+    # --- Tests
+
+    # Case: fail_fast = true
+    tests = [failing_tests_file, some_tests_no_testset_file]
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            cli.run(tests; fail_fast=true)
+        catch error
+        end
+    end)
+
+    @test error isa Test.FallbackTestSetException
+    @test error.msg == "There was an error during testing"
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin("some_tests_no_testset", output)
+
+    # Case: use_wrapper = false, fail_fast = true
+    tests = [failing_tests_file, some_tests_no_testset_file]
+    local tests_passed = false
+    local error = nothing
+    output = strip(@capture_out begin
+        try
+            tests_passed = cli.run(tests; fail_fast=true, use_wrapper=false)
+        catch error
+        end
+    end)
+
+    @test !tests_passed
+    @test error isa Test.FallbackTestSetException
+    @test error.msg == "There was an error during testing"
+
+    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test !occursin("some_tests_no_testset", output)
+
+    # Case: use_wrapper = false, fail_fast = false
+    tests = [failing_tests_file, some_tests_no_testset_file]
+    local tests_passed = false
+    local error = nothing
+    output = strip(
+        @capture_out begin
+            try
+                tests_passed = cli.run(tests; fail_fast=false, use_wrapper=false)
+            catch error
+            end
+        end
+    )
+
+    @test tests_passed
+    @test isnothing(error)
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_some_tests_no_testset, output)
+
+    # Case: recursive = false
+    tests = [test_dir]
+    local tests_passed = true
+    local error = nothing
+    log_msg = strip(
+        @capture_err begin
+            output = strip(@capture_out begin
+                try
+                    tests_passed = cli.run(tests; recursive=false)
+                catch error
+                end
+            end)
+        end
+    )
+
+    @test !tests_passed
+    @test isnothing(error)
+
+    @test startswith(output, expected_output_failing_tests)
+    @test occursin(expected_output_failing_tests_no_testset, output)
+    @test occursin(expected_output_some_tests, output)
+    @test occursin(expected_output_some_tests_no_testset, output)
+    @test !occursin("more_tests", output)
+
+    # Case: verbose = true
+    # Note: this case is tested in `verbose_mode_tests.jl`
 end
 
 @testset EnhancedTestSet "jltest.cli.run(): error cases" begin

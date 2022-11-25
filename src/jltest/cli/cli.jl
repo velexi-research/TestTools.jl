@@ -124,6 +124,10 @@ Returns `true` if all tests pass; returns `false` otherwise.
   of directories in `tests`. Default: `true`
 
 * `verbose::Bool`: print more output to the console. Default: `false`
+
+# Returns
+
+* `Bool`: `true` if all tests passed; `false` otherwise
 """
 function run(
     tests::Vector;
@@ -131,7 +135,7 @@ function run(
     use_wrapper::Bool=true,
     recursive::Bool=true,
     verbose::Bool=false,
-)
+)::Bool
     # --- Check arguments
 
     # Ensure that `tests` contains strings
