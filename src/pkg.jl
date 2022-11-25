@@ -92,16 +92,15 @@ function install_cli(
     # Get OS
     os = Sys.iswindows() ? :windows : :unix
 
-    # Set name of CLI
-    if os == :windows
-        cli *= ".cmd"
-    end
-
     # Get absolute path to installation directory
     bin_dir = abspath(expanduser(bin_dir))
 
     # Get absolute path to executable to be installed
-    exec_path = joinpath(bin_dir, cli)
+    if os == :windows
+        exec_path = joinpath(bin_dir, cli * ".ps1")
+    else  # unix
+        exec_path = joinpath(bin_dir, cli)
+    end
 
     # Check if the executable already exists
     if ispath(exec_path) && !force
@@ -144,7 +143,7 @@ function install_cli(
                 end
             end
 
-        else # unix
+        else  # unix
             # Generate bash part of CLI script
             open(abspath(dirname(@__DIR__), "bin", cli), "r") do bin_cli
                 for line in eachline(bin_cli)
@@ -235,16 +234,15 @@ function uninstall_cli(
     # Get OS
     os = Sys.iswindows() ? :windows : :unix
 
-    # Set name of CLI
-    if os == :windows
-        cli *= ".cmd"
-    end
-
     # Get absolute path to installation directory
     bin_dir = abspath(expanduser(bin_dir))
 
-    # Get absolute path to executable to be installed
-    exec_path = joinpath(bin_dir, cli)
+    # Get absolute path to executable to be uninstalled
+    if os == :windows
+        exec_path = joinpath(bin_dir, cli * ".ps1")
+    else  # unix
+        exec_path = joinpath(bin_dir, cli)
+    end
 
     # --- Uninstall CLI
 
