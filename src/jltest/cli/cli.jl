@@ -44,6 +44,13 @@ using ..jltest
 
 Parse and return CLI arguments contained in `raw_args`. By default, `raw_args` is set to
 `ARGS`, the command-line arguments provided to the executable that called `parse_args()`.
+
+!!! note
+
+    Enabling code execution counting is _not_ implemented within the Julia code contained
+    in the `TestTools` package; it is implemented in the `jltest` bash script. The
+    `--code-coverage` option is only included in the argument table so that it appears in
+    the usage message.
 """
 function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
@@ -51,6 +58,10 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
     description = "Run unit tests."
     arg_table = ArgParse.ArgParseSettings(; prog="jltest", description=description)
     ArgParse.@add_arg_table! arg_table begin
+        "--code-coverage", "-c"
+        help = "count source code line executions"
+        action = :store_true
+
         "--fail-fast", "-x"
         help = "stop testing at first failure"
         action = :store_true
