@@ -2,6 +2,13 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.5.0 (2022-11-25)
+-------------------
+**Enhancements:**
+- Added options for verbose mode and code coverage for `jltest`.
+- Simplified and improved robustness of CLI installer.
+
+--------------------------------------------------------------------------------------------
 v0.4.2 (2022-11-18)
 -------------------
 **Bug Fixes:**
