@@ -42,9 +42,9 @@ using TestTools.jltest: EnhancedTestSet
     jlcoverage_cmd = "jlcoverage"
     jlcodestyle_cmd = "jlcodestyle"
     if Sys.iswindows()
-        jltest_cmd = "$jltest_cmd.cmd"
-        jlcoverage_cmd = "$jlcoverage_cmd.cmd"
-        jlcodestyle_cmd = "$jlcodestyle_cmd.cmd"
+        jltest_cmd = "$jltest_cmd.ps1"
+        jlcoverage_cmd = "$jlcoverage_cmd.ps1"
+        jlcodestyle_cmd = "$jlcodestyle_cmd.ps1"
     end
 
     # --- install() tests

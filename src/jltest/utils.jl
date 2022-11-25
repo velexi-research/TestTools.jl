@@ -115,8 +115,8 @@ end
 # --- Functions/Methods
 
 """
-    run_tests(tests::Vector; <keyword arguments>)
-    run_tests(tests::AbstractString; <keyword arguments>)
+    run_tests(tests::Vector; kwargs...)
+    run_tests(tests::AbstractString; kwargs...)
 
 Run tests in the list of files or modules provided in `tests`. If `tests` is an empty list
 or an empty string, an `ArgumentError` is thrown. File names in `tests` may be specified
@@ -130,14 +130,15 @@ failed tests, errors, and broken tests.
 * `desc::AbstractString`: description to use for test set used to group `tests`.
   Default: the default description set by `@testset`
 
-* `test_set_type::Type`: type of test set to use to group tests. When `test_set_type`
-  is set to `nothing`, the tests are run individually.
+* `test_set_type::Type`: type of test set to use to group tests. When `test_set_type` is
+  set to `nothing`, the tests are run individually.
   Default: `EnhancedTestSet{DefaultTestSet}`
 
   !!! note
-      When the `JLTEST_FAIL_FAST` environment variable is set to "true", the `test_set_type`
-      argument is overridden and set to `EnhancedTestSet{Test.FallbackTestSet}` so that
-      tests are run in fail-fast mode.
+
+      When the `JLTEST_FAIL_FAST` environment variable is set to "true", the
+      `test_set_type` argument is overridden and set to `EnhancedTestSet{FallbackTestSet}`
+      so that tests are run in fail-fast mode.
 
 * `test_set_options::Dict`: options to pass to `@testset` macro
 
@@ -276,7 +277,7 @@ function run_tests(
 end
 
 """
-    find_tests(dir::AbstractString), <keyword arguments>)::Vector{String}
+    find_tests(dir::AbstractString), kwargs...)::Vector{String}
 
 Construct a list of absolute paths to Julia test files contained in `dir`.
 

@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-# -*- mode: julia -*-
-#=
-exec julia --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}" "$@"
-=#
-
 # ------------------------------------------------------------------------------------------
 #   Copyright 2022 Velexi Corporation
 #
@@ -20,6 +15,29 @@ exec julia --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}" "$@"
 #   limitations under the License.
 # ------------------------------------------------------------------------------------------
 
+# -*- mode: bash -*-
+#=
+# Check for --code-coverage/-c option
+CODE_COVERAGE=false
+for ARG in "$@"; do
+    shift
+    case "$ARG" in
+        '--code-coverage'|'-c')
+            CODE_COVERAGE=true;;
+        *)
+            set -- "$@" "$ARG";;
+    esac
+done
+
+# Run Julia script
+if [ "$CODE_COVERAGE" == true ]; then
+    exec julia --startup-file=no -q -O0 --code-coverage -- "${BASH_SOURCE[0]}" "$@"
+else
+    exec julia --startup-file=no -q --compile=min -O0 -- "${BASH_SOURCE[0]}" "$@"
+fi
+=#
+
+# -*- mode: julia -*-
 if abspath(PROGRAM_FILE) == @__FILE__
     include(joinpath(dirname(@__DIR__), "src", "jltest", "cli", "main.jl"))
 end
