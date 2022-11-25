@@ -55,6 +55,22 @@ $ jltest -x test/tests.jl  # short option
 $ jltest --fail-fast test/tests.jl  # long option
 ```
 
+Generate code coverage data when running unit tests (i.e., with code execution counting).
+
+```shell
+$ jltest -c test/tests.jl  # short option
+
+$ jltest --code-coverage test/tests.jl  # long option
+```
+
+Display a more detailed test summary after running unit tests.
+
+```shell
+$ jltest -v test/tests.jl  # short option
+
+$ jltest --verbose test/tests.jl  # long option
+```
+
 Display help and usage messages.
 
 ```shell
