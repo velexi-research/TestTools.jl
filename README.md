@@ -1,4 +1,4 @@
-# TestTools.jl
+# TestTools
 
 [------------------------------------ BADGES: BEGIN ------------------------------------]: #
 
@@ -36,7 +36,7 @@ analysis, and style checking. Our goal is to make it a joy to do software testin
 least save effort and keystrokes).
 
 
-## Why TestTools.jl?
+## Why TestTools?
 
 * Easy-to-use (and fast) CLI tools for testing
 

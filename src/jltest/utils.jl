@@ -30,6 +30,9 @@ using Test: AbstractTestSet
 # External packages
 using Suppressor: @capture_err, @suppress_err
 
+# Local modules
+using ..jltest: get_wrapped_test_set_type
+
 # --- Private utility functions
 
 """
@@ -68,8 +71,16 @@ end
     get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
 
 Compute test statistics for `test_set`.
+
+# Arguments
+
+* `test_set`: test set to collect statistics for
+
+# Returns
+
+* `Dict`: statistics for `test_set`
 """
-function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
+function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})::Dict
     # Initialize test statistics
     stats = get_test_statistics(nothing)
 
@@ -128,19 +139,26 @@ failed tests, errors, and broken tests.
       argument is overridden and set to `EnhancedTestSet{Test.FallbackTestSet}` so that
       tests are run in fail-fast mode.
 
+* `test_set_options::Dict`: options to pass to `@testset` macro
+
 * `recursive::Bool`: flag indicating whether or not to run tests found in subdirectories
   of directories in `tests`. Default: `true`
 
 * `exclude_runtests::Bool`: flag indicating whether or not to exclude files named
   `runtests.jl` from the list of test files that are run. Default: `true`
+
+# Returns
+
+* `Dict`: test statistics
 """
 function run_tests(
     tests::Vector;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
+    test_set_options::Dict=Dict(),
     recursive::Bool=true,
     exclude_runtests::Bool=true,
-)
+)::Dict
     # --- Check arguments
 
     # Ensure that `tests` is not empty
@@ -185,15 +203,46 @@ function run_tests(
         run_all_tests(test_files)
         test_results = nothing
     else
+        # --- Preparations
+
+        # Initialize keyword arguments for @testset macro
+        kwargs = []
+        for (option, value) in test_set_options
+            push!(kwargs, :($option = $value))
+        end
+
+        # Get name of test set type without module name
+        if isnothing(test_set_type)
+            test_set_type = :""
+        else
+            test_set_type_symbol = nameof(test_set_type)
+            if test_set_type_symbol == :EnhancedTestSet
+                wrapped_test_set_type_symbol = nameof(
+                    get_wrapped_test_set_type(test_set_type)
+                )
+
+                push!(kwargs, :(wrap = $wrapped_test_set_type_symbol))
+            end
+            test_set_type = test_set_type_symbol
+        end
+
+        # --- Construct test set and run tests
+
         if isempty(desc)
-            test_results = @testset test_set_type begin
-                run_all_tests(test_files)
+            expr = quote
+                @testset $test_set_type $(kwargs...) begin
+                    run_all_tests($test_files)
+                end
             end
         else
-            test_results = @testset test_set_type "$desc" begin
-                run_all_tests(test_files)
+            expr = quote
+                @testset $test_set_type $(kwargs...) $desc begin
+                    run_all_tests($test_files)
+                end
             end
         end
+
+        test_results = eval(expr)
     end
 
     test_stats = get_test_statistics(test_results)
@@ -206,8 +255,9 @@ function run_tests(
     test::AbstractString;
     desc::AbstractString="",
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
+    test_set_options::Dict=Dict(),
     recursive::Bool=true,
-)
+)::Dict
     # --- Check arguments
 
     # Ensure that `tests` is not an empty string
@@ -217,7 +267,12 @@ function run_tests(
 
     # --- Run tests
 
-    return run_tests(Vector{String}([test]); desc=desc, test_set_type=test_set_type)
+    return run_tests(
+        Vector{String}([test]);
+        desc=desc,
+        test_set_type=test_set_type,
+        test_set_options=test_set_options,
+    )
 end
 
 """

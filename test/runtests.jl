@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 """
-Unit test runner for the TestTools.jl package.
+Unit test runner for the TestTools package.
 """
 
 # --- Imports
@@ -45,18 +45,44 @@ end
 # `jltest runtests.jl` and `import Pkg; Pkg.test()`
 cd(@__DIR__)
 
+# Save current working directory so that it can be restored before running each set of
+# tests.
+cwd = pwd()
+
 # --- Normal unit tests
 
+# installer tests
+tests = [joinpath(@__DIR__, "pkg_tests.jl")]
+cd(cwd)
+jltest.run_tests(tests; desc="installer")
+
+# `jltest` tests
 tests = [
-    joinpath(@__DIR__, "pkg_tests.jl"),
     joinpath(@__DIR__, "jltest", "isolated_test_module_tests.jl"),
+    joinpath(@__DIR__, "jltest", "EnhancedTestSet_utils_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_passing_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_fail_fast_tests.jl"),
-    joinpath(@__DIR__, "jlcodestyle", "cli_tests.jl"),
+]
+cd(cwd)
+jltest.run_tests(tests; desc="jltest")
+
+# `jltest` verbose mode tests
+tests = [joinpath(@__DIR__, "jltest", "verbose_mode_tests.jl")]
+cd(cwd)
+jltest.run_tests(tests; desc="jltest: verbose mode tests", test_set_type=nothing)
+
+# `jlcodestyle` tests
+tests = [joinpath(@__DIR__, "jlcodestyle", "cli_tests.jl")]
+cd(cwd)
+jltest.run_tests(tests; desc="jlcodestyle")
+
+# `jlcoverage` tests
+tests = [
     joinpath(@__DIR__, "jlcoverage", "cli_tests.jl"),
     joinpath(@__DIR__, "jlcoverage", "utils_tests.jl"),
 ]
-jltest.run_tests(tests; desc="jltest")
+cd(cwd)
+jltest.run_tests(tests; desc="jlcoverage")
 
 # --- jltest unit tests that have expected failures and errors
 
@@ -72,6 +98,7 @@ output = strip(
             @testset EnhancedTestSet "EnhancedTestSet" begin
                 global log_message = strip(
                     @capture_err begin
+                        cd(cwd)
                         jltest.run_tests(test_file; desc="failing tests")
                     end
                 )
@@ -155,6 +182,7 @@ output = strip(
             @testset EnhancedTestSet "EnhancedTestSet" begin
                 global log_message = strip(
                     @capture_err begin
+                        cd(cwd)
                         jltest.run_tests(test_file; desc="nested test set tests")
                     end
                 )
@@ -231,6 +259,7 @@ output = strip(
             @testset EnhancedTestSet "jltest" begin
                 global log_message = strip(
                     @capture_err begin
+                        cd(cwd)
                         jltest.run_tests(test_file; desc="utils tests")
                     end
                 )
@@ -370,6 +399,7 @@ output = strip(
             @testset EnhancedTestSet "jltest" begin
                 global log_message = strip(
                     @capture_err begin
+                        cd(cwd)
                         jltest.run_tests(test_file; desc="cli tests")
                     end
                 )
@@ -397,21 +427,22 @@ print("jltest/cli_tests: ")
             $(joinpath("jltest", "cli_tests")): ...........................................
 
 
-            Test Summary:                     | Pass  Fail  Total
-            jltest                            |   64     5     69
-              cli tests                       |   64     5     69
-                jltest.cli.parse_args()       |   12           12
-                jltest.cli.run(): basic tests |   51     5     56
-                  All tests                   |    4            4
-                  failing tests               |    1     1      2
-                  All tests                   |    6     2      8
-                    failing tests             |    1     1      2
-                    some tests                |    2            2
-                  All tests                   |    8     2     10
-                    failing tests             |    1     1      2
-                    some tests                |    2            2
-                    more tests                |    2            2
-                jltest.cli.run(): error cases |    1            1
+            Test Summary:                                | Pass  Fail  Total
+            jltest                                       |   64     5     69
+              cli tests                                  |   64     5     69
+                jltest.cli.parse_args()                  |   12           12
+                jltest.cli.run(): basic tests            |   22     2     24
+                  All tests                              |    4            4
+                  All tests                              |    8     2     10
+                    failing tests                        |    1     1      2
+                    some tests                           |    2            2
+                    more tests                           |    2            2
+                jltest.cli.run(): keyword argument tests |   29     3     32
+                  failing tests                          |    1     1      2
+                  All tests                              |    6     2      8
+                    failing tests                        |    1     1      2
+                    some tests                           |    2            2
+                jltest.cli.run(): error cases            |    1            1
             """
         )
 
@@ -424,21 +455,22 @@ print("jltest/cli_tests: ")
                 $(test_path): ...........................................
 
 
-                Test Summary:                     \\| Pass  Fail  Total\\s+Time
-                jltest                            \\|   64     5     69\\s+\\d+\\.\\d+s
-                  cli tests                       \\|   64     5     69\\s+\\d+\\.\\d+s
-                    jltest\\.cli\\.parse_args\\(\\)       \\|   12           12\\s+\\d+\\.\\d+s
-                    jltest\\.cli\\.run\\(\\): basic tests \\|   51     5     56\\s+\\d+\\.\\d+s
-                      All tests                   \\|    4            4\\s+\\d+\\.\\d+s
-                      failing tests               \\|    1     1      2\\s+\\d+\\.\\d+s
-                      All tests                   \\|    6     2      8\\s+\\d+\\.\\d+s
-                        failing tests             \\|    1     1      2\\s+\\d+\\.\\d+s
-                        some tests                \\|    2            2\\s+\\d+\\.\\d+s
-                      All tests                   \\|    8     2     10\\s+\\d+\\.\\d+s
-                        failing tests             \\|    1     1      2\\s+\\d+\\.\\d+s
-                        some tests                \\|    2            2\\s+\\d+\\.\\d+s
-                        more tests                \\|    2            2\\s+\\d+\\.\\d+s
-                    jltest\\.cli\\.run\\(\\): error cases \\|    1            1\\s+\\d+\\.\\d+s
+                Test Summary:                                \\| Pass  Fail  Total\\s+Time
+                jltest                                       \\|   64     5     69\\s+\\d+\\.\\d+s
+                  cli tests                                  \\|   64     5     69\\s+\\d+\\.\\d+s
+                    jltest\\.cli\\.parse_args\\(\\)                  \\|   12           12\\s+\\d+\\.\\d+s
+                    jltest\\.cli\\.run\\(\\): basic tests            \\|   22     2     24\\s+\\d+\\.\\d+s
+                      All tests                              \\|    4            4\\s+\\d+\\.\\d+s
+                      All tests                              \\|    8     2     10\\s+\\d+\\.\\d+s
+                        failing tests                        \\|    1     1      2\\s+\\d+\\.\\d+s
+                        some tests                           \\|    2            2\\s+\\d+\\.\\d+s
+                        more tests                           \\|    2            2\\s+\\d+\\.\\d+s
+                    jltest\\.cli\\.run\\(\\): keyword argument tests \\|   29     3     32\\s+\\d+\\.\\d+s
+                      failing tests                          \\|    1     1      2\\s+\\d+\\.\\d+s
+                      All tests                              \\|    6     2      8\\s+\\d+\\.\\d+s
+                        failing tests                        \\|    1     1      2\\s+\\d+\\.\\d+s
+                        some tests                           \\|    2            2\\s+\\d+\\.\\d+s
+                    jltest\\.cli\\.run\\(\\): error cases            \\|    1            1\\s+\\d+\\.\\d+s
                 """,
             ),
         )

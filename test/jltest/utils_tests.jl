@@ -189,7 +189,7 @@ end
     tests = ""
     @test_throws ArgumentError run_tests(tests)
 
-    # --- Keyword arguments tests
+    # --- Keyword argument tests
 
     # desc
     tests = [failing_tests_no_testset_file]
@@ -277,6 +277,9 @@ end
     for line in expected_output_lines
         @test occursin(line, output)
     end
+
+    # test_set_options = Dict(:verbose => true)
+    # Note: this case is tested in `verbose_mode_tests.jl`
 end
 
 @testset EnhancedTestSet "jltest.run_tests(): log message tests" begin
@@ -571,7 +574,7 @@ end
     ])
     @test tests == expected_tests
 
-    # --- Keyword arguments tests
+    # --- Keyword argument tests
 
     # recursive = false
     test_dir = joinpath(@__DIR__, "data-find-tests")

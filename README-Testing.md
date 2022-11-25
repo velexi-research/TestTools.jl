@@ -1,5 +1,5 @@
-Testing TestTools.jl
-====================
+Testing TestTools
+=================
 
 Unit tests may be run using any of the following methods:
 
