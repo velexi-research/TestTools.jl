@@ -33,7 +33,7 @@ done
 if [ "$CODE_COVERAGE" == true ]; then
     exec julia --startup-file=no -q -O0 --code-coverage -- "${BASH_SOURCE[0]}" "$@"
 else
-    exec julia --startup-file=no -q --compile=min -O0 -- "${BASH_SOURCE[0]}" "$@"
+    exec julia --startup-file=no -q -O0 -- "${BASH_SOURCE[0]}" "$@"
 fi
 =#
 
