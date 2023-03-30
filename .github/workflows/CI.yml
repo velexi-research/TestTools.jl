@@ -87,13 +87,13 @@ jobs:
           verbose: true
 
   build-docs:
-    name: Build Documentation
-
-    runs-on: ubuntu-latest
+    name: Build and Deploy Documentation
 
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
 
     # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
     permissions:
@@ -119,8 +119,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+#      - name: Upload artifact
+#        uses: actions/upload-pages-artifact@v1
 
       - name: Deploy to GitHub Pages
         id: deployment
