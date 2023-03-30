@@ -2,6 +2,14 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.5.2 (2023-03-30)
+-------------------
+**Developer Updates:**
+- Migrated to use of GitHub Actions for deployment of documentation to GitHub Pages.
+  This update was needed for compatibility with recent changes to GitHub Pages (when
+  symbolic links are present in the site).
+
+--------------------------------------------------------------------------------------------
 v0.5.1 (2023-03-26)
 -------------------
 **Enhancements:**
