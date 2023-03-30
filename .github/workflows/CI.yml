@@ -87,7 +87,7 @@ jobs:
           verbose: true
 
   build-docs:
-    name: Build and Deploy Documentation
+    name: Build Documentation
 
       #    environment:
       #name: github-pages
@@ -119,9 +119,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+#      - name: Upload artifact
+#        uses: actions/upload-pages-artifact@v1
+#        with:
+#          path: "."
+#
+#      - name: Deploy to GitHub Pages
+#        id: deployment
+#        uses: actions/deploy-pages@v2
