@@ -91,6 +91,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -103,7 +109,7 @@ jobs:
       - name: Install dependencies
         run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
 
-      - name: Build and deploy documentation
+      - name: Build documentation
         run: julia --project=docs/ --compile=min -O0 docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
