@@ -13,9 +13,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# Skip intermediate builds: always.
+# Cancel intermediate builds: only if it is a pull request build.
 concurrency:
-  # Skip intermediate builds: always.
-  # Cancel intermediate builds: only if it is a pull request build.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
@@ -38,6 +38,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
+        codecov-os: 'Linux'
         codecov-arch: x64
         codecov-version: '1.8'
 
@@ -66,7 +67,7 @@ jobs:
         # Only run for 'main' branch running on 'Linux' with the latest version of Julia
         if: |
             github.ref_name == 'main' &&
-            runner.os == 'Linux' &&
+            runner.os == env.codecov-os &&
             matrix.arch == env.codecov-arch &&
             matrix.version == env.codecov-version
 
@@ -78,11 +79,11 @@ jobs:
         # Only run for 'main' branch running on 'Linux' with the latest version of Julia
         if: |
             github.ref_name == 'main' &&
-            runner.os == 'Linux' &&
+            runner.os == env.codecov-os &&
             matrix.arch == env.codecov-arch &&
             matrix.version == env.codecov-version
 
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: 7c23e583-ed11-43ef-8fe6-54307b67830c
           files: lcov.info
@@ -92,17 +93,7 @@ jobs:
   build-docs:
     name: Build Documentation
 
-      #    environment:
-      #name: github-pages
-      #url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
-
-    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
 
     steps:
       - name: Check out code
@@ -116,17 +107,8 @@ jobs:
       - name: Install dependencies
         run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
 
-      - name: Build documentation
+      - name: Build documentation and update deployment branch
         run: julia --project=docs/ --compile=min -O0 docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
-
-#      - name: Upload artifact
-#        uses: actions/upload-pages-artifact@v1
-#        with:
-#          path: "."
-#
-#      - name: Deploy to GitHub Pages
-#        id: deployment
-#        uses: actions/deploy-pages@v2
