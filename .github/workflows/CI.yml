@@ -91,6 +91,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
     permissions:
       contents: read
@@ -114,6 +118,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
 
       - name: Deploy to GitHub Pages
         id: deployment
