@@ -2,6 +2,13 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.5.3 (2023-11-15)
+-------------------
+**Developer Updates:**
+- Updated CompatHelper GitHub Action workflows.
+- Updated Julia and Python package dependencies.
+
+--------------------------------------------------------------------------------------------
 v0.5.2 (2023-03-30)
 -------------------
 **Developer Updates:**
