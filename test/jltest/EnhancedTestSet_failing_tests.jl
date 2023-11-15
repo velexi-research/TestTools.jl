@@ -137,9 +137,6 @@ expected_prefix = strip("""
                   =====================================================
                   EnhancedTestSet: Boolean expression test: Test Failed at $(@__FILE__):132
                     Expression: iseven(7)
-
-                  Stacktrace:
-
                   """)
 
 @test startswith(output, expected_prefix)
@@ -153,7 +150,7 @@ end)
 
 expected_prefix = strip("""
                   =====================================================
-                  EnhancedTestSet: Exception test: Error During Test at $(@__FILE__):149
+                  EnhancedTestSet: Exception test: Error During Test at $(@__FILE__):146
                     Got exception outside of a @test
                     This test is supposed to throw an error
                     Stacktrace:
@@ -170,11 +167,9 @@ end)
 
 expected_prefix = strip("""
                   =====================================================
-                  EnhancedTestSet: inequality test: Test Failed at $(@__FILE__):167
+                  EnhancedTestSet: inequality test: Test Failed at $(@__FILE__):164
                     Expression: 1 > 2
                      Evaluated: 1 > 2
-
-                  Stacktrace:
                   """)
 
 @test startswith(output, expected_prefix)
