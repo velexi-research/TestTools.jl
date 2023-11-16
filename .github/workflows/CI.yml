@@ -105,10 +105,10 @@ jobs:
           version: '1.9'
 
       - name: Install dependencies
-        run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+        run: julia --project=docs --color=yes -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
 
       - name: Build documentation and update deployment branch
-        run: julia --project=docs/ --compile=min -O0 docs/make.jl
+        run: julia --project=docs --color=yes --compile=min -O0 docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
