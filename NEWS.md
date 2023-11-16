@@ -2,9 +2,10 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
-v0.5.3 (2023-11-15)
+v0.5.3 (2023-11-16)
 -------------------
 **Developer Updates:**
+- Updated unit tests to be compatible with Julia 1.9.
 - Updated CompatHelper GitHub Action workflows.
 - Updated Julia and Python package dependencies.
 
