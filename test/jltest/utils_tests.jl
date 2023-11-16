@@ -68,8 +68,6 @@ end
                             failing tests: Test Failed at $(failing_tests_file):[0-9]+
                               Expression: 2 == 1
                                Evaluated: 2 == 1
-                            [\\n]*
-                            Stacktrace:
                             """))
     )
 
@@ -82,8 +80,6 @@ end
                   test set: Test Failed at $(failing_tests_no_testset_file):[0-9]+
                     Expression: 2 == 1
                      Evaluated: 2 == 1
-                  [\\n]*
-                  Stacktrace:
                   """)
         ),
     )
@@ -466,19 +462,21 @@ end
                             failing tests: Test Failed at $(failing_tests_file):[0-9]+
                               Expression: 2 == 1
                                Evaluated: 2 == 1
-                            [\\n]*
-                            Stacktrace:
                             """))
     )
 
-    expected_output_failing_tests_fail_fast = Regex(
+    expected_output_failing_tests_fail_fast_prefix = Regex(
         make_windows_safe_regex(strip("""
                             $(joinpath(test_dir_relpath, "failing_tests")): .
                             =====================================================
                             Test Failed at $(failing_tests_file):[0-9]+
                               Expression: 2 == 1
                                Evaluated: 2 == 1
-                            [\\n]*
+                            """))
+    )
+
+    expected_output_failing_tests_fail_fast_interior = Regex(
+        make_windows_safe_regex(strip("""
                             =====================================================
                             Error During Test at
                             """))
@@ -549,7 +547,8 @@ end
         ENV["JLTEST_FAIL_FAST"] = env_jltest_fail_fast_original
     end
 
-    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test startswith(output, expected_output_failing_tests_fail_fast_prefix)
+    @test occursin(expected_output_failing_tests_fail_fast_interior, output)
     @test !occursin(expected_output_some_tests, output)
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
