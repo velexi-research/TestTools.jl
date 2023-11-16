@@ -39,7 +39,8 @@ codestyle:
 
 ## Generate package documentation.
 docs:
-	julia --project=docs --compile=min -O0 docs/make.jl
+	julia --project=docs --color=yes -e 'import Pkg; Pkg.resolve()'
+	julia --project=docs --color=yes --compile=min -O0 docs/make.jl
 
 # --- Utility rules
 

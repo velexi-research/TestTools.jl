@@ -13,9 +13,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Skip intermediate builds: always.
-# Cancel intermediate builds: only if it is a pull request build.
 concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
@@ -29,7 +29,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         arch: [x64, x86]
-        version: ['1.6', '1.7', '1.8']
+        version: ['1.6', '1.7', '1.8', '1.9']
 
         exclude:
           - os: macos-latest
@@ -40,7 +40,7 @@ jobs:
     env:
         codecov-os: 'Linux'
         codecov-arch: x64
-        codecov-version: '1.8'
+        codecov-version: '1.9'
 
     steps:
       - name: Check out code
@@ -55,7 +55,7 @@ jobs:
       - name: Set up Julia caches
         uses: julia-actions/cache@v1
         with:
-          cache-name: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.version }}-${{ hashFiles('.github/workflows/CI.yml') }}
+          cache-name:  ${{ github.repository }}-${{ github.workflow }}-${{ github.job }}-julia-${{ runner.os }}-${{ runner.arch }}-${{ matrix.version }}-${{ hashFiles('.github/workflows/CI.yml') }}
 
       - name: Build package
         uses: julia-actions/julia-buildpkg@v1
@@ -102,13 +102,13 @@ jobs:
       - name: Set up Julia environment
         uses: julia-actions/setup-julia@latest
         with:
-          version: '1.8'
+          version: '1.9'
 
       - name: Install dependencies
-        run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+        run: julia --project=docs --color=yes -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
 
       - name: Build documentation and update deployment branch
-        run: julia --project=docs/ --compile=min -O0 docs/make.jl
+        run: julia --project=docs --color=yes --compile=min -O0 docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}

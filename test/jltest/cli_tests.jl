@@ -268,8 +268,6 @@ end
               failing tests: Test Failed at $(failing_tests_file):[0-9]+
                 Expression: 2 == 1
                  Evaluated: 2 == 1
-
-              Stacktrace:
               """))
     )
     @test startswith(output, expected_output_failing_tests)
@@ -281,8 +279,6 @@ end
               All tests: Test Failed at $(failing_tests_no_testset_file):[0-9]+
                 Expression: 2 == 1
                  Evaluated: 2 == 1
-
-              Stacktrace:
               """))
     )
     @test occursin(expected_output_failing_tests_no_testset, output)
@@ -319,19 +315,21 @@ end
               failing tests: Test Failed at $(failing_tests_file):[0-9]+
                 Expression: 2 == 1
                  Evaluated: 2 == 1
-
-              Stacktrace:
               """))
     )
 
-    expected_output_failing_tests_fail_fast = Regex(
+    expected_output_failing_tests_fail_fast_prefix = Regex(
         make_windows_safe_regex(strip("""
               failing_tests: .
               =====================================================
               Test Failed at $(failing_tests_file):[0-9]+
                 Expression: 2 == 1
                  Evaluated: 2 == 1
+              """))
+    )
 
+    expected_output_failing_tests_fail_fast_interior = Regex(
+        make_windows_safe_regex(strip("""
               =====================================================
               Error During Test at
               """))
@@ -345,8 +343,6 @@ end
               All tests: Test Failed at $(failing_tests_no_testset_file):[0-9]+
                 Expression: 2 == 1
                  Evaluated: 2 == 1
-
-              Stacktrace:
               """))
     )
 
@@ -368,7 +364,8 @@ end
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
 
-    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test startswith(output, expected_output_failing_tests_fail_fast_prefix)
+    @test occursin(expected_output_failing_tests_fail_fast_interior, output)
     @test !occursin("some_tests_no_testset", output)
 
     # Case: use_wrapper = false, fail_fast = true
@@ -386,7 +383,8 @@ end
     @test error isa Test.FallbackTestSetException
     @test error.msg == "There was an error during testing"
 
-    @test startswith(output, expected_output_failing_tests_fail_fast)
+    @test startswith(output, expected_output_failing_tests_fail_fast_prefix)
+    @test occursin(expected_output_failing_tests_fail_fast_interior, output)
     @test !occursin("some_tests_no_testset", output)
 
     # Case: use_wrapper = false, fail_fast = false

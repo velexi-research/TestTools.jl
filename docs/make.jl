@@ -15,11 +15,11 @@ DocMeta.setdocmeta!(TestTools, :DocTestSetup, :(using TestTools); recursive=true
 makedocs(;
     modules=[TestTools],
     authors="Kevin Chu <kevin@velexi.com> and contributors",
-    repo="https://github.com/velexi-corporation/TestTools.jl/blob/{commit}{path}#{line}",
     sitename="TestTools.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://velexi-corporation.github.io/TestTools.jl/stable",
+        repolink="https://github.com/velexi-corporation/TestTools.jl",
         assets=String[],
     ),
     pages=[
@@ -30,6 +30,7 @@ makedocs(;
         "Acknowledgements" => "acknowledgements.md",
         "Index" => "docs-index.md",
     ],
+    checkdocs=:exports,
 )
 
 # --- Deploy documentation
