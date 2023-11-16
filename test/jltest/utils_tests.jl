@@ -68,7 +68,7 @@ end
                             failing tests: Test Failed at $(failing_tests_file):[0-9]+
                               Expression: 2 == 1
                                Evaluated: 2 == 1
-
+                            [\n]+
                             Stacktrace:
                             """))
     )
@@ -82,7 +82,7 @@ end
                   test set: Test Failed at $(failing_tests_no_testset_file):[0-9]+
                     Expression: 2 == 1
                      Evaluated: 2 == 1
-
+                  [\n]+
                   Stacktrace:
                   """)
         ),
@@ -466,7 +466,7 @@ end
                             failing tests: Test Failed at $(failing_tests_file):[0-9]+
                               Expression: 2 == 1
                                Evaluated: 2 == 1
-
+                            [\n]+
                             Stacktrace:
                             """))
     )
@@ -478,7 +478,7 @@ end
                             Test Failed at $(failing_tests_file):[0-9]+
                               Expression: 2 == 1
                                Evaluated: 2 == 1
-
+                            [\n]+
                             =====================================================
                             Error During Test at
                             """))

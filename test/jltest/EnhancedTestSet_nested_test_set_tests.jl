@@ -73,7 +73,6 @@ expected_prefix = strip(
     DefaultTestSet Nested in EnhancedTestSet: Test Failed at $(@__FILE__):66
       Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
        Evaluated: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
-    Stacktrace:
     """
 )
 @test startswith(output, expected_prefix)
