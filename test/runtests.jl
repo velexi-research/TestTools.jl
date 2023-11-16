@@ -280,18 +280,18 @@ print("jltest/utils_tests: ")
         "[ Info: For utils_tests.jl, 13 failures and 0 errors are expected."
 
     @test error_message ==
-        "Some tests did not pass: 140 passed, 13 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 141 passed, 13 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     if VERSION < v"1.8-"
         expected_output = strip(
             """
-            $(joinpath("jltest", "utils_tests")): ......................................................................................
+            $(joinpath("jltest", "utils_tests")): .......................................................................................
 
 
             Test Summary:                                    | Pass  Fail  Total
-            jltest                                           |  140    13    153
-              utils tests                                    |  140    13    153
+            jltest                                           |  141    13    154
+              utils tests                                    |  141    13    154
                 jltest.run_tests(): basic tests              |   97    11    108
                   test set                                   |    2            2
                   test set                                   |    2            2
@@ -318,7 +318,7 @@ print("jltest/utils_tests: ")
                     more tests                               |    2            2
                 jltest.run_tests(): log message tests        |    9            9
                 jltest.run_tests(): current directory checks |    4            4
-                jltest.run_tests(): JLTEST_FAIL_FAST tests   |   16     2     18
+                jltest.run_tests(): JLTEST_FAIL_FAST tests   |   17     2     19
                   test set                                   |    3     1      4
                     failing tests                            |    1     1      2
                     some tests                               |    2            2
@@ -337,12 +337,12 @@ print("jltest/utils_tests: ")
         expected_output = Regex(
             strip(
                 """
-                $(test_path): .......................................................................................
+                $(test_path): ........................................................................................
 
 
                 Test Summary:                                    \\| Pass  Fail  Total\\s+Time
-                jltest                                           \\|  140    13    153\\s+\\d+\\.\\d+s
-                  utils tests                                    \\|  140    13    153\\s+\\d+\\.\\d+s
+                jltest                                           \\|  141    13    154\\s+\\d+\\.\\d+s
+                  utils tests                                    \\|  141    13    154\\s+\\d+\\.\\d+s
                     jltest\\.run_tests\\(\\): basic tests              \\|   97    11    108\\s+\\d+\\.\\d+s
                       test set                                   \\|    2            2\\s+\\d+\\.\\d+s
                       test set                                   \\|    2            2\\s+\\d+\\.\\d+s
@@ -369,7 +369,7 @@ print("jltest/utils_tests: ")
                         more tests                               \\|    2            2\\s+\\d+\\.\\d+s
                     jltest\\.run_tests\\(\\): log message tests        \\|    9            9\\s+\\d+\\.\\d+s
                     jltest\\.run_tests\\(\\): current directory checks \\|    4            4\\s+\\d+\\.\\d+s
-                    jltest\\.run_tests\\(\\): JLTEST_FAIL_FAST tests   \\|   16     2     18\\s+\\d+\\.\\d+s
+                    jltest\\.run_tests\\(\\): JLTEST_FAIL_FAST tests   \\|   17     2     19\\s+\\d+\\.\\d+s
                       test set                                   \\|    3     1      4\\s+\\d+\\.\\d+s
                         failing tests                            \\|    1     1      2\\s+\\d+\\.\\d+s
                         some tests                               \\|    2            2\\s+\\d+\\.\\d+s
@@ -418,18 +418,18 @@ print("jltest/cli_tests: ")
 
     @test error_type == TestSetException
     @test error_message ==
-        "Some tests did not pass: 64 passed, 5 failed, 0 errored, 0 broken."
+        "Some tests did not pass: 66 passed, 5 failed, 0 errored, 0 broken."
 
     # Check output from EnhancedTestSet
     if VERSION < v"1.8-"
         expected_output = strip(
             """
-            $(joinpath("jltest", "cli_tests")): ...........................................
+            $(joinpath("jltest", "cli_tests")): .............................................
 
 
             Test Summary:                                | Pass  Fail  Total
-            jltest                                       |   64     5     69
-              cli tests                                  |   64     5     69
+            jltest                                       |   66     5     71
+              cli tests                                  |   66     5     71
                 jltest.cli.parse_args()                  |   12           12
                 jltest.cli.run(): basic tests            |   22     2     24
                   All tests                              |    4            4
@@ -437,13 +437,13 @@ print("jltest/cli_tests: ")
                     failing tests                        |    1     1      2
                     some tests                           |    2            2
                     more tests                           |    2            2
-                jltest.cli.run(): keyword argument tests |   29     3     32
+                jltest.cli.run(): keyword argument tests |   31     3     34
                   failing tests                          |    1     1      2
                   All tests                              |    6     2      8
                     failing tests                        |    1     1      2
                     some tests                           |    2            2
                 jltest.cli.run(): error cases            |    1            1
-            """
+            """,
         )
 
         @test output == expected_output
@@ -452,12 +452,12 @@ print("jltest/cli_tests: ")
         expected_output = Regex(
             strip(
                 """
-                $(test_path): ...........................................
+                $(test_path): .............................................
 
 
                 Test Summary:                                \\| Pass  Fail  Total\\s+Time
-                jltest                                       \\|   64     5     69\\s+\\d+\\.\\d+s
-                  cli tests                                  \\|   64     5     69\\s+\\d+\\.\\d+s
+                jltest                                       \\|   66     5     71\\s+\\d+\\.\\d+s
+                  cli tests                                  \\|   66     5     71\\s+\\d+\\.\\d+s
                     jltest\\.cli\\.parse_args\\(\\)                  \\|   12           12\\s+\\d+\\.\\d+s
                     jltest\\.cli\\.run\\(\\): basic tests            \\|   22     2     24\\s+\\d+\\.\\d+s
                       All tests                              \\|    4            4\\s+\\d+\\.\\d+s
@@ -465,7 +465,7 @@ print("jltest/cli_tests: ")
                         failing tests                        \\|    1     1      2\\s+\\d+\\.\\d+s
                         some tests                           \\|    2            2\\s+\\d+\\.\\d+s
                         more tests                           \\|    2            2\\s+\\d+\\.\\d+s
-                    jltest\\.cli\\.run\\(\\): keyword argument tests \\|   29     3     32\\s+\\d+\\.\\d+s
+                    jltest\\.cli\\.run\\(\\): keyword argument tests \\|   31     3     34\\s+\\d+\\.\\d+s
                       failing tests                          \\|    1     1      2\\s+\\d+\\.\\d+s
                       All tests                              \\|    6     2      8\\s+\\d+\\.\\d+s
                         failing tests                        \\|    1     1      2\\s+\\d+\\.\\d+s
