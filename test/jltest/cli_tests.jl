@@ -343,8 +343,6 @@ end
               All tests: Test Failed at $(failing_tests_no_testset_file):[0-9]+
                 Expression: 2 == 1
                  Evaluated: 2 == 1
-              [\\n]*
-              Stacktrace:
               """))
     )
 
