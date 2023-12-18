@@ -2,6 +2,14 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.5.4 (2023-12-18)
+-------------------
+**Developer Updates:**
+- Polished package documentation.
+- Improved security and robustness of GitHub Action workflows.
+- Updated Python package dependencies.
+
+--------------------------------------------------------------------------------------------
 v0.5.3 (2023-11-16)
 -------------------
 **Developer Updates:**
