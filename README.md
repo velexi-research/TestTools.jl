@@ -32,8 +32,8 @@
 [------------------------------------- BADGES: END -------------------------------------]: #
 
 TestTools is a collection of CLI tools and APIs that simplifies code testing, coverage
-analysis, and style checking for Julia. Our goal is to make it a joy to do software testing
-(or at least save effort and keystrokes).
+analysis, and style checking for the Julia programming language. Our goal is to make it a
+joy to do software testing (or at least save effort and keystrokes).
 
 
 ## Why TestTools?

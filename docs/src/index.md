@@ -2,7 +2,7 @@
 
 [TestTools](https://github.com/velexi-research/TestTools.jl)
 is a collection of CLI tools and APIs that simplifies code testing, coverage analysis, and
-style checking for Julia.
+style checking for the Julia programming language.
 
 TestTools provides the following core components.
 
