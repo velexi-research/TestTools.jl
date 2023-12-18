@@ -18,8 +18,8 @@ makedocs(;
     sitename="TestTools.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://velexi-corporation.github.io/TestTools.jl/stable",
-        repolink="https://github.com/velexi-corporation/TestTools.jl",
+        canonical="https://velexi-research.github.io/TestTools.jl/stable",
+        repolink="https://github.com/velexi-research/TestTools.jl",
         assets=String[],
     ),
     pages=[
@@ -35,4 +35,4 @@ makedocs(;
 
 # --- Deploy documentation
 
-deploydocs(; repo="github.com/velexi-corporation/TestTools.jl", devbranch="main")
+deploydocs(; repo="github.com/velexi-research/TestTools.jl", devbranch="main")

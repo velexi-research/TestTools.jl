@@ -1,8 +1,8 @@
 # TestTools
 
-[TestTools](https://github.com/velexi-corporation/TestTools.jl)
+[TestTools](https://github.com/velexi-research/TestTools.jl)
 is a collection of CLI tools and APIs that simplifies code testing, coverage analysis, and
-style checking.
+style checking for Julia.
 
 TestTools provides the following core components.
 
