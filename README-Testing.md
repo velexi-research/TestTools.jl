@@ -31,3 +31,6 @@ Unit tests may be run using any of the following methods:
 
   When using `jltest` to run the unit tests, note that the `-W` or `--no-wrapper` option
   is required for the tests that check the output failing tests to work correctly.
+
+  __Note__. Use this method to test the outcome of the unit tests when they are run by the
+  `julia-actions/julia-runtest` GitHub Action.
