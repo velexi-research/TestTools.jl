@@ -86,6 +86,11 @@ end
 
 # --- Functions/Methods
 
+# Helper methods copied from Test.jl (Julia v1.10)
+extract_file(source::LineNumberNode) = extract_file(source.file)
+extract_file(file::Symbol) = string(file)
+extract_file(::Nothing) = nothing
+
 """
     EnhancedTestSet(description::AbstractString; kwargs...)
 
@@ -177,7 +182,17 @@ function Test.record(ts::EnhancedTestSet{DefaultTestSet}, res::Test.Fail)
             println(res)
         end
 
-        Base.show_backtrace(stdout, Test.scrub_backtrace(backtrace()))
+        if VERSION < v"1.10-"
+            Base.show_backtrace(stdout, Test.scrub_backtrace(backtrace()))
+        else
+            Base.show_backtrace(
+                stdout,
+                Test.scrub_backtrace(
+                    backtrace(), ts.wrapped.file, extract_file(res.source)
+                ),
+            )
+        end
+
         println("\n=====================================================")
     end
     push!(ts.wrapped.results, res)
