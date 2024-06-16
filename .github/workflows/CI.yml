@@ -34,12 +34,8 @@ jobs:
         exclude:
           - os: windows-latest
             version: 'nightly'
-
-        exclude:
           - os: macos-latest
             arch: x86
-
-        exclude:
           - os: macos-latest
             version: 'nightly'
 
