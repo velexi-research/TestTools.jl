@@ -32,11 +32,15 @@ jobs:
         version: ['1.6', '1.7', '1.8', '1.9', '1.10', 'nightly']
 
         exclude:
+          - os: windows-latest
+            version: 'nightly'
+
+        exclude:
           - os: macos-latest
             arch: x86
 
         exclude:
-          - os: [windows-latest, macos-latest]
+          - os: macos-latest
             version: 'nightly'
 
     runs-on: ${{ matrix.os }}
