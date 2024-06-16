@@ -35,6 +35,10 @@ jobs:
           - os: macos-latest
             arch: x86
 
+        exclude:
+          - os: [windows-latest, macos-latest]
+            version: 'nightly'
+
     runs-on: ${{ matrix.os }}
 
     env:
