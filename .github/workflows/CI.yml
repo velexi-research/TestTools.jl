@@ -36,7 +36,7 @@ jobs:
             version: 'nightly'
 
           - os: windows-latest
-            version: 'nightly'
+            version: ['1.6', 'nightly']
 
     runs-on: ${{ matrix.os }}
 
