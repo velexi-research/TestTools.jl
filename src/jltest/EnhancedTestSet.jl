@@ -117,7 +117,19 @@ end
 # throw an exception if there are any failures or errors in the DefaultTestSet.
 function Test.record(ts::EnhancedTestSet{FallbackTestSet}, res::DefaultTestSet)
     # Check for failures and errors
-    passes, fails, errors, broken, _, _, _, _ = Test.get_test_counts(res)
+    test_counts = Test.get_test_counts(res)
+    if VERSION < v"1.11-"
+        passes = test_counts[1]
+        fails = test_counts[2]
+        errors = test_counts[3]
+        broken = test_counts[4]
+    else
+        passes = test_counts.passes
+        fails = test_counts.fails
+        errors = test_counts.errors
+        broken = test_counts.broken
+    end
+
     if (fails > 0) || (errors > 0)
         throw(
             EnhancedTestSetException(

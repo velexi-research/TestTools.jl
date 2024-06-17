@@ -85,11 +85,18 @@ function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})::Dict
     stats = get_test_statistics(nothing)
 
     # Get cumulative statistics for `test_set`
-    counts = Test.get_test_counts(test_set.wrapped)
-    stats[:pass] = counts[1] + counts[5]
-    stats[:fail] = counts[2] + counts[6]
-    stats[:error] = counts[3] + counts[7]
-    stats[:broken] = counts[4] + counts[8]
+    test_counts = Test.get_test_counts(test_set.wrapped)
+    if VERSION < v"1.11-"
+        stats[:pass] = test_counts[1] + test_counts[5]
+        stats[:fail] = test_counts[2] + test_counts[6]
+        stats[:error] = test_counts[3] + test_counts[7]
+        stats[:broken] = test_counts[4] + test_counts[8]
+    else
+        stats[:pass] = test_counts.passes + test_counts.cumulative_passes
+        stats[:fail] = test_counts.fails + test_counts.cumulative_fails
+        stats[:error] = test_counts.errors + test_counts.cumulative_errors
+        stats[:broken] = test_counts.broken + test_counts.cumulative_broken
+    end
 
     return stats
 end
@@ -99,11 +106,18 @@ function get_test_statistics(test_set::DefaultTestSet)
     stats = get_test_statistics(nothing)
 
     # Get cumulative statistics for `test_set`
-    counts = Test.get_test_counts(test_set)
-    stats[:pass] = counts[1] + counts[5]
-    stats[:fail] = counts[2] + counts[6]
-    stats[:error] = counts[3] + counts[7]
-    stats[:broken] = counts[4] + counts[8]
+    test_counts = Test.get_test_counts(test_set)
+    if VERSION < v"1.11-"
+        stats[:pass] = test_counts[1] + test_counts[5]
+        stats[:fail] = test_counts[2] + test_counts[6]
+        stats[:error] = test_counts[3] + test_counts[7]
+        stats[:broken] = test_counts[4] + test_counts[8]
+    else
+        stats[:pass] = test_counts.passes + test_counts.cumulative_passes
+        stats[:fail] = test_counts.fails + test_counts.cumulative_fails
+        stats[:error] = test_counts.errors + test_counts.cumulative_errors
+        stats[:broken] = test_counts.broken + test_counts.cumulative_broken
+    end
 
     return stats
 end
