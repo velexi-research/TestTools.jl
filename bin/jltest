@@ -17,24 +17,74 @@
 
 # -*- mode: bash -*-
 #=
-# Check for --code-coverage/-c option
+
+# --- Handle CLI options that are not directly handled by the Julia CLI.
+
+# Initialize Julia command, arguments, and CLI arguments
+JULIA_CMD=julia
+JULIA_ARGS="--startup-file=no -q -O0"
+JULIA_CLI_ARGS=
+
+# Default option values
 CODE_COVERAGE=false
-for ARG in "$@"; do
-    shift
-    case "$ARG" in
+JULIA_VERSION=
+VERBOSE=false
+
+while [ "${#@}" -gt "0" ]; do
+    OPT=$1
+    case "$OPT" in
         '--code-coverage'|'-c')
-            CODE_COVERAGE=true;;
+            JULIA_ARGS="$JULIA_ARGS --code-coverage"
+            ;;
+        '--julia-version'|'-j')
+            shift
+            JULIA_VERSION=$1
+            JULIA_CMD="$JULIA_CMD +$JULIA_VERSION"
+            ;;
+        '--verbose'|'-v')
+            VERBOSE=true
+            JULIA_CLI_ARGS="$JULIA_CLI_ARGS -v"
+            ;;
         *)
-            set -- "$@" "$ARG";;
+            JULIA_CLI_ARGS="$JULIA_CLI_ARGS $OPT"
+            ;;
     esac
+
+    # Shift argument list
+    shift
 done
 
-# Run Julia script
-if [ "$CODE_COVERAGE" == true ]; then
-    exec julia --startup-file=no -q -O0 --code-coverage -- "${BASH_SOURCE[0]}" "$@"
-else
-    exec julia --startup-file=no -q -O0 -- "${BASH_SOURCE[0]}" "$@"
+# Check that the Julia version can be set
+JULIA_VERSION_TEST_OUTPUT=$($JULIA_CMD -e '2+2' 2>&1)
+if [[ "$JULIA_VERSION_TEST_OUTPUT" == *"No such file or directory"* ]]; then
+    >&2 echo -n "ERROR: "
+    >&2 echo "The current Julia installation does not support specifying the Julia version."
+    >&2 echo "Try installing Juliaup to install and manage multiple Julia versions."
+    exit 1
+elif [[ "$JULIA_VERSION_TEST_OUTPUT" == *"\`$JULIA_VERSION\` is not installed"* ]]; then
+    >&2 echo -n "ERROR: "
+    >&2 echo "Julia version $JULIA_VERSION_TEST_OUTPUT"
+    exit 2
+elif [[ "$JULIA_VERSION_TEST_OUTPUT" == *"Invalid Juliaup channel"* ]]; then
+    >&2 echo $JULIA_VERSION_TEST_OUTPUT
+    exit 3
 fi
+
+# Update Julia package dependencies
+if $VERBOSE; then
+    $JULIA_CMD -e "using Pkg; Pkg.update();"
+else
+    $JULIA_CMD -e "using Pkg; Pkg.update();" >& /dev/null
+fi
+
+# Emit message to console
+if $VERBOSE; then
+    echo
+    echo "Running tests with `$JULIA_CMD --version`"
+fi
+
+# Run Julia script
+exec $JULIA_CMD $JULIA_ARGS -- "${BASH_SOURCE[0]}" $JULIA_CLI_ARGS
 =#
 
 # -*- mode: julia -*-
