@@ -2,6 +2,19 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.5.6 (2024-06-16)
+-------------------
+**Enhancements:**
+- Added support for selecting Julia version used by `jltest` to run tests.
+
+**Developer Updates:**
+- Updated unit tests to be compatible with Julia 1.11 and nightly build (1.12).
+- Updated CI matrix.
+  - Added "nightly" Julia version.
+  - Excluded x86 for macOS and Windows.
+- Updated Python package dependencies.
+
+--------------------------------------------------------------------------------------------
 v0.5.5 (2024-05-06)
 -------------------
 **Developer Updates:**
