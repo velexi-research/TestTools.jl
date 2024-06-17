@@ -33,7 +33,7 @@ jobs:
 
         exclude:
           - os: ubuntu-latest
-            archi: x86
+            arch: x86
             version: 'nightly'
 
           - os: macos-latest
