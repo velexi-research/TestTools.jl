@@ -280,6 +280,7 @@ end
     bluestyle_pass_file = joinpath(test_file_dir, "blue-style.jl")
     yasstyle_fail_file = joinpath(test_file_dir, "yasstyle-fail.jl")
     cp(bluestyle_pass_file, yasstyle_fail_file; force=true)
+    chmod(yasstyle_fail_file, 0o644)
 
     error = @capture_err begin
         output = @capture_out begin
