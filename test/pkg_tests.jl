@@ -35,7 +35,7 @@ using TestTools.jltest: EnhancedTestSet
     # --- Preparations
 
     # Construct path to test installation directory
-    bin_dir = abspath(joinpath(@__DIR__, "testing-bin-dir"))
+    bin_dir = mktempdir()
 
     # Cache common variables
     jltest_cmd = "jltest"
@@ -49,9 +49,9 @@ using TestTools.jltest: EnhancedTestSet
 
     # --- install() tests
 
-    jltest_exec_path = Base.contractuser(joinpath(bin_dir, jltest_cmd))
-    jlcoverage_exec_path = Base.contractuser(joinpath(bin_dir, jlcoverage_cmd))
-    jlcodestyle_exec_path = Base.contractuser(joinpath(bin_dir, jlcodestyle_cmd))
+    jltest_exec_path = abspath(joinpath(bin_dir, jltest_cmd))
+    jlcoverage_exec_path = abspath(joinpath(bin_dir, jlcoverage_cmd))
+    jlcodestyle_exec_path = abspath(joinpath(bin_dir, jlcodestyle_cmd))
 
     expected_output_install = """
         [ Info: Installed $jltest_cmd to `$jltest_exec_path`.
@@ -61,17 +61,15 @@ using TestTools.jltest: EnhancedTestSet
         └ symlink from a directory in PATH to the installed program file.
         """
 
-    # Remove existing install directory
-    if isdir(bin_dir)
-        rm(bin_dir; force=true, recursive=true)
-    end
-
     # Case: fresh installation
     output = @capture_err begin
         TestTools.install(; bin_dir=bin_dir)
     end
 
     @test output == expected_output_install
+    @test isfile(jltest_exec_path)
+    @test isfile(jlcoverage_exec_path)
+    @test isfile(jlcodestyle_exec_path)
 
     # Case: attempt to reinstall with force=false
     local error
@@ -91,6 +89,9 @@ using TestTools.jltest: EnhancedTestSet
     end
 
     @test output == expected_output_install
+    @test isfile(jltest_exec_path)
+    @test isfile(jlcoverage_exec_path)
+    @test isfile(jlcodestyle_exec_path)
 
     # --- uninstall() tests
 
@@ -105,10 +106,9 @@ using TestTools.jltest: EnhancedTestSet
         [ Info: Uninstalled `$jlcodestyle_exec_path`.
         """
     @test output == expected_output
-
-    # --- Clean up
-
-    rm(bin_dir)
+    @test !isfile(jltest_exec_path)
+    @test !isfile(jlcoverage_exec_path)
+    @test !isfile(jlcodestyle_exec_path)
 end
 
 @testset EnhancedTestSet "TestTools: install_cli(), uninstall_cli(): invalid arguments" begin
