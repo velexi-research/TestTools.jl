@@ -3,5 +3,11 @@ uuid = "2474edba-f46f-47d4-968b-3ddd452486df"
 version = "0.1.0"
 
 [deps]
+ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
+Coverage = "a2441757-f6aa-5fb2-8edb-039e3f45d037"
+DeepDiffs = "ab62b9b5-e342-54a8-a765-a90f495de1a6"
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

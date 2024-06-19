@@ -601,9 +601,22 @@ end
     # Get current directory
     cwd = pwd()
 
+    # Copy TestPackage directory to temporary directory for testing
     test_pkg_dir = joinpath(@__DIR__, "data-missing-package-dependency", "TestPackage")
+    tmp_dir = mktempdir()
+    tmp_test_pkg_dir = joinpath(tmp_dir, "TestPackage")
+    cp(test_pkg_dir, tmp_test_pkg_dir)
+
+    # Create system command to run test
     cmd_options = `--startup-file=no --project=@. -O0`
-    cmd = `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`
+    cmd = Cmd(
+        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`;
+        dir=tmp_test_pkg_dir,
+    )
+
+    # Add path to TestTools.jl package to use for testing
+    test_tools_src_dir = abspath(joinpath(@__DIR__, "..", ".."))
+    cmd = addenv(cmd, Dict("JLTEST_LOAD_PATH" => "$test_tools_src_dir"))
 
     # --- Tests
 
@@ -629,7 +642,7 @@ end
         test_error = strip(@capture_out begin
             try
                 @suppress_err begin
-                    Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+                    Base.run(cmd; wait=true)
                 end
             catch process_error
                 @test process_error isa ProcessFailedException
@@ -640,7 +653,7 @@ end
     else
         test_error = strip(@capture_err begin
             try
-                Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+                Base.run(cmd; wait=true)
             catch process_error
                 @test process_error isa ProcessFailedException
             end
@@ -648,11 +661,6 @@ end
 
         @test occursin(expected_test_error, test_error)
     end
-
-    # --- Clean up
-
-    # Remove Manifest.toml
-    rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
 
 @testset EnhancedTestSet "jltest.get_test_statistics()" begin
