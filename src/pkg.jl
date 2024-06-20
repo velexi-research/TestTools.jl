@@ -27,8 +27,8 @@ const cli_tools = ["jltest", "jlcoverage", "jlcodestyle"]
 
 Install all of the CLI utilities.
 
-# Keyword arguments
-
+Keyword arguments
+=================
 * `julia::AbstractString`: path to julia executable. Default: path of the current running
   julia
 
@@ -45,16 +45,22 @@ function install(;
 )
     # --- Install CLI utilities
 
+    success = true
     for cli in cli_tools
-        install_cli(cli; julia=julia, bin_dir=bin_dir, force=force)
+        install_success = install_cli(cli; julia=julia, bin_dir=bin_dir, force=force)
+        success = success && install_success
     end
 
     # --- Emit informational message
 
-    @info """
-          Make sure that `$(bin_dir)` is in PATH, or manually add a
-          symlink from a directory in PATH to the installed program file.
-          """
+    if success
+        @info """
+              Make sure that `$(bin_dir)` is in PATH, or manually add a
+              symlink from a directory in PATH to the installed program file.
+              """
+    else
+        println("Use `TestTools.install(force=true)` to overwrite existing CLI executables")
+    end
 end
 
 """
@@ -64,8 +70,8 @@ Install executable for CLI named `cli`.
 
 Valid values for `cli`: "jltest", "jlcoverage", "jlcodestyle".
 
-# Keyword arguments
-
+Keyword arguments
+=================
 * `julia::AbstractString`: path to julia executable. Default: path of the current running
   julia
 
@@ -74,6 +80,10 @@ Valid values for `cli`: "jltest", "jlcoverage", "jlcodestyle".
 
 * `force::Bool`: flag used to indicate that existing CLI executable should be
   overwritten. Default: `false`
+
+Return Values
+=============
+* `true` if installation was successful; `false` otherwise
 """
 function install_cli(
     cli::AbstractString;
@@ -104,10 +114,10 @@ function install_cli(
 
     # Check if the executable already exists
     if ispath(exec_path) && !force
-        error(
-            "File `$(Base.contractuser(exec_path))` already exists. " *
-            "Use `TestTools.install(force=true)` to overwrite.",
-        )
+        printstyled("ERROR: "; color=:red, bold=true)
+        println("File `$(Base.contractuser(exec_path))` already exists.")
+
+        return false
     end
 
     # Create installation directory
@@ -187,7 +197,7 @@ function install_cli(
 
     @info "Installed $(basename(exec_path)) to `$(Base.contractuser(exec_path))`."
 
-    return nothing
+    return true
 end
 
 # --- CLI uninstaller functions
@@ -197,8 +207,8 @@ end
 
 Unnstall all of the CLI utilities.
 
-# Keyword arguments
-
+Keyword arguments
+=================
 * `bin_dir::AbstractString`: directory containing CLI executables to uninstall.
   Default: `~/.julia/bin`
 """
@@ -215,8 +225,8 @@ Uninstall executable for CLI named `cli`.
 
 Valid values for `cli`: "jltest", "jlcoverage", "jlcodestyle".
 
-# Keyword arguments
-
+Keyword arguments
+=================
 * `bin_dir::AbstractString`: directory containing CLI executable to uninstall.
   Default: `~/.julia/bin`
 """
