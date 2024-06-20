@@ -323,10 +323,18 @@ end
 
     test_path = joinpath(test_dir_relpath, "log_message_tests")
     if VERSION < v"1.8-"
-        location_prefix = "Main.##$(test_path)#[0-9]+ $(abspath(log_message_tests_file))"
+        if Sys.iswindows()
+            location_prefix = "Main.##$(test_path)#[0-9]+ $(realpath(log_message_tests_file))"
+        else
+            location_prefix = "Main.##$(test_path)#[0-9]+ $(abspath(log_message_tests_file))"
+        end
     else
         test_path = make_windows_safe_regex(test_path)
-        location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(abspath(log_message_tests_file))"
+        if Sys.iswindows()
+            location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(realpath(log_message_tests_file))"
+        else
+            location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(abspath(log_message_tests_file))"
+        end
     end
     location_prefix = make_windows_safe_regex(location_prefix)
 
