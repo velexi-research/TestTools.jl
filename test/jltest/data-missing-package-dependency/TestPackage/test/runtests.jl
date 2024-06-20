@@ -18,7 +18,7 @@ Unit tests runner for TestPackage.jl package.
 
 # --- Set up Julia environment
 
-test_tools_dir = joinpath(@__DIR__, "..", "..", "..", "..", "..")
+test_tools_dir = ENV["JLTEST_LOAD_PATH"]
 push!(LOAD_PATH, test_tools_dir)
 
 # --- Imports

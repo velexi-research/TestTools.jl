@@ -2,12 +2,29 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.5.9 (2024-06-20)
+-------------------
+**Enhancements:**
+- Improved error messages when installing CLI.
+
+**Bug Fixes:**
+- Eliminated unbounded proliferation of coverage data files generated within the TestTools
+  installation when using `jltest`.
+
+**Developer Updates:**
+- Fixed errors when running test suite via `Pkg.test()`.
+- Updated unit tests.
+  - Migrated to use of temporary directories for running tests.
+  - Simplified path construction logic through code and tests.
+  - Various other minor updates.
+
+--------------------------------------------------------------------------------------------
 v0.5.8 (2024-06-17)
 -------------------
 **Developer Updates:**
-- Fix compatibility syntax in Project.toml.
+- Fixed compatibility syntax in Project.toml.
 - Updated CI matrix.
-  - Re-add testing for Julia 1.6 on Windows.
+  - Re-added testing for Julia 1.6 on Windows.
 
 --------------------------------------------------------------------------------------------
 v0.5.7 (2024-06-16)

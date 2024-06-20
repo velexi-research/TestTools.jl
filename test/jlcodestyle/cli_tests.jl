@@ -191,7 +191,7 @@ end
     cwd = pwd()
 
     # Construct path to test data directory
-    test_file_dir = abspath(joinpath(@__DIR__, "data"))
+    test_file_dir = abspath(@__DIR__, "data")
 
     # --- Exercise functionality and check results
 
@@ -278,8 +278,11 @@ end
     # Case: `paths` contains only source files with style errors, overwrite = true
     cd(test_file_dir)
     bluestyle_pass_file = joinpath(test_file_dir, "blue-style.jl")
-    yasstyle_fail_file = joinpath(test_file_dir, "yasstyle-fail.jl")
-    cp(bluestyle_pass_file, yasstyle_fail_file; force=true)
+
+    tmp_dir = mktempdir()
+    yasstyle_fail_file = joinpath(tmp_dir, "yasstyle-fail.jl")
+    cp(bluestyle_pass_file, yasstyle_fail_file)
+    chmod(yasstyle_fail_file, 0o644)
 
     error = @capture_err begin
         output = @capture_out begin
@@ -303,11 +306,9 @@ end
     @test error == expected_error
 
     expected_output = """
-        Formatting $(yasstyle_fail_file)
+        Formatting $(realpath(yasstyle_fail_file))
         """
     @test output == expected_output
-
-    rm(yasstyle_fail_file)
 end
 
 @testset EnhancedTestSet "jlcodestyle.cli.run(): invalid arguments" begin

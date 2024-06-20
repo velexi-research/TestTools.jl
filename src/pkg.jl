@@ -27,8 +27,8 @@ const cli_tools = ["jltest", "jlcoverage", "jlcodestyle"]
 
 Install all of the CLI utilities.
 
-# Keyword arguments
-
+Keyword arguments
+=================
 * `julia::AbstractString`: path to julia executable. Default: path of the current running
   julia
 
@@ -45,27 +45,36 @@ function install(;
 )
     # --- Install CLI utilities
 
+    success = true
     for cli in cli_tools
-        install_cli(cli; julia=julia, bin_dir=bin_dir, force=force)
+        install_success = install_cli(cli; julia=julia, bin_dir=bin_dir, force=force)
+        success = success && install_success
     end
 
     # --- Emit informational message
 
-    @info """
-          Make sure that `$(bin_dir)` is in PATH, or manually add a
-          symlink from a directory in PATH to the installed program file.
-          """
+    if success
+        @info """
+              Make sure that `$(bin_dir)` is in PATH, or manually add a
+              symlink from a directory in PATH to the installed program file.
+              """
+    else
+        println(
+            stderr,
+            "Use `TestTools.install(force=true)` to overwrite existing CLI executables.",
+        )
+    end
 end
 
 """
-    TestTools.install_cli(cli::AbstractString; kwargs...)
+    TestTools.install_cli(cli::AbstractString; kwargs...)::Bool
 
 Install executable for CLI named `cli`.
 
 Valid values for `cli`: "jltest", "jlcoverage", "jlcodestyle".
 
-# Keyword arguments
-
+Keyword arguments
+=================
 * `julia::AbstractString`: path to julia executable. Default: path of the current running
   julia
 
@@ -74,13 +83,17 @@ Valid values for `cli`: "jltest", "jlcoverage", "jlcodestyle".
 
 * `force::Bool`: flag used to indicate that existing CLI executable should be
   overwritten. Default: `false`
+
+Return Values
+=============
+`true` if installation was successful; `false` otherwise
 """
 function install_cli(
     cli::AbstractString;
     julia::AbstractString=joinpath(Sys.BINDIR, Base.julia_exename()),
     bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"),
     force::Bool=false,
-)
+)::Bool
     # --- Check arguments
 
     if !(cli in cli_tools)
@@ -104,10 +117,10 @@ function install_cli(
 
     # Check if the executable already exists
     if ispath(exec_path) && !force
-        error(
-            "File `$(Base.contractuser(exec_path))` already exists. " *
-            "Use `TestTools.install(force=true)` to overwrite.",
-        )
+        printstyled(stderr, "ERROR: "; color=:red, bold=true)
+        println(stderr, "File `$(Base.contractuser(exec_path))` already exists.")
+
+        return false
     end
 
     # Create installation directory
@@ -120,7 +133,7 @@ function install_cli(
             # TODO: test and debug on Windows
 
             # Generate PowerShell part of CLI script
-            open(abspath(dirname(@__DIR__), "bin", cli), "r") do bin_cli
+            open(abspath(pkgdir(@__MODULE__), "bin", cli), "r") do bin_cli
                 for line in eachline(bin_cli)
                     # Skip shebang interpreter directive
                     if occursin("#!/usr/bin/env bash", line)
@@ -145,7 +158,7 @@ function install_cli(
 
         else  # unix
             # Generate bash part of CLI script
-            open(abspath(dirname(@__DIR__), "bin", cli), "r") do bin_cli
+            open(abspath(pkgdir(@__MODULE__), "bin", cli), "r") do bin_cli
                 for line in eachline(bin_cli)
                     # Stop processing lines when Julia section starts
                     if occursin("mode: julia", line)
@@ -187,7 +200,7 @@ function install_cli(
 
     @info "Installed $(basename(exec_path)) to `$(Base.contractuser(exec_path))`."
 
-    return nothing
+    return true
 end
 
 # --- CLI uninstaller functions
@@ -197,8 +210,8 @@ end
 
 Unnstall all of the CLI utilities.
 
-# Keyword arguments
-
+Keyword arguments
+=================
 * `bin_dir::AbstractString`: directory containing CLI executables to uninstall.
   Default: `~/.julia/bin`
 """
@@ -215,8 +228,8 @@ Uninstall executable for CLI named `cli`.
 
 Valid values for `cli`: "jltest", "jlcoverage", "jlcodestyle".
 
-# Keyword arguments
-
+Keyword arguments
+=================
 * `bin_dir::AbstractString`: directory containing CLI executable to uninstall.
   Default: `~/.julia/bin`
 """

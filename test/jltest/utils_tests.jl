@@ -281,8 +281,12 @@ end
 @testset EnhancedTestSet "jltest.run_tests(): log message tests" begin
     # --- Preparations
 
-    # Construct path to test directory
-    test_dir = joinpath(@__DIR__, "data-log-message-tests")
+    # Set up temporary directory for testing
+    tmp_dir = mktempdir()
+    test_dir = joinpath(tmp_dir, "data-log-message-tests")
+    cp(joinpath(@__DIR__, "data-log-message-tests"), test_dir)
+
+    # Construct relative path to test directory
     test_dir_relpath = relpath(test_dir)
 
     # Set up Julia environment
@@ -306,7 +310,11 @@ end
         end)
     end)
 
-    expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+    if Sys.iswindows()
+        expected_output_missing_dependencies_tests = "$(joinpath(test_dir, "missing_dependencies_tests")):"
+    else
+        expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+    end
     @test output == expected_output_missing_dependencies_tests
 
     expected_log_messages_missing_dependencies_tests = "[ Info: Log message that isn't about a missing dependency"
@@ -315,14 +323,22 @@ end
     # ------ Case: only non-missing dependency log messages
 
     log_message_tests_file = joinpath(test_dir, "log_message_tests.jl")
-    expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
+    if Sys.iswindows()
+        expected_output_log_message_tests = "$(joinpath(test_dir, "log_message_tests")):"
+    else
+        expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
+    end
 
-    test_path = joinpath(test_dir_relpath, "log_message_tests")
+    if Sys.iswindows()
+        test_path = joinpath(test_dir, "log_message_tests")
+    else
+        test_path = joinpath(test_dir_relpath, "log_message_tests")
+    end
     if VERSION < v"1.8-"
-        location_prefix = "Main.##$(test_path)#[0-9]+ $(Base.contractuser(log_message_tests_file))"
+        location_prefix = "Main.##$(test_path)#[0-9]+ $(abspath(log_message_tests_file))"
     else
         test_path = make_windows_safe_regex(test_path)
-        location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(Base.contractuser(log_message_tests_file))"
+        location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(abspath(log_message_tests_file))"
     end
     location_prefix = make_windows_safe_regex(location_prefix)
 
@@ -365,9 +381,6 @@ end
     end
 
     # --- Clean up
-
-    # Remove Manifest.toml
-    rm(joinpath(test_dir, "Manifest.toml"); force=true)
 
     # Restore LOAD_PATH
     filter!(x -> x != test_dir, LOAD_PATH)
@@ -601,9 +614,20 @@ end
     # Get current directory
     cwd = pwd()
 
-    test_pkg_dir = joinpath(@__DIR__, "data-missing-package-dependency", "TestPackage")
+    # Set up temporary directory for testing
+    tmp_dir = mktempdir()
+    test_pkg_dir = joinpath(tmp_dir, "TestPackage")
+    cp(joinpath(@__DIR__, "data-missing-package-dependency", "TestPackage"), test_pkg_dir)
+
+    # Create system command to run test
     cmd_options = `--startup-file=no --project=@. -O0`
-    cmd = `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`
+    cmd = Cmd(
+        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
+    )
+
+    # Add path to TestTools.jl package to use for testing
+    test_tools_src_dir = abspath(@__DIR__, "..", "..")
+    cmd = addenv(cmd, Dict("JLTEST_LOAD_PATH" => "$test_tools_src_dir"))
 
     # --- Tests
 
@@ -629,7 +653,7 @@ end
         test_error = strip(@capture_out begin
             try
                 @suppress_err begin
-                    Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+                    Base.run(cmd; wait=true)
                 end
             catch process_error
                 @test process_error isa ProcessFailedException
@@ -640,7 +664,7 @@ end
     else
         test_error = strip(@capture_err begin
             try
-                Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+                Base.run(cmd; wait=true)
             catch process_error
                 @test process_error isa ProcessFailedException
             end
@@ -648,11 +672,6 @@ end
 
         @test occursin(expected_test_error, test_error)
     end
-
-    # --- Clean up
-
-    # Remove Manifest.toml
-    rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
 
 @testset EnhancedTestSet "jltest.get_test_statistics()" begin

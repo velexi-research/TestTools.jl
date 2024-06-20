@@ -46,6 +46,10 @@ using ..jlcoverage
 
 Parse and return CLI arguments contained in `raw_args`. By default, `raw_args` is set to
 `ARGS`, the command-line arguments provided to the executable that called `parse_args()`.
+
+Return Values
+=============
+* parsed CLI arguments converted to Julia types
 """
 function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
@@ -83,8 +87,8 @@ end
 
 Run code coverage analysis for files and directories in `paths`.
 
-# Keyword Arguments
-
+Keyword Arguments
+=================
 * `verbose::Bool`: print more output to the console. Default: `false`
 """
 function run(paths::Vector; verbose::Bool=false)

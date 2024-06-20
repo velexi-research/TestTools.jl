@@ -96,8 +96,8 @@ extract_file(::Nothing) = nothing
 
 Construct an EnhancedTestSet with the specified `description`.
 
-# Keyword Arguments
-
+Keyword Arguments
+=================
 * `wrap::Type{<:AbstractTestSet}`: test set type to wrap. Default: `DefaultTestSet`
 """
 function EnhancedTestSet(
