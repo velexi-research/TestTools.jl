@@ -29,7 +29,7 @@ using Test: AbstractTestSet
 
 # External packages
 using Coverage: clean_folder
-using Suppressor: @capture_err, @suppress_err
+using Suppressor: @suppress
 
 # Local modules
 using ..jltest: get_wrapped_test_set_type
@@ -265,7 +265,9 @@ function run_tests(
     # --- Clean up
 
     # Remove coverage files created in TestTools package
-    clean_folder(pkgdir(@__MODULE__))
+    @suppress begin
+        clean_folder(pkgdir(@__MODULE__); include_memfiles=true)
+    end
 
     return test_stats
 end
