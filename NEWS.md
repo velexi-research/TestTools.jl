@@ -2,6 +2,19 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.6.0 (2024-06-21)
+-------------------
+**Enhancements:**
+- Bumped minor version on account of several end-user improvements (since v0.5.6).
+
+**Developer Updates:**
+- Polished code.
+  - Removed unreachable code.
+  - Removed unnecessary type annotations.
+  - Polished docstrings.
+- Improved coverage of unit tests.
+
+--------------------------------------------------------------------------------------------
 v0.5.9 (2024-06-20)
 -------------------
 **Enhancements:**
