@@ -28,6 +28,7 @@ using Test
 using Test: AbstractTestSet
 
 # External packages
+using Coverage: clean_folder
 using Suppressor: @capture_err, @suppress_err
 
 # Local modules
@@ -261,6 +262,11 @@ function run_tests(
     end
 
     test_stats = get_test_statistics(test_results)
+
+    # --- Clean up
+
+    # Remove coverage files created in TestTools package
+    clean_folder(pkgdir(@__MODULE__))
 
     return test_stats
 end
