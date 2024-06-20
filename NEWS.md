@@ -14,8 +14,8 @@ v0.5.9 (2024-06-19)
 - Fixed errors when running test suite via `Pkg.test()`.
 - Updated unit tests.
   - Migrated to use of temporary directories for running tests.
-  - Various minor updates.
-- Simplified path construction logic through code and tests.
+  - Simplified path construction logic through code and tests.
+  - Various other minor updates.
 
 --------------------------------------------------------------------------------------------
 v0.5.8 (2024-06-17)
