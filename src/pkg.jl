@@ -120,7 +120,7 @@ function install_cli(
             # TODO: test and debug on Windows
 
             # Generate PowerShell part of CLI script
-            open(abspath(dirname(@__DIR__), "bin", cli), "r") do bin_cli
+            open(abspath(pkgdir(@__MODULE__), "bin", cli), "r") do bin_cli
                 for line in eachline(bin_cli)
                     # Skip shebang interpreter directive
                     if occursin("#!/usr/bin/env bash", line)
@@ -145,7 +145,7 @@ function install_cli(
 
         else  # unix
             # Generate bash part of CLI script
-            open(abspath(dirname(@__DIR__), "bin", cli), "r") do bin_cli
+            open(abspath(pkgdir(@__MODULE__), "bin", cli), "r") do bin_cli
                 for line in eachline(bin_cli)
                     # Stop processing lines when Julia section starts
                     if occursin("mode: julia", line)
