@@ -27,11 +27,9 @@ jobs:
       fail-fast: false
 
       matrix:
-        # os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         arch: [x64]
-        #version: ['1.6', '1.7', '1.8', '1.9', '1.10', 'nightly']
-        os: [windows-latest]
-        version: ['1.10']
+        version: ['1.6', '1.7', '1.8', '1.9', '1.10', 'nightly']
 
         exclude:
           - os: macos-latest
