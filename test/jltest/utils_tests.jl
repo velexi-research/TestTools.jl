@@ -286,7 +286,7 @@ end
     test_dir = joinpath(tmp_dir, "data-log-message-tests")
     cp(joinpath(@__DIR__, "data-log-message-tests"), test_dir)
 
-    # Construct path to test directory
+    # Construct relative path to test directory
     test_dir_relpath = relpath(test_dir)
 
     # Set up Julia environment
@@ -310,7 +310,11 @@ end
         end)
     end)
 
-    expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+    if Sys.iswindows()
+        expected_output_missing_dependencies_tests = "$(joinpath(test_dir, "missing_dependencies_tests")):"
+    else
+        expected_output_missing_dependencies_tests = "$(joinpath(test_dir_relpath, "missing_dependencies_tests")):"
+    end
     @test output == expected_output_missing_dependencies_tests
 
     expected_log_messages_missing_dependencies_tests = "[ Info: Log message that isn't about a missing dependency"
@@ -319,22 +323,22 @@ end
     # ------ Case: only non-missing dependency log messages
 
     log_message_tests_file = joinpath(test_dir, "log_message_tests.jl")
-    expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
+    if Sys.iswindows()
+        expected_output_log_message_tests = "$(joinpath(test_dir, "log_message_tests")):"
+    else
+        expected_output_log_message_tests = "$(joinpath(test_dir_relpath, "log_message_tests")):"
+    end
 
-    test_path = joinpath(test_dir_relpath, "log_message_tests")
+    if Sys.iswindows()
+        test_path = joinpath(test_dir, "log_message_tests")
+    else
+        test_path = joinpath(test_dir_relpath, "log_message_tests")
+    end
     if VERSION < v"1.8-"
-        if Sys.iswindows()
-            location_prefix = "Main.##$(test_path)#[0-9]+ $(realpath(log_message_tests_file))"
-        else
-            location_prefix = "Main.##$(test_path)#[0-9]+ $(abspath(log_message_tests_file))"
-        end
+        location_prefix = "Main.##$(test_path)#[0-9]+ $(abspath(log_message_tests_file))"
     else
         test_path = make_windows_safe_regex(test_path)
-        if Sys.iswindows()
-            location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(realpath(log_message_tests_file))"
-        else
-            location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(abspath(log_message_tests_file))"
-        end
+        location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(abspath(log_message_tests_file))"
     end
     location_prefix = make_windows_safe_regex(location_prefix)
 
