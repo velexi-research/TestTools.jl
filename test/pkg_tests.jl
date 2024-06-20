@@ -79,9 +79,9 @@ using TestTools.jltest: EnhancedTestSet
     end
 
     expected_output = """
-         ERROR: File `$(abspath(bin_dir, "jltest"))` already exists.
-         ERROR: File `$(abspath(bin_dir, "jlcoverage"))` already exists.
-         ERROR: File `$(abspath(bin_dir, "jlcodestyle"))` already exists.
+         ERROR: File `$(abspath(bin_dir, jltest_cmd))` already exists.
+         ERROR: File `$(abspath(bin_dir, jlcoverage_cmd))` already exists.
+         ERROR: File `$(abspath(bin_dir, jlcodestyle_cmd))` already exists.
          Use `TestTools.install(force=true)` to overwrite existing CLI executables.
          """
     @test output == expected_output
