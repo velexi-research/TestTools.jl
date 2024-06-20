@@ -23,7 +23,7 @@ using Test
 using Test: DefaultTestSet, FallbackTestSet
 
 # Local modules
-using TestTools.jltest: EnhancedTestSet, get_wrapped_test_set_type
+using TestTools.jltest: EnhancedTestSet, get_wrapped_test_set_type, extract_file
 
 # --- Tests
 
@@ -33,4 +33,15 @@ using TestTools.jltest: EnhancedTestSet, get_wrapped_test_set_type
 
     @test get_wrapped_test_set_type(EnhancedTestSet{DefaultTestSet}) === DefaultTestSet
     @test get_wrapped_test_set_type(EnhancedTestSet{FallbackTestSet}) === FallbackTestSet
+end
+
+@testset EnhancedTestSet "extract_file() tests" begin
+
+    # --- Exercise functionality and check restuls
+
+    # argument is a ::Symbol
+    @test extract_file(:symbol) == "symbol"
+
+    # argument is `nothing`
+    @test extract_file(nothing) === nothing
 end
