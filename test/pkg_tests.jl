@@ -53,49 +53,66 @@ using TestTools.jltest: EnhancedTestSet
     jlcoverage_exec_path = abspath(bin_dir, jlcoverage_cmd)
     jlcodestyle_exec_path = abspath(bin_dir, jlcodestyle_cmd)
 
-    expected_output_install = """
+    # ------ Case: fresh installation
+
+    output = @capture_err begin
+        TestTools.install(; bin_dir=bin_dir)
+    end
+
+    expected_output = """
         [ Info: Installed $jltest_cmd to `$jltest_exec_path`.
         [ Info: Installed $jlcoverage_cmd to `$jlcoverage_exec_path`.
         [ Info: Installed $jlcodestyle_cmd to `$jlcodestyle_exec_path`.
         ┌ Info: Make sure that `$bin_dir` is in PATH, or manually add a
         └ symlink from a directory in PATH to the installed program file.
         """
+    @test output == expected_output
 
-    # Case: fresh installation
-    output = @capture_err begin
-        TestTools.install(; bin_dir=bin_dir)
-    end
-
-    @test output == expected_output_install
     @test isfile(jltest_exec_path)
     @test isfile(jlcoverage_exec_path)
     @test isfile(jlcodestyle_exec_path)
 
-    # Case: attempt to reinstall with force=false
-    local error
-    try
+    # ------ Case: attempt to reinstall with force=false
+
+    output = @capture_err begin
         TestTools.install(; bin_dir=bin_dir)
-    catch error
     end
 
-    expected_error =
-        "File `$jltest_exec_path` already exists. " *
-        "Use `TestTools.install(force=true)` to overwrite."
-    @test error.msg == expected_error
+    expected_output = """
+         ERROR: File `$(abspath(bin_dir, "jltest"))` already exists.
+         ERROR: File `$(abspath(bin_dir, "jlcoverage"))` already exists.
+         ERROR: File `$(abspath(bin_dir, "jlcodestyle"))` already exists.
+         Use `TestTools.install(force=true)` to overwrite existing CLI executables.
+         """
+    @test output == expected_output
 
-    # Case: attempt to reinstall with force=true
+    @test isfile(jltest_exec_path)
+    @test isfile(jlcoverage_exec_path)
+    @test isfile(jlcodestyle_exec_path)
+
+    # ------ Case: attempt to reinstall with force=true
+
     output = @capture_err begin
         TestTools.install(; bin_dir=bin_dir, force=true)
     end
 
-    @test output == expected_output_install
+    expected_output = """
+        [ Info: Installed $jltest_cmd to `$jltest_exec_path`.
+        [ Info: Installed $jlcoverage_cmd to `$jlcoverage_exec_path`.
+        [ Info: Installed $jlcodestyle_cmd to `$jlcodestyle_exec_path`.
+        ┌ Info: Make sure that `$bin_dir` is in PATH, or manually add a
+        └ symlink from a directory in PATH to the installed program file.
+        """
+    @test output == expected_output
+
     @test isfile(jltest_exec_path)
     @test isfile(jlcoverage_exec_path)
     @test isfile(jlcodestyle_exec_path)
 
     # --- uninstall() tests
 
-    # Case: uninstall
+    # ------ Case: uninstall
+
     output = @capture_err begin
         TestTools.uninstall(; bin_dir=bin_dir)
     end
