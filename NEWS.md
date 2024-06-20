@@ -8,7 +8,8 @@ v0.5.9 (2024-06-19)
 - Improved error messages when installing CLI.
 
 **Bug Fixes:**
-- Eliminated proliferation of coverage data files when using `jltest`.
+- Eliminated unbounded proliferation of coverage data files generated within the TestTools
+  installation when using `jltest`.
 
 **Developer Updates:**
 - Fixed errors when running test suite via `Pkg.test()`.
