@@ -108,9 +108,7 @@ end
 
 function Test.record(ts::EnhancedTestSet{T}, res::Test.Fail) where {T}
     println("\n=====================================================")
-    Test.record(ts.wrapped, res)
-
-    return ts
+    return Test.record(ts.wrapped, res)
 end
 
 # When recording DefaultTestSet results to an EnhancedTestSet{FallbackTestSet},
