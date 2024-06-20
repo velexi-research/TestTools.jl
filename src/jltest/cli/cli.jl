@@ -51,6 +51,10 @@ Parse and return CLI arguments contained in `raw_args`. By default, `raw_args` i
     in the `TestTools` package; it is implemented in the `jltest` bash script. The
     `--code-coverage` option is only included in the argument table so that it appears in
     the usage message.
+
+Return Values
+=============
+* parsed CLI arguments converted to Julia types
 """
 function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
@@ -109,14 +113,12 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 end
 
 """
-    run(tests::Vector; kwargs...)
+    run(tests::Vector; kwargs...)::Bool
 
 Run unit tests defined in the list of files or modules provided in `tests`.
 
-Returns `true` if all tests pass; returns `false` otherwise.
-
-# Keyword Arguments
-
+Keyword Arguments
+=================
 * `fail_fast::Bool`: flag indicating whether or not to stop testing at first failure.
   Default: `false`
 
@@ -142,9 +144,9 @@ Returns `true` if all tests pass; returns `false` otherwise.
 
 * `verbose::Bool`: print more output to the console. Default: `false`
 
-# Returns
-
-* `Bool`: `true` if all tests passed; `false` otherwise
+Return Values
+=============
+`true` if all tests passed; `false` otherwise
 """
 function run(
     tests::Vector;

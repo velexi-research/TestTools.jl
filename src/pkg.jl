@@ -59,12 +59,15 @@ function install(;
               symlink from a directory in PATH to the installed program file.
               """
     else
-        println("Use `TestTools.install(force=true)` to overwrite existing CLI executables")
+        println(
+            stderr,
+            "Use `TestTools.install(force=true)` to overwrite existing CLI executables.",
+        )
     end
 end
 
 """
-    TestTools.install_cli(cli::AbstractString; kwargs...)
+    TestTools.install_cli(cli::AbstractString; kwargs...)::Bool
 
 Install executable for CLI named `cli`.
 
@@ -83,14 +86,14 @@ Keyword arguments
 
 Return Values
 =============
-* `true` if installation was successful; `false` otherwise
+`true` if installation was successful; `false` otherwise
 """
 function install_cli(
     cli::AbstractString;
     julia::AbstractString=joinpath(Sys.BINDIR, Base.julia_exename()),
     bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"),
     force::Bool=false,
-)
+)::Bool
     # --- Check arguments
 
     if !(cli in cli_tools)
@@ -114,8 +117,8 @@ function install_cli(
 
     # Check if the executable already exists
     if ispath(exec_path) && !force
-        printstyled("ERROR: "; color=:red, bold=true)
-        println("File `$(Base.contractuser(exec_path))` already exists.")
+        printstyled(stderr, "ERROR: "; color=:red, bold=true)
+        println(stderr, "File `$(Base.contractuser(exec_path))` already exists.")
 
         return false
     end

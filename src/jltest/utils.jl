@@ -69,17 +69,17 @@ function run_all_tests(test_files::Vector{<:AbstractString})
 end
 
 """
-    get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
+    get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})::Dict
 
 Compute test statistics for `test_set`.
 
-# Arguments
-
+Arguments
+=========
 * `test_set`: test set to collect statistics for
 
-# Returns
-
-* `Dict`: statistics for `test_set`
+Return Values
+=============
+* statistics for `test_set`
 """
 function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})::Dict
     # Initialize test statistics
@@ -130,18 +130,16 @@ end
 # --- Functions/Methods
 
 """
-    run_tests(tests::Vector; kwargs...)
-    run_tests(tests::AbstractString; kwargs...)
+    run_tests(tests::Vector; kwargs...)::Dict
+
+    run_tests(tests::AbstractString; kwargs...)::Dict
 
 Run tests in the list of files or modules provided in `tests`. If `tests` is an empty list
 or an empty string, an `ArgumentError` is thrown. File names in `tests` may be specified
 with or without the `.jl` extension.
 
-Returns a Dict containing statistis test statistics: total number of passed tests,
-failed tests, errors, and broken tests.
-
-# Keyword Arguments
-
+Keyword Arguments
+=================
 * `desc::AbstractString`: description to use for test set used to group `tests`.
   Default: the default description set by `@testset`
 
@@ -163,9 +161,10 @@ failed tests, errors, and broken tests.
 * `exclude_runtests::Bool`: flag indicating whether or not to exclude files named
   `runtests.jl` from the list of test files that are run. Default: `true`
 
-# Returns
-
-* `Dict`: test statistics
+Return Values
+=============
+* test statistics, such as total number of passed tests, failed tests, errors,
+  and broken tests.
 """
 function run_tests(
     tests::Vector;
@@ -301,13 +300,17 @@ end
 
 Construct a list of absolute paths to Julia test files contained in `dir`.
 
-# Keyword Arguments
-
+Keyword Arguments
+=================
 * `recursive::Bool`: flag indicating whether or not tests found in subdirectories of `dir`
   should be included in results. Default: `true`
 
 * `exclude_runtests::Bool`: flag indicating whether or not to exclude files named
   `runtests.jl` from the list of test files. Default: `true`
+
+Return Values
+=============
+* list of paths to Julia test files
 """
 function find_tests(
     dir::AbstractString; recursive::Bool=true, exclude_runtests::Bool=true

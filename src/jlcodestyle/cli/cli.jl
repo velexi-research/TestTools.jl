@@ -42,6 +42,10 @@ using ..jlcodestyle
 
 Parse and return CLI arguments contained in `raw_args`. By default, `raw_args` is set to
 `ARGS`, the command-line arguments provided to the executable that called `parse_args()`.
+
+Return Values
+=============
+* parsed CLI arguments converted to Julia types
 """
 function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 
@@ -94,27 +98,29 @@ function parse_args(; raw_args::Vector{<:AbstractString}=ARGS)::Dict
 end
 
 """
-    run(paths::Vector; kwargs...)
+    run(paths::Vector; kwargs...)::Bool
 
 Run code style checks for files contained in `paths`.
 
-Returns `true` if style checks pass; returns `false` otherwise.
-
-# Keyword Arguments
-
+Keyword Arguments
+=================
 * `style::JuliaFormatter.AbstractStyle`: code style to apply. Default: `BlueStyle()`
 
 * `overwrite::Bool`: overwrite existing files with style-corrected versions.
   Default: `false`
 
 * `verbose::Bool`: print more output to the console. Default: `false`
+
+Return Values
+=============
+`true` if style checks pass; `false` otherwise
 """
 function run(
     paths::Vector;
     style::JuliaFormatter.AbstractStyle=BlueStyle(),
     overwrite::Bool=false,
     verbose::Bool=false,
-)
+)::Bool
     # --- Check arguments
 
     # Ensure that `paths` contains strings
