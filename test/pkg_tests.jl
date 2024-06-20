@@ -49,9 +49,9 @@ using TestTools.jltest: EnhancedTestSet
 
     # --- install() tests
 
-    jltest_exec_path = abspath(joinpath(bin_dir, jltest_cmd))
-    jlcoverage_exec_path = abspath(joinpath(bin_dir, jlcoverage_cmd))
-    jlcodestyle_exec_path = abspath(joinpath(bin_dir, jlcodestyle_cmd))
+    jltest_exec_path = abspath(bin_dir, jltest_cmd)
+    jlcoverage_exec_path = abspath(bin_dir, jlcoverage_cmd)
+    jlcodestyle_exec_path = abspath(bin_dir, jlcodestyle_cmd)
 
     expected_output_install = """
         [ Info: Installed $jltest_cmd to `$jltest_exec_path`.

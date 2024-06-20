@@ -614,7 +614,7 @@ end
     )
 
     # Add path to TestTools.jl package to use for testing
-    test_tools_src_dir = abspath(joinpath(@__DIR__, "..", ".."))
+    test_tools_src_dir = abspath(@__DIR__, "..", "..")
     cmd = addenv(cmd, Dict("JLTEST_LOAD_PATH" => "$test_tools_src_dir"))
 
     # --- Tests
