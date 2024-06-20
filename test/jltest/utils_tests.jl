@@ -281,8 +281,12 @@ end
 @testset EnhancedTestSet "jltest.run_tests(): log message tests" begin
     # --- Preparations
 
+    # Set up temporary directory for testing
+    tmp_dir = mktempdir()
+    test_dir = joinpath(tmp_dir, "data-log-message-tests")
+    cp(joinpath(@__DIR__, "data-log-message-tests"), test_dir)
+
     # Construct path to test directory
-    test_dir = joinpath(@__DIR__, "data-log-message-tests")
     test_dir_relpath = relpath(test_dir)
 
     # Set up Julia environment
@@ -319,10 +323,10 @@ end
 
     test_path = joinpath(test_dir_relpath, "log_message_tests")
     if VERSION < v"1.8-"
-        location_prefix = "Main.##$(test_path)#[0-9]+ $(Base.contractuser(log_message_tests_file))"
+        location_prefix = "Main.##$(test_path)#[0-9]+ $(abspath(log_message_tests_file))"
     else
         test_path = make_windows_safe_regex(test_path)
-        location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(Base.contractuser(log_message_tests_file))"
+        location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(abspath(log_message_tests_file))"
     end
     location_prefix = make_windows_safe_regex(location_prefix)
 
@@ -365,9 +369,6 @@ end
     end
 
     # --- Clean up
-
-    # Remove Manifest.toml
-    rm(joinpath(test_dir, "Manifest.toml"); force=true)
 
     # Restore LOAD_PATH
     filter!(x -> x != test_dir, LOAD_PATH)
@@ -601,17 +602,15 @@ end
     # Get current directory
     cwd = pwd()
 
-    # Copy TestPackage directory to temporary directory for testing
-    test_pkg_dir = joinpath(@__DIR__, "data-missing-package-dependency", "TestPackage")
+    # Set up temporary directory for testing
     tmp_dir = mktempdir()
-    tmp_test_pkg_dir = joinpath(tmp_dir, "TestPackage")
-    cp(test_pkg_dir, tmp_test_pkg_dir)
+    test_pkg_dir = joinpath(tmp_dir, "TestPackage")
+    cp(joinpath(@__DIR__, "data-missing-package-dependency", "TestPackage"), test_pkg_dir)
 
     # Create system command to run test
     cmd_options = `--startup-file=no --project=@. -O0`
     cmd = Cmd(
-        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`;
-        dir=tmp_test_pkg_dir,
+        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
     )
 
     # Add path to TestTools.jl package to use for testing
