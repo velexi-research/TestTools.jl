@@ -67,7 +67,7 @@ function install(;
 end
 
 """
-    TestTools.install_cli(cli::AbstractString; kwargs...)::Bool
+    TestTools.install_cli(cli::AbstractString; kwargs...) -> Bool
 
 Install executable for CLI named `cli`.
 
@@ -93,7 +93,7 @@ function install_cli(
     julia::AbstractString=joinpath(Sys.BINDIR, Base.julia_exename()),
     bin_dir::AbstractString=joinpath(DEPOT_PATH[1], "bin"),
     force::Bool=false,
-)::Bool
+)
     # --- Check arguments
 
     if !(cli in cli_tools)

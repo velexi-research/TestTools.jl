@@ -69,7 +69,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
 end
 
 """
-    get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})::Dict
+    get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet}) -> Dict
 
 Compute test statistics for `test_set`.
 
@@ -81,7 +81,7 @@ Return Values
 =============
 * statistics for `test_set`
 """
-function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})::Dict
+function get_test_statistics(test_set::EnhancedTestSet{DefaultTestSet})
     # Initialize test statistics
     stats = get_test_statistics(nothing)
 
@@ -130,9 +130,9 @@ end
 # --- Functions/Methods
 
 """
-    run_tests(tests::Vector; kwargs...)::Dict
+    run_tests(tests::Vector; kwargs...) -> Dict
 
-    run_tests(tests::AbstractString; kwargs...)::Dict
+    run_tests(tests::AbstractString; kwargs...) -> Dict
 
 Run tests in the list of files or modules provided in `tests`. If `tests` is an empty list
 or an empty string, an `ArgumentError` is thrown. File names in `tests` may be specified
@@ -173,7 +173,7 @@ function run_tests(
     test_set_options::Dict=Dict(),
     recursive::Bool=true,
     exclude_runtests::Bool=true,
-)::Dict
+)
     # --- Check arguments
 
     # Ensure that `tests` is not empty
@@ -279,7 +279,7 @@ function run_tests(
     test_set_type::Union{Type{<:AbstractTestSet},Nothing}=EnhancedTestSet{DefaultTestSet},
     test_set_options::Dict=Dict(),
     recursive::Bool=true,
-)::Dict
+)
     # --- Check arguments
 
     # Ensure that `tests` is not an empty string
@@ -298,7 +298,7 @@ function run_tests(
 end
 
 """
-    find_tests(dir::AbstractString), kwargs...)::Vector{String}
+    find_tests(dir::AbstractString), kwargs...) -> Vector{String}
 
 Construct a list of absolute paths to Julia test files contained in `dir`.
 
@@ -314,9 +314,7 @@ Return Values
 =============
 * list of paths to Julia test files
 """
-function find_tests(
-    dir::AbstractString; recursive::Bool=true, exclude_runtests::Bool=true
-)::Vector{String}
+function find_tests(dir::AbstractString; recursive::Bool=true, exclude_runtests::Bool=true)
 
     # --- Check arguments
 
