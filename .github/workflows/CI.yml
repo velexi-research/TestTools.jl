@@ -27,15 +27,19 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [windows-latest]
         arch: [x64]
-        version: ['1.6', '1.7', '1.8', '1.9', '1.10', 'nightly']
-
-        exclude:
-          - os: macos-latest
-            version: 'nightly'
-          - os: windows-latest
-            version: 'nightly'
+        version: ['1.10']
+        #
+        #os: [ubuntu-latest, macos-latest, windows-latest]
+        #arch: [x64]
+        #version: ['1.6', '1.7', '1.8', '1.9', '1.10', 'nightly']
+        #
+        #exclude:
+        #  - os: macos-latest
+        #    version: 'nightly'
+        #  - os: windows-latest
+        #    version: 'nightly'
 
     runs-on: ${{ matrix.os }}
 

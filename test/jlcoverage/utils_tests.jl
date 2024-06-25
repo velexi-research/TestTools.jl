@@ -148,6 +148,8 @@ $(joinpath(test_pkg_src_dir, "more_methods.jl"))\\s+2\\s+2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """)))
+    println(expected_output)
+    println(match(expected_output, output))
     @test !isnothing(match(expected_output, output))
 
     cd(cwd)  # Restore current directory
