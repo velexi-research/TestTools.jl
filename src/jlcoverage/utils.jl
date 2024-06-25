@@ -43,7 +43,7 @@ function display_coverage(coverage_data::Vector; startpath::AbstractString=pwd()
 
     # Ensure that `startpath` is an absolute path
     if !isempty(startpath)
-        startpath = abspath(startpath)
+        startpath = realpath(abspath(startpath))
     end
 
     # --- Generate coverage report
@@ -65,7 +65,7 @@ function display_coverage(coverage_data::Vector; startpath::AbstractString=pwd()
     # Print coverage for individual files
     for file_coverage in coverage_data
         if !isempty(startpath)
-            filename = relpath(file_coverage.filename, startpath)
+            filename = relpath(realpath(file_coverage.filename), startpath)
         else
             filename = file_coverage.filename
         end

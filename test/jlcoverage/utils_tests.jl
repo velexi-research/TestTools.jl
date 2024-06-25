@@ -30,6 +30,16 @@ using Suppressor
 using TestTools.jlcoverage
 using TestTools.jltest: EnhancedTestSet
 
+# --- Helper functions
+
+function make_windows_safe_regex(s::AbstractString)
+    if Sys.iswindows()
+        s = replace(s, "\\" => "\\\\")
+    end
+
+    return s
+end
+
 # --- Tests
 
 @testset EnhancedTestSet "jlcoverage.display_coverage()" begin
@@ -39,12 +49,18 @@ using TestTools.jltest: EnhancedTestSet
     # Get current directory
     cwd = pwd()
 
+    # Set up temporary directory for testing
+    tmp_dir = mktempdir()
+    test_pkg_dir = joinpath(tmp_dir, "TestPackage")
+    cp(joinpath(@__DIR__, "data", "TestPackage"), test_pkg_dir)
+
     # Generate coverage data for TestPackage
-    test_pkg_dir = joinpath(@__DIR__, "data", "TestPackage")
     cmd_options = `--startup-file=no --project=@. -O0`
-    cmd = `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`
+    cmd = Cmd(
+        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
+    )
     @suppress begin
-        Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+        Base.run(cmd; wait=true)
     end
 
     # Process coverage data
@@ -122,26 +138,17 @@ TOTAL                                                     6         3     50.0%
         display_coverage(coverage; startpath=startpath)
     end
 
-    expected_output = """
+    expected_output = Regex(make_windows_safe_regex(strip("""
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
-$(joinpath(test_pkg_src_dir, "TestPackage.jl"))              1         0    100.0%
-$(joinpath(test_pkg_src_dir, "methods.jl"))              3         1     66.7%
-$(joinpath(test_pkg_src_dir, "more_methods.jl"))              2         2      0.0%
+$(joinpath(test_pkg_src_dir, "TestPackage.jl"))[ ]+1 +0    100.0%
+$(joinpath(test_pkg_src_dir, "methods.jl"))[ ]+3[ ]+1     66.7%
+$(joinpath(test_pkg_src_dir, "more_methods.jl"))[ ]+2[ ]+2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
-"""
-    @test output == expected_output
+""")))
+    @test occursin(expected_output, output)
+
     cd(cwd)  # Restore current directory
-
-    # --- Clean up
-
-    # Delete coverage data files
-    @suppress begin
-        Coverage.clean_folder(test_pkg_dir)
-    end
-
-    # Remove Manifest.toml
-    rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
