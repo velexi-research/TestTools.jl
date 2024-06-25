@@ -337,7 +337,7 @@ end
     if VERSION < v"1.8-"
         location_prefix = "Main.##$(test_path)#[0-9]+ $(abspath(log_message_tests_file))"
     else
-        test_path = make_windows_safe_regex(test_path)
+        # test_path = make_windows_safe_regex(test_path)
         location_prefix = "Main.var\"##$(test_path)#[0-9]+\" $(abspath(log_message_tests_file))"
     end
     location_prefix = make_windows_safe_regex(location_prefix)
