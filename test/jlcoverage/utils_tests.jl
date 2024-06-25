@@ -148,8 +148,6 @@ $(joinpath(test_pkg_src_dir, "more_methods.jl"))[ ]+2[ ]+2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """)))
-    println(expected_output)
-    println(output)
     @test occursin(expected_output, output)
 
     cd(cwd)  # Restore current directory
