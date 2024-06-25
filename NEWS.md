@@ -2,6 +2,18 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.6.1 (2024-06-24)
+-------------------
+**Bug Fixes:**
+- Fixed bug in `jlcoverage.display_coverage()` when symbolic links are present in file
+  paths.
+
+**Developer Updates:**
+- Updated unit tests
+  - Added use of temporary directories for running `jlcoverage` tests.
+- Updated pre-commit hooks version.
+
+--------------------------------------------------------------------------------------------
 v0.6.0 (2024-06-21)
 -------------------
 **Enhancements:**
