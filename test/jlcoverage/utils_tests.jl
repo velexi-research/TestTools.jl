@@ -138,7 +138,7 @@ TOTAL                                                     6         3     50.0%
         display_coverage(coverage; startpath=startpath)
     end
 
-    expected_output = Regex(strip("""
+    expected_output = Regex(make_windows_safe_regex(strip("""
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ $(joinpath(test_pkg_src_dir, "methods.jl"))\\s+3\\s+1     66.7%
 $(joinpath(test_pkg_src_dir, "more_methods.jl"))\\s+2\\s+2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
-"""))
+""")))
     println(expected_output)
     println(output)
     println(match(expected_output, output))
