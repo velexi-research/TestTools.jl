@@ -30,6 +30,16 @@ using Suppressor
 using TestTools.jlcoverage
 using TestTools.jltest: EnhancedTestSet
 
+# --- Helper functions
+
+function make_windows_safe_regex(s::AbstractString)
+    if Sys.iswindows()
+        s = replace(s, "\\" => "\\\\")
+    end
+
+    return s
+end
+
 # --- Tests
 
 @testset EnhancedTestSet "jlcoverage.display_coverage()" begin
@@ -128,16 +138,17 @@ TOTAL                                                     6         3     50.0%
         display_coverage(coverage; startpath=startpath)
     end
 
-    expected_output = """
+    expected_output = Regex(make_windows_safe_regex(strip("""
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
-$(joinpath(test_pkg_src_dir, "TestPackage.jl"))              1         0    100.0%
-$(joinpath(test_pkg_src_dir, "methods.jl"))              3         1     66.7%
-$(joinpath(test_pkg_src_dir, "more_methods.jl"))              2         2      0.0%
+$(joinpath(test_pkg_src_dir, "TestPackage.jl"))\\s+1         0    100.0%
+$(joinpath(test_pkg_src_dir, "methods.jl"))\\s+3         1     66.7%
+$(joinpath(test_pkg_src_dir, "more_methods.jl"))\\s+2         2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
-"""
-    @test output == expected_output
+""")))
+    @test !isnothing(match(expected_output, output))
+
     cd(cwd)  # Restore current directory
 end
