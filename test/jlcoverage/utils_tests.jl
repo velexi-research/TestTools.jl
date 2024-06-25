@@ -39,12 +39,18 @@ using TestTools.jltest: EnhancedTestSet
     # Get current directory
     cwd = pwd()
 
+    # Set up temporary directory for testing
+    tmp_dir = mktempdir()
+    test_pkg_dir = joinpath(tmp_dir, "TestPackage")
+    cp(joinpath(@__DIR__, "data", "TestPackage"), test_pkg_dir)
+
     # Generate coverage data for TestPackage
-    test_pkg_dir = joinpath(@__DIR__, "data", "TestPackage")
     cmd_options = `--startup-file=no --project=@. -O0`
-    cmd = `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`
+    cmd = Cmd(
+        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
+    )
     @suppress begin
-        Base.run(Cmd(cmd; dir=test_pkg_dir); wait=true)
+        Base.run(cmd; wait=true)
     end
 
     # Process coverage data
@@ -134,14 +140,4 @@ TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
     cd(cwd)  # Restore current directory
-
-    # --- Clean up
-
-    # Delete coverage data files
-    @suppress begin
-        Coverage.clean_folder(test_pkg_dir)
-    end
-
-    # Remove Manifest.toml
-    rm(joinpath(test_pkg_dir, "Manifest.toml"); force=true)
 end
