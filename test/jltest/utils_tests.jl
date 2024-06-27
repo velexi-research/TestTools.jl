@@ -620,7 +620,7 @@ end
     cp(joinpath(@__DIR__, "data-missing-package-dependency", "TestPackage"), test_pkg_dir)
 
     # Create system command to run test
-    cmd_options = `--startup-file=no --project=@. -O0`
+    cmd_options = `--startup-file=no --project=. -O0`
     cmd = Cmd(
         `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
     )

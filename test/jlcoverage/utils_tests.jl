@@ -55,7 +55,7 @@ end
     cp(joinpath(@__DIR__, "data", "TestPackage"), test_pkg_dir)
 
     # Generate coverage data for TestPackage
-    cmd_options = `--startup-file=no --project=@. -O0`
+    cmd_options = `--startup-file=no --project=. -O0`
     cmd = Cmd(
         `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
     )
