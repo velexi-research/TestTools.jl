@@ -217,6 +217,9 @@ end
 @testset EnhancedTestSet "jltest.cli.run(): basic tests" begin
     # --- Preparations
 
+    # Get current directory
+    cwd = pwd()
+
     # Construct path to test directory
     test_dir = joinpath(@__DIR__, "data-basic-tests")
     test_dir_relpath = relpath(test_dir)
@@ -246,6 +249,7 @@ end
 
     # Case: `tests` is empty
     cd(test_dir)
+
     tests = []
     local tests_passed = true
     local error = nothing
@@ -291,6 +295,11 @@ end
 
     expected_output_more_tests = "$(joinpath("subdir", "more_tests")): .."
     @test occursin(expected_output_more_tests, output)
+
+    # --- Clean up
+
+    # Restore current directory
+    cd(cwd)
 end
 
 @testset EnhancedTestSet "jltest.cli.run(): keyword argument tests" begin
@@ -302,15 +311,15 @@ end
 
     # Precompute commonly used values
     some_tests_file = joinpath(test_dir, "some_tests.jl")
-    expected_output_some_tests = "some_tests: .."
+    expected_output_some_tests = "$(joinpath(test_dir_relpath, "some_tests")): .."
 
     some_tests_no_testset_file = joinpath(test_dir, "some_tests_no_testset.jl")
-    expected_output_some_tests_no_testset = "some_tests_no_testset: .."
+    expected_output_some_tests_no_testset = "$(joinpath(test_dir_relpath, "some_tests_no_testset")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
     expected_output_failing_tests = Regex(
         make_windows_safe_regex(strip("""
-              failing_tests: .
+              $(joinpath(test_dir_relpath, "failing_tests")): .
               =====================================================
               failing tests: Test Failed at $(failing_tests_file):[0-9]+
                 Expression: 2 == 1
@@ -320,7 +329,7 @@ end
 
     expected_output_failing_tests_fail_fast_prefix = Regex(
         make_windows_safe_regex(strip("""
-              failing_tests: .
+              $(joinpath(test_dir_relpath, "failing_tests")): .
               =====================================================
               Test Failed at $(failing_tests_file):[0-9]+
                 Expression: 2 == 1
@@ -338,7 +347,7 @@ end
     failing_tests_no_testset_file = joinpath(test_dir, "failing_tests_no_testset.jl")
     expected_output_failing_tests_no_testset = Regex(
         make_windows_safe_regex(strip("""
-              failing_tests_no_testset: .
+              $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
               =====================================================
               All tests: Test Failed at $(failing_tests_no_testset_file):[0-9]+
                 Expression: 2 == 1

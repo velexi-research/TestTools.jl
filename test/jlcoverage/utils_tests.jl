@@ -55,7 +55,7 @@ end
     cp(joinpath(@__DIR__, "data", "TestPackage"), test_pkg_dir)
 
     # Generate coverage data for TestPackage
-    cmd_options = `--startup-file=no --project=@. -O0`
+    cmd_options = `--startup-file=no --project=. -O0`
     cmd = Cmd(
         `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
     )
@@ -74,6 +74,7 @@ end
 
     # Case: default keyword arguments
     cd(test_pkg_dir)
+
     output = @capture_out begin
         display_coverage(coverage)
     end
@@ -89,10 +90,12 @@ $(joinpath("src", "more_methods.jl"))                                       2   
 TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
+
     cd(cwd)  # Restore current directory
 
     # Case: startpath = test/jlcoverage/data/TestPackage/src/
     cd(test_pkg_dir)
+
     startpath = "src"
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)
@@ -109,10 +112,12 @@ more_methods.jl                                           2         2      0.0%
 TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
+
     cd(cwd)  # Restore current directory
 
     # Case: startpath = pwd()/test/jlcoverage/data/TestPackage/src/
     cd(test_pkg_dir)
+
     startpath = joinpath(pwd(), "src")
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)
@@ -129,10 +134,12 @@ more_methods.jl                                           2         2      0.0%
 TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
+
     cd(cwd)  # Restore current directory
 
     # Case: startpath = ""
     cd(test_pkg_dir)
+
     startpath = ""
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)

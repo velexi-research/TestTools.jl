@@ -1,7 +1,7 @@
 name = "TestTools"
 uuid = "a8cb73c1-6ac8-4a70-8c57-09fe1bc7c59b"
 authors = ["Kevin Chu <kevin@velexi.com> and contributors"]
-version = "0.6.1"
+version = "0.6.2"
 
 [deps]
 ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"

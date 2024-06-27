@@ -52,11 +52,20 @@ cwd = pwd()
 # --- Normal unit tests
 
 # installer tests
+println()
+println("=============================== pkg tests start ===============================")
+
 tests = [joinpath(@__DIR__, "pkg_tests.jl")]
 cd(cwd)
 jltest.run_tests(tests; desc="installer")
 
+println()
+println("================================ pkg tests end ================================")
+println()
+
 # `jltest` tests
+println("============================== jltest tests start =============================")
+
 tests = [
     joinpath(@__DIR__, "jltest", "isolated_test_module_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_utils_tests.jl"),
@@ -71,12 +80,25 @@ tests = [joinpath(@__DIR__, "jltest", "verbose_mode_tests.jl")]
 cd(cwd)
 jltest.run_tests(tests; desc="jltest: verbose mode tests", test_set_type=nothing)
 
+println()
+println()
+println("=============================== jltest tests end ==============================")
+println()
+
 # `jlcodestyle` tests
+println("=========================== jlcodestyle tests start ===========================")
+
 tests = [joinpath(@__DIR__, "jlcodestyle", "cli_tests.jl")]
 cd(cwd)
 jltest.run_tests(tests; desc="jlcodestyle")
 
+println()
+println("============================ jlcodestyle tests end ============================")
+println()
+
 # `jlcoverage` tests
+println("============================ jlcoverage tests start ===========================")
+
 tests = [
     joinpath(@__DIR__, "jlcoverage", "cli_tests.jl"),
     joinpath(@__DIR__, "jlcoverage", "utils_tests.jl"),
@@ -84,7 +106,13 @@ tests = [
 cd(cwd)
 jltest.run_tests(tests; desc="jlcoverage")
 
+println()
+println("============================= jlcoverage tests end =============================")
+println()
+
 # --- jltest unit tests that have expected failures and errors
+
+println("========================= EnhancedTestSet tests start =========================")
 
 # EnhancedTestSet with failing tests
 println()
@@ -247,8 +275,14 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
     end
 end
 
-# utils.jl
 println()
+println("========================== EnhancedTestSet tests end ==========================")
+println()
+
+# utils.jl
+println("=========================== jltest.utils tests start ==========================")
+println()
+
 test_file = joinpath(@__DIR__, "jltest", "utils_tests.jl")
 
 local log_message
@@ -387,8 +421,14 @@ print("jltest/utils_tests: ")
     end
 end
 
-# cli.jl
 println()
+println("============================ jltest.utils tests end ===========================")
+println()
+
+# cli.jl
+println("============================ jltest.cli tests start ===========================")
+println()
+
 test_file = joinpath(@__DIR__, "jltest", "cli_tests.jl")
 
 local log_message
@@ -478,3 +518,7 @@ print("jltest/cli_tests: ")
         @test occursin(expected_output, output)
     end
 end
+
+println()
+println("============================= jltest.cli tests end ============================")
+println()

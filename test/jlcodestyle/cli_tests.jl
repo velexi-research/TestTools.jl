@@ -225,6 +225,8 @@ end
                       """
     @test output == ""
 
+    cd(cwd)  # Restore current directory
+
     # Case: verbose = true
     cd(test_file_dir)
 
@@ -248,6 +250,8 @@ end
         No style errors found.
         """
     @test output == expected_output
+
+    cd(cwd)  # Restore current directory
 
     # Case: `paths` contains only source files without style errors, overwrite = true
     cd(test_file_dir)
@@ -275,8 +279,11 @@ end
         """
     @test output == expected_output
 
+    cd(cwd)  # Restore current directory
+
     # Case: `paths` contains only source files with style errors, overwrite = true
     cd(test_file_dir)
+
     bluestyle_pass_file = joinpath(test_file_dir, "blue-style.jl")
 
     tmp_dir = mktempdir()
@@ -309,6 +316,8 @@ end
         Formatting $(realpath(yasstyle_fail_file))
         """
     @test output == expected_output
+
+    cd(cwd)  # Restore current directory
 end
 
 @testset EnhancedTestSet "jlcodestyle.cli.run(): invalid arguments" begin

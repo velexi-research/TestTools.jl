@@ -2,6 +2,15 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.6.2 (2024-06-26)
+-------------------
+**Developer Updates:**
+- Updated unit tests.
+  - Improved robustness of unit tests.
+  - Added missing calls to `cd(cwd)` to restore working directory during tests.
+  - Improved readability of `runtests.jl` output.
+
+--------------------------------------------------------------------------------------------
 v0.6.1 (2024-06-24)
 -------------------
 **Bug Fixes:**
