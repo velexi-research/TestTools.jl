@@ -51,7 +51,7 @@ jobs:
           if !ismissing(result.version)
             println("$(PKG_NAME) Version: v$(result.version)")
           end
-          println("PkgEval runtime: $(result.duration)s")
+          println("PkgEval runtime: $(round(result.duration; digits=2))s")
           println("PkgEval status: $(result.status)")
           if !ismissing(result.reason)
             println("Failure reason: $(result.reason)")
