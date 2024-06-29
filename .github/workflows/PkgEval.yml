@@ -38,9 +38,12 @@ jobs:
 
           if isempty(ENV["GITHUB_HEAD_REF"])
             BRANCH = ENV["GITHUB_HEAD_REF"]
+            println("DEBUG GITHUB_HEAD_REF: $(BRANCH)")
           else
             BRANCH = ENV["GITHUB_REF_NAME"]
+            println("DEBUG GITHUB_REF_NAME: $(BRANCH)")
           end
+          println(BRANCH)
 
           using PkgEval
           config = Configuration(; julia="nightly");
