@@ -36,7 +36,7 @@ jobs:
         run: |
           PKG_NAME = "TestTools"
 
-          if "GITHUB_HEAD_REF" in ENV.keys
+          if "GITHUB_HEAD_REF" in keys(ENV)
             BRANCH = ENV["GITHUB_HEAD_REF"]
           else
             BRANCH = ENV["GITHUB_REF_NAME"]
