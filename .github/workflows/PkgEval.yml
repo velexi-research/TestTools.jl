@@ -35,7 +35,13 @@ jobs:
         shell: julia --project=. {0}
         run: |
           PKG_NAME = "TestTools"
-          BRANCH = ENV["GITHUB_REF_NAME"]
+
+          if "GITHUB_HEAD_REF" in ENV.keys
+            BRANCH = ENV["GITHUB_HEAD_REF"]
+          else
+            BRANCH = ENV["GITHUB_REF_NAME"]
+          end
+
           using PkgEval
           config = Configuration(; julia="nightly");
           package = Package(; name=PKG_NAME, rev=BRANCH)
