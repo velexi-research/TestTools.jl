@@ -1,0 +1,69 @@
+name: PkgEval
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  pkgeval-test:
+    name: Check PkgEval
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: '1'
+
+      - uses: actions/checkout@v4
+        with:
+          repository: 'JuliaCI/PkgEval.jl'
+
+      - name: Instantiate PkgEval
+        run: julia --project=. -e 'import Pkg; Pkg.instantiate()'
+
+      - name: Run PkgEval
+        shell: julia --project=. {0}
+        run: |
+          PKG_NAME = "TestTools"
+
+          if "GITHUB_HEAD_REF" in keys(ENV)
+            BRANCH = ENV["GITHUB_HEAD_REF"]
+          else
+            BRANCH = ENV["GITHUB_REF_NAME"]
+          end
+
+          using PkgEval
+          config = Configuration(; julia="nightly");
+          package = Package(; name=PKG_NAME, rev=BRANCH)
+
+          horizontal_rule = "#"^80
+
+          println(horizontal_rule)
+          println("PkgEval Configuration")
+
+          @show config
+          @show package
+
+          println(horizontal_rule)
+          result = PkgEval.evaluate_test(config, package; echo=true)
+
+          println(horizontal_rule)
+          if !ismissing(result.version)
+            println("$(PKG_NAME) Version: v$(result.version)")
+          end
+          println("PkgEval runtime: $(round(result.duration; digits=2))s")
+          println("PkgEval status: $(result.status)")
+          if !ismissing(result.reason)
+            println("Failure reason: $(result.reason)")
+          end
+          exit(result.status == :ok ? 0 : 1)

@@ -19,6 +19,7 @@ Unit tests for the methods in `jlcoverage/utils.jl`.
 # --- Imports
 
 # Standard library
+using Pkg: Pkg
 using Test
 using Test: DefaultTestSet
 
@@ -46,7 +47,7 @@ end
 
     # --- Preparations
 
-    # Get current directory
+    # Save current directory
     cwd = pwd()
 
     # Set up temporary directory for testing
@@ -54,13 +55,14 @@ end
     test_pkg_dir = joinpath(tmp_dir, "TestPackage")
     cp(joinpath(@__DIR__, "data", "TestPackage"), test_pkg_dir)
 
+    # Change to test directory
+    cd(test_pkg_dir)
+
     # Generate coverage data for TestPackage
-    cmd_options = `--startup-file=no --project=. -O0`
-    cmd = Cmd(
-        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
-    )
     @suppress begin
-        Base.run(cmd; wait=true)
+        Pkg.activate(".")
+        Pkg.update()
+        Pkg.test("TestPackage"; coverage=true)
     end
 
     # Process coverage data
@@ -73,8 +75,6 @@ end
     # --- Exercise functionality and check results
 
     # Case: default keyword arguments
-    cd(test_pkg_dir)
-
     output = @capture_out begin
         display_coverage(coverage)
     end
@@ -91,11 +91,7 @@ TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
 
-    cd(cwd)  # Restore current directory
-
     # Case: startpath = test/jlcoverage/data/TestPackage/src/
-    cd(test_pkg_dir)
-
     startpath = "src"
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)
@@ -113,11 +109,7 @@ TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
 
-    cd(cwd)  # Restore current directory
-
     # Case: startpath = pwd()/test/jlcoverage/data/TestPackage/src/
-    cd(test_pkg_dir)
-
     startpath = joinpath(pwd(), "src")
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)
@@ -135,11 +127,7 @@ TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
 
-    cd(cwd)  # Restore current directory
-
     # Case: startpath = ""
-    cd(test_pkg_dir)
-
     startpath = ""
     output = @capture_out begin
         display_coverage(coverage; startpath=startpath)
@@ -157,5 +145,8 @@ TOTAL                                                     6         3     50.0%
 """)))
     @test occursin(expected_output, output)
 
-    cd(cwd)  # Restore current directory
+    # --- Clean up
+
+    # Restore current directory
+    cd(cwd)
 end

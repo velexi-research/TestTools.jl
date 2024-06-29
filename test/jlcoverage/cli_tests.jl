@@ -20,6 +20,7 @@ Unit tests for the methods in `jlcoverage/cli.jl`.
 
 # Standard library
 using Logging: Logging
+using Pkg: Pkg
 using Test
 
 # External packages
@@ -98,7 +99,7 @@ end
 
     # --- Preparations
 
-    # Get current directory
+    # Save current directory
     cwd = pwd()
 
     # Set up temporary directory for testing
@@ -106,20 +107,19 @@ end
     test_pkg_dir = joinpath(tmp_dir, "TestPackage")
     cp(joinpath(@__DIR__, "data", "TestPackage"), test_pkg_dir)
 
+    # Change to test directory
+    cd(test_pkg_dir)
+
     # Generate coverage data for TestPackage
-    cmd_options = `--startup-file=no --project=. -O0`
-    cmd = Cmd(
-        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
-    )
     @suppress begin
-        Base.run(cmd; wait=true)
+        Pkg.activate(".")
+        Pkg.update()
+        Pkg.test("TestPackage"; coverage=true)
     end
 
     # --- Exercise functionality and check results
 
     # Case: `paths` contains a single directory, verbose=false
-    cd(test_pkg_dir)
-
     output = @capture_out begin
         cli.run([test_pkg_dir])
     end
@@ -137,12 +137,8 @@ TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
 
-    cd(cwd)  # Restore current directory
-
     # Case: `paths` contains a single directory, verbose=true
     # TODO: add test to check that log messages are generated
-    cd(test_pkg_dir)
-
     output = @capture_out begin
         cli.run([test_pkg_dir]; verbose=true)
     end
@@ -160,11 +156,7 @@ TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
 
-    cd(cwd)  # Restore current directory
-
     # Case: `paths` contains a file
-    cd(test_pkg_dir)
-
     src_file = joinpath("src", "methods.jl")
     output = @capture_out begin
         cli.run([src_file])
@@ -180,11 +172,7 @@ TOTAL                                                     3         1     66.7%
 """
     @test output == expected_output
 
-    cd(cwd)  # Restore current directory
-
     # Case: `paths` is empty and current directory is a Julia package
-    cd(test_pkg_dir)
-
     output = @capture_out begin
         cli.run([])
     end
@@ -200,8 +188,6 @@ $(joinpath("src", "more_methods.jl"))                                       2   
 TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
-
-    cd(cwd)  # Restore current directory
 
     # Case: `paths` is empty and current directory is not a Julia package
     cd(joinpath(test_pkg_dir, "src"))
@@ -221,7 +207,10 @@ TOTAL                                                     6         3     50.0%
 """
     @test output == expected_output
 
-    cd(cwd)  # Restore current directory
+    # --- Clean up
+
+    # Restore current directory
+    cd(cwd)
 end
 
 @testset EnhancedTestSet "jlcoverage.cli.run(): error cases" begin
