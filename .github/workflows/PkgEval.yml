@@ -30,18 +30,30 @@ jobs:
       - name: Run PkgEval
         shell: julia --project=. {0}
         run: |
+          PKG_NAME = "TestTools"
           BRANCH = ENV["GITHUB_REF_NAME"]
           using PkgEval
           config = Configuration(; julia="nightly");
-          package = Package(; name="TestTools", rev=BRANCH)
-          println("##################################################")
+          package = Package(; name=PKG_NAME, rev=BRANCH)
+
+          horizontal_rule = "#"^80
+
+          println(horizontal_rule)
+          println("PkgEval Configuration")
+
           @show config
           @show package
-          println("##################################################")
+
+          println(horizontal_rule)
           result = PkgEval.evaluate_test(config, package; echo=true)
-          println("##################################################")
-          @show result.version
-          @show result.duration
-          @show result.status
-          @show result.reason
+
+          println(horizontal_rule)
+          if !ismissing(result.version)
+            println("$(PKG_NAME) Version: v$(result.version)")
+          end
+          println("PkgEval runtime: $(result.duration)s")
+          println("PkgEval status: $(result.status)")
+          if !ismissing(result.reason)
+            println("Failure reason: $(result.reason)")
+          end
           exit(result.status == :ok ? 0 : 1)
