@@ -5,7 +5,7 @@ TestTools Release Notes
 v0.6.3 (2024-06-29)
 -------------------
 **Developer Updates:**
-- Removed external program calls from unit tests.
+- Fixed PkgEval failures by removing external program calls from unit tests.
 - Add PkgEval GitHub Actions workflow.
 
 --------------------------------------------------------------------------------------------
