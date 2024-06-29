@@ -99,7 +99,7 @@ end
 
     # --- Preparations
 
-    # Save current directory and JULIA_PROJECT environment variable
+    # Save current directory
     cwd = pwd()
 
     # Set up temporary directory for testing

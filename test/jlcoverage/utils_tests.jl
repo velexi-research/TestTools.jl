@@ -47,7 +47,7 @@ end
 
     # --- Preparations
 
-    # Get current directory
+    # Save current directory
     cwd = pwd()
 
     # Set up temporary directory for testing
