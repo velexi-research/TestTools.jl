@@ -24,6 +24,7 @@ Notes
 
 # Standard library
 using Logging
+import Pkg: Pkg
 using Test
 using Test: DefaultTestSet
 
@@ -619,15 +620,18 @@ end
     test_pkg_dir = joinpath(tmp_dir, "TestPackage")
     cp(joinpath(@__DIR__, "data-missing-package-dependency", "TestPackage"), test_pkg_dir)
 
-    # Create system command to run test
-    cmd_options = `--startup-file=no --project=. -O0`
-    cmd = Cmd(
-        `julia $(cmd_options) -e 'import Pkg; Pkg.test(coverage=true)'`; dir=test_pkg_dir
-    )
+    # Change to test directory
+    cd(test_pkg_dir)
 
     # Add path to TestTools.jl package to use for testing
     test_tools_src_dir = abspath(@__DIR__, "..", "..")
-    cmd = addenv(cmd, Dict("JLTEST_LOAD_PATH" => "$test_tools_src_dir"))
+    ENV["JLTEST_LOAD_PATH"] = "$test_tools_src_dir"
+
+    # Activate TestPackage
+    @suppress begin
+        Pkg.activate(".")
+        Pkg.update()
+    end
 
     # --- Tests
 
@@ -640,7 +644,7 @@ end
                 """
                 missing_dependency_tests: 
                 =====================================================
-                test set: Error During Test at $(src_error_file):[0-9]+
+                test set: [^\\s]*Error During Test[^\\s]* at [^\\s]*$(src_error_file):[0-9]+[^\\s]*
                   Got exception outside of a @test
                   LoadError: ArgumentError: Package InteractiveUtils not found in current path.
                 """,
@@ -653,10 +657,10 @@ end
         test_error = strip(@capture_out begin
             try
                 @suppress_err begin
-                    Base.run(cmd; wait=true)
+                    Pkg.test("TestPackage")
                 end
-            catch process_error
-                @test process_error isa ProcessFailedException
+            catch error
+                @test error isa Pkg.Types.PkgError
             end
         end)
 
@@ -664,14 +668,22 @@ end
     else
         test_error = strip(@capture_err begin
             try
-                Base.run(cmd; wait=true)
-            catch process_error
-                @test process_error isa ProcessFailedException
+                Pkg.test("TestPackage")
+            catch error
+                @test error isa Pkg.Types.PkgError
             end
         end)
 
         @test occursin(expected_test_error, test_error)
     end
+
+    # --- Clean up
+
+    # Restore current directory
+    cd(cwd)
+
+    # Restore environment
+    delete!(ENV, "JLTEST_LOAD_PATH")
 end
 
 @testset EnhancedTestSet "jltest.get_test_statistics()" begin
