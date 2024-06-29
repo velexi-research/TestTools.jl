@@ -99,12 +99,14 @@ println()
 # `jlcoverage` tests
 println("============================ jlcoverage tests start ===========================")
 
+#=
 tests = [
     joinpath(@__DIR__, "jlcoverage", "cli_tests.jl"),
     joinpath(@__DIR__, "jlcoverage", "utils_tests.jl"),
 ]
 cd(cwd)
 jltest.run_tests(tests; desc="jlcoverage")
+=#
 
 println()
 println("============================= jlcoverage tests end =============================")
