@@ -27,8 +27,18 @@ using Suppressor
 # Local package
 using TestTools.jltest
 
-cmd = Cmd(`$HOME/.juliaup/bin/julia --project=. -e "import Pkg"`)
-Base.run(cmd)
+#cmd = Cmd(`\$HOME/.juliaup/bin/julia --project=. -e "import Pkg"`)
+cmd = Cmd(`pwd`)
+console = @capture_out begin
+    Base.run(cmd)
+end
+println(console)
+
+cmd = Cmd(`ls`)
+console = @capture_out begin
+    Base.run(cmd)
+end
+println(console)
 
 # --- Helper functions
 
