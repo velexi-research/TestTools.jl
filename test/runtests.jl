@@ -27,7 +27,7 @@ using Suppressor
 # Local package
 using TestTools.jltest
 
-cmd = Cmd(`ls`)
+cmd = Cmd(`julia --project=. -e "import Pkg"`)
 Base.run(cmd)
 
 # --- Helper functions
