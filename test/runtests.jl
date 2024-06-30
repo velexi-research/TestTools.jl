@@ -27,8 +27,12 @@ using Suppressor
 # Local package
 using TestTools.jltest
 
+cmd = Cmd(`ls`)
+Base.run(cmd)
+
 # --- Helper functions
 
+#=
 function make_windows_safe_regex(s::AbstractString)
     if Sys.iswindows()
         s = replace(s, "\\" => "\\\\")
@@ -155,7 +159,6 @@ print("jltest/EnhancedTestSet_failing_tests: ")
             """
             $(joinpath("jltest", "EnhancedTestSet_failing_tests")): .......
 
-
             Test Summary:                                | Pass  Fail  Error  Total
             EnhancedTestSet                              |    7     6      1     14
               failing tests                              |    7     6      1     14
@@ -178,7 +181,6 @@ print("jltest/EnhancedTestSet_failing_tests: ")
             strip(
                 """
                 $(test_path): .......
-
 
                 Test Summary:                                \\| Pass  Fail  Error  Total\\s+Time
                 EnhancedTestSet                              \\|    7     6      1     14\\s+\\d+\\.\\d+s
@@ -238,7 +240,6 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
             """
             $(joinpath("jltest", "EnhancedTestSet_nested_test_set_tests")): ..
 
-
             Test Summary:                                         | Pass  Fail  Total
             EnhancedTestSet                                       |    2     2      4
               nested test set tests                               |    2     2      4
@@ -258,7 +259,6 @@ print("jltest/EnhancedTestSet_nested_test_set_tests: ")
             strip(
                 """
                 $(test_path): ..
-
 
                 Test Summary:                                         \\| Pass  Fail  Total\\s+Time
                 EnhancedTestSet                                       \\|    2     2      4\\s+\\d+\\.\\d+s
@@ -322,7 +322,6 @@ print("jltest/utils_tests: ")
             """
             $(joinpath("jltest", "utils_tests")): .......................................................................................
 
-
             Test Summary:                                    | Pass  Fail  Total
             jltest                                           |  141    13    154
               utils tests                                    |  141    13    154
@@ -372,7 +371,6 @@ print("jltest/utils_tests: ")
             strip(
                 """
                 $(test_path): ........................................................................................
-
 
                 Test Summary:                                    \\| Pass  Fail  Total\\s+Time
                 jltest                                           \\|  141    13    154\\s+\\d+\\.\\d+s
@@ -466,7 +464,6 @@ print("jltest/cli_tests: ")
             """
             $(joinpath("jltest", "cli_tests")): .............................................
 
-
             Test Summary:                                | Pass  Fail  Total
             jltest                                       |   66     5     71
               cli tests                                  |   66     5     71
@@ -493,7 +490,6 @@ print("jltest/cli_tests: ")
             strip(
                 """
                 $(test_path): .............................................
-
 
                 Test Summary:                                \\| Pass  Fail  Total\\s+Time
                 jltest                                       \\|   66     5     71\\s+\\d+\\.\\d+s
@@ -522,3 +518,4 @@ end
 println()
 println("============================= jltest.cli tests end ============================")
 println()
+=#
