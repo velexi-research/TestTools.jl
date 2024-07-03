@@ -54,11 +54,23 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Restore current directory before each test file is run
             cd(cwd)
 
-            # Activate Julia project for test file
-            println(Base.active_project())
-            test_dir = abspath(dirname(test_file))
-            println(test_dir)
-            Pkg.activate(test_dir)
+            # Find and activate the relevant Julia project for test_file
+            project_dir = abspath(dirname(test_file))
+            while (
+                startswith(project_dir, cwd) &&
+                !isfile(joinpath(project_dir, "Project.toml"))
+            )
+                project_dir = dirname(project_dir)
+            end
+
+            println(project_dir)
+            if startswith(project_dir, cwd)
+                # Found a Project.toml in the file tree between test_file and cwd
+                Pkg.activate(project_dir)
+            else
+                # Failed to find a Project.toml in the file tree between test_file and cwd
+                Pkg.activate(cwd)
+            end
             println(Base.active_project())
 
             # Construct an isolated module to run the tests contained in test_file
