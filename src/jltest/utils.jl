@@ -61,6 +61,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             cd(test_dir)
             Pkg.activate()
             println(Base.active_project())
+            cd(cwd)
 
             # Construct an isolated module to run the tests contained in test_file
             module_name = splitext(relpath(test_file, cwd))[1]
