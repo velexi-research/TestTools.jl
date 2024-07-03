@@ -29,7 +29,7 @@ using Test: AbstractTestSet
 
 # External packages
 using Coverage: clean_folder
-using Suppressor: @suppress
+using Suppressor: @suppress, @suppress_err
 
 # Local modules
 using ..jltest: get_wrapped_test_set_type
@@ -68,7 +68,9 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             end
 
             # Activate the Julia project to run test_file under
-            Pkg.activate(project_dir)
+            @suppress_err begin
+                Pkg.activate(project_dir)
+            end
 
             # Construct an isolated module to run the tests contained in test_file
             module_name = splitext(relpath(test_file, cwd))[1]
