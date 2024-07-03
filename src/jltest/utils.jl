@@ -51,8 +51,8 @@ function run_all_tests(test_files::Vector{<:AbstractString})
     # Activate Julia project
     println(cwd)
     println(Base.active_project())
-    Pkg.activate(".")
-    println(Base.active_project())
+    #    Pkg.activate(".")
+    #    println(Base.active_project())
 
     # Run tests files
     if !isempty(test_files)
