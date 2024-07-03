@@ -48,17 +48,18 @@ function run_all_tests(test_files::Vector{<:AbstractString})
     # Get current directory
     cwd = pwd()
 
-    # Activate Julia project
-    println(cwd)
-    println(Base.active_project())
-    Pkg.activate(".")
-    println(Base.active_project())
-
     # Run tests files
     if !isempty(test_files)
         for test_file in test_files
             # Restore current directory before each test file is run
             cd(cwd)
+
+            # Activate Julia project for test file
+            println(Base.active_project())
+            test_dir = dirname(test_file)
+            println(test_dir)
+            Pkg.activate(test_dir)
+            println(Base.active_project())
 
             # Construct an isolated module to run the tests contained in test_file
             module_name = splitext(relpath(test_file, cwd))[1]
