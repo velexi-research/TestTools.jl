@@ -17,9 +17,6 @@ The `jltest` module provides support for running unit tests.
 """
 module jltest
 
-# External modules
-using Aqua: Aqua
-
 # API
 include("EnhancedTestSet.jl")
 include("utils.jl")

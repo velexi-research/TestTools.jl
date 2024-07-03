@@ -36,6 +36,8 @@ using ..jltest: get_wrapped_test_set_type
 
 # --- Private utility functions
 
+using Pkg: Pkg
+
 """
     run_all_tests(test_files::Vector{<:AbstractString})
 
@@ -45,6 +47,9 @@ function run_all_tests(test_files::Vector{<:AbstractString})
 
     # Get current directory
     cwd = pwd()
+
+    # Activate Julia project
+    Pkg.activate(".")
 
     # Run tests files
     if !isempty(test_files)
