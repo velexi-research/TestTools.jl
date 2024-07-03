@@ -56,7 +56,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
 
             # Activate Julia project for test file
             println(Base.active_project())
-            test_dir = dirname(test_file)
+            test_dir = abspath(dirname(test_file))
             println(test_dir)
             Pkg.activate(test_dir; shared=true)
             println(Base.active_project())
