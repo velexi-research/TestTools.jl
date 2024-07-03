@@ -58,7 +58,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             println(Base.active_project())
             test_dir = dirname(test_file)
             println(test_dir)
-            cd(cwd)
+            cd(test_dir)
             Pkg.activate()
             println(Base.active_project())
 
