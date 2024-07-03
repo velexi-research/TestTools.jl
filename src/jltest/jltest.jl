@@ -17,14 +17,14 @@ The `jltest` module provides support for running unit tests.
 """
 module jltest
 
+# External modules
+using Aqua: Aqua
+
 # API
 include("EnhancedTestSet.jl")
 include("utils.jl")
 
 # CLI
 include("cli/cli.jl")
-
-# External modules
-using Aqua: Aqua
 
 end  # End of jltest module
