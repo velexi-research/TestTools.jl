@@ -22,9 +22,11 @@ Unit test runner for the TestTools package.
 using Test
 
 # External packages
+using Aqua
 using Suppressor
 
 # Local package
+using TestTools
 using TestTools.jltest
 
 # --- Helper functions
@@ -107,7 +109,7 @@ cd(cwd)
 jltest.run_tests(tests; desc="jlcoverage")
 
 println()
-println("============================= jlcoverage tests end =============================")
+println("============================= jlcoverage tests end ============================")
 println()
 
 # --- jltest unit tests that have expected failures and errors
@@ -521,4 +523,22 @@ end
 
 println()
 println("============================= jltest.cli tests end ============================")
+println()
+
+# --- Aqua.jl tests
+
+println("============================= Aqua.jl checks start ============================")
+println()
+
+print("Aqua.jl: ")
+@testset EnhancedTestSet "Aqua.jl code quality checks" begin
+    Aqua.test_all(
+        TestTools;
+        stale_deps=(ignore=[:Aqua],),
+        deps_compat=(ignore=[:Distributed, :Logging, :Printf, :Test],),
+    )
+end
+
+println()
+println("============================== Aqua.jl checks end =============================")
 println()
