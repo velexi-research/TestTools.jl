@@ -24,4 +24,7 @@ include("utils.jl")
 # CLI
 include("cli/cli.jl")
 
+# External modules
+using Aqua: Aqua
+
 end  # End of jltest module
