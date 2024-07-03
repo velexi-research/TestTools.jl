@@ -24,7 +24,6 @@
     <td colspan=2 align="center">
       <a href="https://github.com/velexi-research/TestTools.jl/issues"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"/></a>
       <a href="https://github.com/invenia/BlueStyle"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/code%20style-blue-4495d1.svg"/></a>
-      <a href="http://hits.dwyl.com/velexi/TestToolsjl"><img style="vertical-align: bottom;" src="https://hits.dwyl.com/velexi/TestToolsjl.svg?style=flat-square&show=unique"/></a>
     </td>
   </tr>
 </table>
