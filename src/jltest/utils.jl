@@ -58,7 +58,8 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             println(Base.active_project())
             test_dir = dirname(test_file)
             println(test_dir)
-            Pkg.activate(test_dir)
+            cd(cwd)
+            Pkg.activate("@.")
             println(Base.active_project())
 
             # Construct an isolated module to run the tests contained in test_file
