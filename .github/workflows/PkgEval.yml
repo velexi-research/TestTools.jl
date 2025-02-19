@@ -31,44 +31,41 @@ jobs:
       - name: Instantiate PkgEval
         run: julia --project=. -e 'import Pkg; Pkg.instantiate()'
 
-      - name: Run headless test
-        uses: GabrielBB/xvfb-action@v1
-        with:
-          run: npm test
-
       - name: Run PkgEval
+        uses: GabrielBB/xvfb-action@v1
         shell: julia --project=. {0}
-        run: |
-          PKG_NAME = "TestTools"
+        with:
+          run: |
+            PKG_NAME = "TestTools"
 
-          if !isempty(ENV["GITHUB_HEAD_REF"])
-            BRANCH = ENV["GITHUB_HEAD_REF"]
-          else
-            BRANCH = ENV["GITHUB_REF_NAME"]
-          end
+            if !isempty(ENV["GITHUB_HEAD_REF"])
+              BRANCH = ENV["GITHUB_HEAD_REF"]
+            else
+              BRANCH = ENV["GITHUB_REF_NAME"]
+            end
 
-          using PkgEval
-          config = Configuration(; julia="nightly");
-          package = Package(; name=PKG_NAME, rev=BRANCH)
+            using PkgEval
+            config = Configuration(; julia="nightly");
+            package = Package(; name=PKG_NAME, rev=BRANCH)
 
-          horizontal_rule = "#"^80
+            horizontal_rule = "#"^80
 
-          println(horizontal_rule)
-          println("PkgEval Configuration")
+            println(horizontal_rule)
+            println("PkgEval Configuration")
 
-          @show config
-          @show package
+            @show config
+            @show package
 
-          println(horizontal_rule)
-          result = PkgEval.evaluate_package(config, package; echo=true)
+            println(horizontal_rule)
+            result = PkgEval.evaluate_package(config, package; echo=true)
 
-          println(horizontal_rule)
-          if !ismissing(result.version)
-            println("$(PKG_NAME) Version: v$(result.version)")
-          end
-          println("PkgEval runtime: $(round(result.duration; digits=2))s")
-          println("PkgEval status: $(result.status)")
-          if !ismissing(result.reason)
-            println("Failure reason: $(result.reason)")
-          end
-          exit(result.status == :ok ? 0 : 1)
+            println(horizontal_rule)
+            if !ismissing(result.version)
+              println("$(PKG_NAME) Version: v$(result.version)")
+            end
+            println("PkgEval runtime: $(round(result.duration; digits=2))s")
+            println("PkgEval status: $(result.status)")
+            if !ismissing(result.reason)
+              println("Failure reason: $(result.reason)")
+            end
+            exit(result.status == :ok ? 0 : 1)
