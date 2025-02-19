@@ -548,8 +548,7 @@ print("Aqua.jl: ")
 cd(cwd)
 
 # Refresh Julia environment
-#Pkg.activate(cwd)
-#Pkg.instantiate()
+Pkg.activate(cwd)
 
 @testset EnhancedTestSet "Aqua.jl code quality checks" begin
     Aqua.test_all(
