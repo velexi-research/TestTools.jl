@@ -43,7 +43,7 @@ jobs:
           end
 
           using PkgEval
-          config = Configuration(; julia="nightly");
+          config = Configuration(; xvfb=false);
           package = Package(; name=PKG_NAME, rev=BRANCH)
 
           horizontal_rule = "#"^80
