@@ -63,32 +63,14 @@ cd(@__DIR__)
 # tests.
 cwd = pwd()
 
-# --- Aqua.jl tests
-
-println("============================= Aqua.jl checks start ============================")
-println()
-
-print("Aqua.jl: ")
-@testset EnhancedTestSet "Aqua.jl code quality checks" begin
-    Aqua.test_all(
-        TestTools;
-        stale_deps=(ignore=[:Aqua],),
-        deps_compat=(ignore=[:Distributed, :Logging, :Printf, :Test],),
-    )
-end
-
-println()
-println("============================== Aqua.jl checks end =============================")
-println()
-
 # --- Normal unit tests
 
 # installer tests
 println()
 println("=============================== pkg tests start ===============================")
 
-tests = [joinpath(@__DIR__, "pkg_tests.jl")]
 cd(cwd)
+tests = [joinpath(@__DIR__, "pkg_tests.jl")]
 jltest.run_tests(tests; desc="installer")
 
 println()
@@ -98,18 +80,18 @@ println()
 # `jltest` tests
 println("============================== jltest tests start =============================")
 
+cd(cwd)
 tests = [
     joinpath(@__DIR__, "jltest", "isolated_test_module_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_utils_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_passing_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_fail_fast_tests.jl"),
 ]
-cd(cwd)
 jltest.run_tests(tests; desc="jltest")
 
 # `jltest` verbose mode tests
-tests = [joinpath(@__DIR__, "jltest", "verbose_mode_tests.jl")]
 cd(cwd)
+tests = [joinpath(@__DIR__, "jltest", "verbose_mode_tests.jl")]
 jltest.run_tests(tests; desc="jltest: verbose mode tests", test_set_type=nothing)
 
 println()
@@ -120,8 +102,8 @@ println()
 # `jlcodestyle` tests
 println("=========================== jlcodestyle tests start ===========================")
 
-tests = [joinpath(@__DIR__, "jlcodestyle", "cli_tests.jl")]
 cd(cwd)
+tests = [joinpath(@__DIR__, "jlcodestyle", "cli_tests.jl")]
 jltest.run_tests(tests; desc="jlcodestyle")
 
 println()
@@ -131,11 +113,11 @@ println()
 # `jlcoverage` tests
 println("============================ jlcoverage tests start ===========================")
 
+cd(cwd)
 tests = [
     joinpath(@__DIR__, "jlcoverage", "cli_tests.jl"),
     joinpath(@__DIR__, "jlcoverage", "utils_tests.jl"),
 ]
-cd(cwd)
 jltest.run_tests(tests; desc="jlcoverage")
 
 println()
@@ -553,4 +535,24 @@ end
 
 println()
 println("============================= jltest.cli tests end ============================")
+println()
+
+# --- Aqua.jl tests
+
+println("============================= Aqua.jl checks start ============================")
+println()
+
+print("Aqua.jl: ")
+
+cd(cwd)
+@testset EnhancedTestSet "Aqua.jl code quality checks" begin
+    Aqua.test_all(
+        TestTools;
+        stale_deps=(ignore=[:Aqua],),
+        deps_compat=(ignore=[:Distributed, :Logging, :Printf, :Test],),
+    )
+end
+
+println()
+println("============================== Aqua.jl checks end =============================")
 println()
