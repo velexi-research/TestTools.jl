@@ -28,12 +28,11 @@ jobs:
         with:
           repository: 'JuliaCI/PkgEval.jl'
 
-      - name: Instantiate PkgEval
-        run: julia --project=. -e 'import Pkg; Pkg.instantiate()'
-
       - name: Run PkgEval
         shell: sudo julia --project=. {0}
         run: |
+          import Pkg; Pkg.instantiate()
+
           PKG_NAME = "TestTools"
 
           if !isempty(ENV["GITHUB_HEAD_REF"])
