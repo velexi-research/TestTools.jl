@@ -29,6 +29,18 @@ using Suppressor
 using TestTools
 using TestTools.jltest
 
+#cmd = Cmd(`\$HOME/.juliaup/bin/julia --project=. -e "import Pkg"`)
+cmd = Cmd(`pwd`)
+console = @capture_out begin
+    Base.run(cmd)
+end
+println(console)
+cmd = Cmd(`ls`)
+console = @capture_out begin
+    Base.run(cmd)
+end
+println(console)
+
 # --- Helper functions
 
 function make_windows_safe_regex(s::AbstractString)
@@ -533,7 +545,9 @@ println()
 print("Aqua.jl: ")
 @testset EnhancedTestSet "Aqua.jl code quality checks" begin
     Aqua.test_all(
-        TestTools; deps_compat=(ignore=[:Aqua, :Distributed, :Logging, :Printf, :Test],)
+        TestTools;
+        stale_deps=(ignore=[:Aqua],),
+        deps_compat=(ignore=[:Distributed, :Logging, :Printf, :Test],),
     )
 end
 
