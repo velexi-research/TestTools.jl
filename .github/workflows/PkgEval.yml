@@ -20,6 +20,9 @@ jobs:
       fail-fast: false
 
     steps:
+      - name: Set up virtual X11
+        run: sudo apt-get install xvfb
+
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1'
