@@ -45,8 +45,8 @@ Run all tests contained in `test_files`.
 """
 function run_all_tests(test_files::Vector{<:AbstractString})
 
-    # Get directory of currently active Julia project
-    active_project_dir = abspath(dirname(Base.active_project()))
+    # Get original active Julia project
+    original_active_project = abspath(dirname(Base.active_project()))
 
     # Get current directory
     cwd = pwd()
@@ -90,9 +90,9 @@ function run_all_tests(test_files::Vector{<:AbstractString})
         end
     end
 
-    # Restore originally active Julia project
+    # Restore original active Julia project
     @suppress_err begin
-        Pkg.activate(active_project_dir)
+        Pkg.activate(original_active_project)
     end
 end
 
