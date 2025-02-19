@@ -31,6 +31,11 @@ jobs:
       - name: Instantiate PkgEval
         run: julia --project=. -e 'import Pkg; Pkg.instantiate()'
 
+      - name: Run headless test
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: npm test
+
       - name: Run PkgEval
         shell: julia --project=. {0}
         run: |
@@ -43,7 +48,7 @@ jobs:
           end
 
           using PkgEval
-          config = Configuration(; xvfb=false);
+          config = Configuration(; julia="nightly");
           package = Package(; name=PKG_NAME, rev=BRANCH)
 
           horizontal_rule = "#"^80
@@ -55,7 +60,7 @@ jobs:
           @show package
 
           println(horizontal_rule)
-          result = PkgEval.evaluate_package(config, package; use_cache=false, echo=true)
+          result = PkgEval.evaluate_package(config, package; echo=true)
 
           println(horizontal_rule)
           if !ismissing(result.version)
