@@ -29,7 +29,7 @@ jobs:
           repository: 'JuliaCI/PkgEval.jl'
 
       - name: Run PkgEval
-        shell: sudo julia --project=. {0}
+        shell: julia --project=. {0}
         run: |
           import Pkg; Pkg.instantiate()
 
