@@ -27,20 +27,22 @@ jobs:
         with:
           version: '1'
 
-      - uses: actions/checkout@v4
-        with:
-          repository: 'JuliaCI/PkgEval.jl'
-
       - name: Set up Julia caches
         uses: julia-actions/cache@v2
         with:
           cache-name: ${{ github.repository }}-${{ github.workflow }}-${{ github.job }}-julia-${{ hashFiles('.github/workflows/PkgEval.yml') }}
 
+      - name: Check out PkgEval
+        uses: actions/checkout@v4
+        with:
+          repository: 'JuliaCI/PkgEval.jl'
+
+      - name: Install PkgEval
+        run: julia --project=. -e 'import Pkg; Pkg.instantiate()'
+
       - name: Run PkgEval
         shell: julia --project=. {0}
         run: |
-          import Pkg; Pkg.instantiate()
-
           PKG_NAME = "TestTools"
 
           if !isempty(ENV["GITHUB_HEAD_REF"])
