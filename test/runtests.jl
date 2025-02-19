@@ -70,8 +70,8 @@ cwd = pwd()
 println()
 println("=============================== pkg tests start ===============================")
 
-cd(cwd)
 tests = [joinpath(@__DIR__, "pkg_tests.jl")]
+cd(cwd)
 jltest.run_tests(tests; desc="installer")
 
 println()
@@ -81,18 +81,18 @@ println()
 # `jltest` tests
 println("============================== jltest tests start =============================")
 
-cd(cwd)
 tests = [
     joinpath(@__DIR__, "jltest", "isolated_test_module_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_utils_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_passing_tests.jl"),
     joinpath(@__DIR__, "jltest", "EnhancedTestSet_fail_fast_tests.jl"),
 ]
+cd(cwd)
 jltest.run_tests(tests; desc="jltest")
 
 # `jltest` verbose mode tests
-cd(cwd)
 tests = [joinpath(@__DIR__, "jltest", "verbose_mode_tests.jl")]
+cd(cwd)
 jltest.run_tests(tests; desc="jltest: verbose mode tests", test_set_type=nothing)
 
 println()
@@ -103,8 +103,8 @@ println()
 # `jlcodestyle` tests
 println("=========================== jlcodestyle tests start ===========================")
 
-cd(cwd)
 tests = [joinpath(@__DIR__, "jlcodestyle", "cli_tests.jl")]
+cd(cwd)
 jltest.run_tests(tests; desc="jlcodestyle")
 
 println()
@@ -114,11 +114,11 @@ println()
 # `jlcoverage` tests
 println("============================ jlcoverage tests start ===========================")
 
-cd(cwd)
 tests = [
     joinpath(@__DIR__, "jlcoverage", "cli_tests.jl"),
     joinpath(@__DIR__, "jlcoverage", "utils_tests.jl"),
 ]
+cd(cwd)
 jltest.run_tests(tests; desc="jlcoverage")
 
 println()
@@ -542,10 +542,9 @@ println()
 
 println("============================= Aqua.jl checks start ============================")
 println()
+print("Aqua.jl: ")
 
 cd(cwd)
-
-print("Aqua.jl: ")
 @testset EnhancedTestSet "Aqua.jl code quality checks" begin
     Aqua.test_all(
         TestTools;
