@@ -19,6 +19,7 @@ Unit test runner for the TestTools package.
 # --- Imports
 
 # Standard library
+using Pkg: Pkg
 using Test
 
 # External packages
@@ -545,6 +546,7 @@ println()
 print("Aqua.jl: ")
 
 cd(cwd)
+Pkg.activate(cwd)
 @testset EnhancedTestSet "Aqua.jl code quality checks" begin
     Aqua.test_all(
         TestTools;
