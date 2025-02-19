@@ -32,7 +32,7 @@ jobs:
         run: julia --project=. -e 'import Pkg; Pkg.instantiate()'
 
       - name: Run PkgEval
-        shell: julia --project=. {0}
+        shell: sudo julia --project=. {0}
         run: |
           PKG_NAME = "TestTools"
 
