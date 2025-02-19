@@ -70,6 +70,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Activate the Julia project to run test_file under
             @suppress_err begin
                 Pkg.activate(project_dir)
+                Pkg.instantiate(project_dir)
             end
 
             # Construct an isolated module to run the tests contained in test_file
@@ -88,6 +89,7 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             # Re-activate the Julia project in the current directory
             @suppress_err begin
                 Pkg.activate(cwd)
+                Pkg.instantiate(cwd)
             end
         end
     end
