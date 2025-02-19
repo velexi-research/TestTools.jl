@@ -544,7 +544,6 @@ println("============================= Aqua.jl checks start ====================
 println()
 
 cd(cwd)
-Pkg.activate(".")
 
 print("Aqua.jl: ")
 @testset EnhancedTestSet "Aqua.jl code quality checks" begin
