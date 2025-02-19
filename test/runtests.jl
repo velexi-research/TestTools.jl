@@ -41,10 +41,6 @@ end
 
 # --- Preparations
 
-# Ensure all recorded dependencies are installed
-using Pkg: Pkg
-Pkg.instantiate()
-
 # Change to test directory
 #
 # Note: this is needed for consistency of results when tests are run via
