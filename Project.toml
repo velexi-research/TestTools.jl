@@ -4,6 +4,7 @@ authors = ["Kevin Chu <kevin@velexi.com> and contributors"]
 version = "0.6.4"
 
 [deps]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
 Coverage = "a2441757-f6aa-5fb2-8edb-039e3f45d037"
 CoverageTools = "c36e975a-824b-4404-a568-ef97ca766997"
@@ -19,6 +20,7 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+Aqua = "0.8.11"
 ArgParse = "1"
 Coverage = "1"
 CoverageTools = "1"
