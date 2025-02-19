@@ -543,13 +543,10 @@ println()
 println("============================= Aqua.jl checks start ============================")
 println()
 
-print("Aqua.jl: ")
-
 cd(cwd)
+Pkg.activate(".")
 
-# Refresh Julia environment
-Pkg.activate(cwd)
-
+print("Aqua.jl: ")
 @testset EnhancedTestSet "Aqua.jl code quality checks" begin
     Aqua.test_all(
         TestTools;
