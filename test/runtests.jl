@@ -546,7 +546,6 @@ print("Aqua.jl: ")
 @testset EnhancedTestSet "Aqua.jl code quality checks" begin
     Aqua.test_all(
         TestTools;
-        ambiguities=(ignore=[:Aqua],),
         stale_deps=(ignore=[:Aqua],),
         deps_compat=(ignore=[:Distributed, :Logging, :Printf, :Test],),
     )
