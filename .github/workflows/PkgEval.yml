@@ -55,7 +55,7 @@ jobs:
           @show package
 
           println(horizontal_rule)
-          result = PkgEval.evaluate_test(config, package; echo=true)
+          result = PkgEval.evaluate(config, package; echo=true)
 
           println(horizontal_rule)
           if !ismissing(result.version)
