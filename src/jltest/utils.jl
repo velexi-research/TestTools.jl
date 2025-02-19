@@ -54,6 +54,8 @@ function run_all_tests(test_files::Vector{<:AbstractString})
     # Run tests files
     if !isempty(test_files)
         for test_file in test_files
+            # --- Set up
+
             # Restore current directory before each test file is run
             cd(cwd)
 
@@ -71,9 +73,22 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             end
 
             # Activate the Julia project to run test_file under
+            clean_up_manifest_toml = false
             @suppress_err begin
-                Pkg.activate(project_dir)
+                if isfile(joinpath(project_dir, "Project.toml"))
+                    Pkg.activate(project_dir)
+
+                    # Check if Manifest.toml already exist in project_dir
+                    clean_up_manifest_toml = !isfile(joinpath(project_dir, "Manifest.toml"))
+
+                else
+                    Pkg.activate(; temp=true)
+                end
+
+                Pkg.instantiate()
             end
+
+            # --- Run tests
 
             # Construct an isolated module to run the tests contained in test_file
             module_name = splitext(relpath(test_file, cwd))[1]
@@ -87,6 +102,13 @@ function run_all_tests(test_files::Vector{<:AbstractString})
             println()
             print(module_name, ": ")
             Base.include(testing_module, abspath(test_file))
+
+            # --- Clean up
+
+            # Clean up active project directory
+            if clean_up_manifest_toml
+                rm(joinpath(project_dir, "Manifest.toml"))
+            end
         end
     end
 
