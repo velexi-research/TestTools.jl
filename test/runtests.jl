@@ -63,6 +63,33 @@ cd(@__DIR__)
 # tests.
 cwd = pwd()
 
+# --- Aqua.jl tests
+
+println("============================= Aqua.jl checks start ============================")
+println()
+
+print("Aqua.jl: ")
+@testset EnhancedTestSet "Aqua.jl code quality checks" begin
+    if VERSION < v"1.9"
+        Aqua.test_all(
+            TestTools;
+            stale_deps=(ignore=[:Aqua],),
+            deps_compat=(ignore=[:Distributed, :Logging, :Printf, :Test],),
+        )
+    else
+        Aqua.test_all(
+            TestTools;
+            ambiguities=true,  # TODO: enable ambiguity detection
+            stale_deps=(ignore=[:Aqua],),
+            deps_compat=(ignore=[:Distributed, :Logging, :Printf, :Test],),
+        )
+    end
+end
+
+println()
+println("============================== Aqua.jl checks end =============================")
+println()
+
 # --- Normal unit tests
 
 # installer tests
@@ -535,22 +562,4 @@ end
 
 println()
 println("============================= jltest.cli tests end ============================")
-println()
-
-# --- Aqua.jl tests
-
-println("============================= Aqua.jl checks start ============================")
-println()
-
-print("Aqua.jl: ")
-@testset EnhancedTestSet "Aqua.jl code quality checks" begin
-    Aqua.test_all(
-        TestTools;
-        stale_deps=(ignore=[:Aqua],),
-        deps_compat=(ignore=[:Distributed, :Logging, :Printf, :Test],),
-    )
-end
-
-println()
-println("============================== Aqua.jl checks end =============================")
 println()
