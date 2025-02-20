@@ -124,7 +124,8 @@ end
         cli.run([test_pkg_dir])
     end
 
-    expected_output = """
+    if VERSION < v"1.12-"
+        expected_output = """
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -135,6 +136,19 @@ $(joinpath("test", "runtests.jl"))                                          0   
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """
+    else
+        expected_output = """
+--------------------------------------------------------------------------------
+File                                          Lines of Code    Missed  Coverage
+--------------------------------------------------------------------------------
+$(joinpath("src", "TestPackage.jl"))                                        0         0       N/A
+$(joinpath("src", "methods.jl"))                                            3         1     66.7%
+$(joinpath("src", "more_methods.jl"))                                       2         2      0.0%
+$(joinpath("test", "runtests.jl"))                                          0         0       N/A
+--------------------------------------------------------------------------------
+TOTAL                                                     5         3     40.0%
+"""
+    end
     @test output == expected_output
 
     # Case: `paths` contains a single directory, verbose=true
@@ -143,7 +157,8 @@ TOTAL                                                     6         3     50.0%
         cli.run([test_pkg_dir]; verbose=true)
     end
 
-    expected_output = """
+    if VERSION < v"1.12-"
+        expected_output = """
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -154,6 +169,19 @@ $(joinpath("test", "runtests.jl"))                                          0   
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """
+    else
+        expected_output = """
+--------------------------------------------------------------------------------
+File                                          Lines of Code    Missed  Coverage
+--------------------------------------------------------------------------------
+$(joinpath("src", "TestPackage.jl"))                                        0         0       N/A
+$(joinpath("src", "methods.jl"))                                            3         1     66.7%
+$(joinpath("src", "more_methods.jl"))                                       2         2      0.0%
+$(joinpath("test", "runtests.jl"))                                          0         0       N/A
+--------------------------------------------------------------------------------
+TOTAL                                                     5         3     40.0%
+"""
+    end
     @test output == expected_output
 
     # Case: `paths` contains a file
@@ -177,7 +205,8 @@ TOTAL                                                     3         1     66.7%
         cli.run([])
     end
 
-    expected_output = """
+    if VERSION < v"1.12-"
+        expected_output = """
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -187,6 +216,18 @@ $(joinpath("src", "more_methods.jl"))                                       2   
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """
+    else
+        expected_output = """
+--------------------------------------------------------------------------------
+File                                          Lines of Code    Missed  Coverage
+--------------------------------------------------------------------------------
+$(joinpath("src", "TestPackage.jl"))                                        0         0       N/A
+$(joinpath("src", "methods.jl"))                                            3         1     66.7%
+$(joinpath("src", "more_methods.jl"))                                       2         2      0.0%
+--------------------------------------------------------------------------------
+TOTAL                                                     5         3     40.0%
+"""
+    end
     @test output == expected_output
 
     # Case: `paths` is empty and current directory is not a Julia package
@@ -195,7 +236,9 @@ TOTAL                                                     6         3     50.0%
     output = @capture_out begin
         cli.run([])
     end
-    expected_output = """
+
+    if VERSION < v"1.12-"
+        expected_output = """
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -205,6 +248,18 @@ more_methods.jl                                           2         2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """
+    else
+        expected_output = """
+--------------------------------------------------------------------------------
+File                                          Lines of Code    Missed  Coverage
+--------------------------------------------------------------------------------
+TestPackage.jl                                            0         0       N/A
+methods.jl                                                3         1     66.7%
+more_methods.jl                                           2         2      0.0%
+--------------------------------------------------------------------------------
+TOTAL                                                     5         3     40.0%
+"""
+    end
     @test output == expected_output
 
     # --- Clean up

@@ -79,7 +79,8 @@ end
         display_coverage(coverage)
     end
 
-    expected_output = """
+    if VERSION < v"1.12-"
+        expected_output = """
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -89,6 +90,18 @@ $(joinpath("src", "more_methods.jl"))                                       2   
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """
+    else
+        expected_output = """
+--------------------------------------------------------------------------------
+File                                          Lines of Code    Missed  Coverage
+--------------------------------------------------------------------------------
+$(joinpath("src", "TestPackage.jl"))                                        0         0       N/A
+$(joinpath("src", "methods.jl"))                                            3         1     66.7%
+$(joinpath("src", "more_methods.jl"))                                       2         2      0.0%
+--------------------------------------------------------------------------------
+TOTAL                                                     5         3     40.0%
+"""
+    end
     @test output == expected_output
 
     # Case: startpath = test/jlcoverage/data/TestPackage/src/
@@ -97,7 +110,8 @@ TOTAL                                                     6         3     50.0%
         display_coverage(coverage; startpath=startpath)
     end
 
-    expected_output = """
+    if VERSION < v"1.12-"
+        expected_output = """
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -107,6 +121,18 @@ more_methods.jl                                           2         2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """
+    else
+        expected_output = """
+--------------------------------------------------------------------------------
+File                                          Lines of Code    Missed  Coverage
+--------------------------------------------------------------------------------
+TestPackage.jl                                            0         0       N/A
+methods.jl                                                3         1     66.7%
+more_methods.jl                                           2         2      0.0%
+--------------------------------------------------------------------------------
+TOTAL                                                     5         3     40.0%
+"""
+    end
     @test output == expected_output
 
     # Case: startpath = pwd()/test/jlcoverage/data/TestPackage/src/
@@ -115,7 +141,8 @@ TOTAL                                                     6         3     50.0%
         display_coverage(coverage; startpath=startpath)
     end
 
-    expected_output = """
+    if VERSION < v"1.12-"
+        expected_output = """
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -125,6 +152,18 @@ more_methods.jl                                           2         2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """
+    else
+        expected_output = """
+--------------------------------------------------------------------------------
+File                                          Lines of Code    Missed  Coverage
+--------------------------------------------------------------------------------
+TestPackage.jl                                            0         0       N/A
+methods.jl                                                3         1     66.7%
+more_methods.jl                                           2         2      0.0%
+--------------------------------------------------------------------------------
+TOTAL                                                     5         3     40.0%
+"""
+    end
     @test output == expected_output
 
     # Case: startpath = ""
@@ -133,7 +172,8 @@ TOTAL                                                     6         3     50.0%
         display_coverage(coverage; startpath=startpath)
     end
 
-    expected_output = Regex(make_windows_safe_regex(strip("""
+    if VERSION < v"1.12-"
+        expected_output = Regex(make_windows_safe_regex(strip("""
 --------------------------------------------------------------------------------
 File                                          Lines of Code    Missed  Coverage
 --------------------------------------------------------------------------------
@@ -143,6 +183,18 @@ $(joinpath(test_pkg_src_dir, "more_methods.jl"))[ ]+2[ ]+2      0.0%
 --------------------------------------------------------------------------------
 TOTAL                                                     6         3     50.0%
 """)))
+    else
+        expected_output = Regex(make_windows_safe_regex(strip("""
+--------------------------------------------------------------------------------
+File                                          Lines of Code    Missed  Coverage
+--------------------------------------------------------------------------------
+$(joinpath(test_pkg_src_dir, "TestPackage.jl"))[ ]+0 +0       N/A
+$(joinpath(test_pkg_src_dir, "methods.jl"))[ ]+3[ ]+1     66.7%
+$(joinpath(test_pkg_src_dir, "more_methods.jl"))[ ]+2[ ]+2      0.0%
+--------------------------------------------------------------------------------
+TOTAL                                                     5         3     40.0%
+""")))
+    end
     @test occursin(expected_output, output)
 
     # --- Clean up
