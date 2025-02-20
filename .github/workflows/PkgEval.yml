@@ -22,7 +22,6 @@ jobs:
     steps:
       - name: Debugging
         run: |
-          ls /usr/bin
           /usr/bin/Xvfb :1 -screen 0 1024x768x16 &
 
 #      - name: Start Xvfb
@@ -60,7 +59,7 @@ jobs:
           end
 
           using PkgEval
-          config = Configuration(; julia="nightly");
+          config = Configuration(; julia="nightly", xvfb=false);
           package = Package(; name=PKG_NAME, rev=BRANCH)
 
           horizontal_rule = "#"^80
