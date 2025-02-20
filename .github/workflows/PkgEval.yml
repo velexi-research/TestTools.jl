@@ -20,9 +20,8 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: Debugging
-        run: |
-          /usr/bin/Xvfb :1 -screen 0 1024x768x16 &
+      - name: "Allow unprivileged user namespaces"
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
       - name: Set up Julia
         uses: julia-actions/setup-julia@v2
