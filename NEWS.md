@@ -5,7 +5,7 @@ TestTools Release Notes
 v0.6.4 (2025-02-20)
 -------------------
 **Enhancements:**
-- Improved robustness of Julia environment used by tests.
+- Improved isolation and robustness of Julia environments used when running tests.
 
 **Developer Updates:**
 - Added Aqua.jl checks to unit tests.
