@@ -24,10 +24,7 @@ jobs:
         run: ls /usr/bin
 
       - name: Start Xvfb
-        run: Xvfb :19 -screen 0 1024x768x16 &
-
-      - name: set display
-        run: export DISPLAY=:19
+        run: Xvfb :1 -screen 0 1024x768x16 &
 
       - name: Set up Julia
         uses: julia-actions/setup-julia@v2
@@ -49,6 +46,8 @@ jobs:
 
       - name: Run PkgEval
         shell: julia --project=. {0}
+        env:
+          DISPLAY: :1
         run: |
           PKG_NAME = "TestTools"
 
