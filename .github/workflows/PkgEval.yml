@@ -21,10 +21,12 @@ jobs:
 
     steps:
       - name: Debugging
-        run: ls /usr/bin
+        run: |
+          ls /usr/bin
+          /usr/bin/Xvfb :1 -screen 0 1024x768x16
 
-      - name: Start Xvfb
-        run: Xvfb :1 -screen 0 1024x768x16 &
+#      - name: Start Xvfb
+#        run: Xvfb :1 -screen 0 1024x768x16 &
 
       - name: Set up Julia
         uses: julia-actions/setup-julia@v2
