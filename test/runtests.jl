@@ -19,7 +19,6 @@ Unit test runner for the TestTools package.
 # --- Imports
 
 # Standard library
-using Pkg: Pkg
 using Test
 
 # External packages
@@ -29,18 +28,6 @@ using Suppressor
 # Local package
 using TestTools
 using TestTools.jltest
-
-#cmd = Cmd(`\$HOME/.juliaup/bin/julia --project=. -e "import Pkg"`)
-cmd = Cmd(`pwd`)
-console = @capture_out begin
-    Base.run(cmd)
-end
-println(console)
-cmd = Cmd(`ls`)
-console = @capture_out begin
-    Base.run(cmd)
-end
-println(console)
 
 # --- Helper functions
 

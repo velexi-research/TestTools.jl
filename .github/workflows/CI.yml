@@ -42,20 +42,20 @@ jobs:
     env:
         codecov-os: 'Linux'
         codecov-arch: x64
-        codecov-version: '1.10'
+        codecov-version: '1.11'
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
       - name: Set up Julia environment
-        uses: julia-actions/setup-julia@v1
+        uses: julia-actions/setup-julia@v2
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
 
       - name: Set up Julia caches
-        uses: julia-actions/cache@v1
+        uses: julia-actions/cache@v2
         with:
           cache-name: ${{ github.repository }}-${{ github.workflow }}-${{ github.job }}-julia-${{ hashFiles('.github/workflows/CI.yml') }}
 
@@ -85,7 +85,7 @@ jobs:
             matrix.arch == env.codecov-arch &&
             matrix.version == env.codecov-version
 
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
@@ -102,9 +102,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Julia environment
-        uses: julia-actions/setup-julia@latest
+        uses: julia-actions/setup-julia@v2
         with:
-          version: '1.10'
+          version: '1.11'
+
+      - name: Set up Julia caches
+        uses: julia-actions/cache@v2
+        with:
+          cache-name: ${{ github.repository }}-${{ github.workflow }}-${{ github.job }}-julia-${{ hashFiles('.github/workflows/CI.yml') }}
 
       - name: Install dependencies
         run: julia --project=docs --color=yes -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'

@@ -1,12 +1,12 @@
 name: PkgEval
 on:
-#  push:
-#    branches:
-#      - main
-#
-#  pull_request:
-#    branches:
-#      - main
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -20,15 +20,25 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: julia-actions/setup-julia@v1
+      - name: "Allow unprivileged user namespaces"
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v2
         with:
           version: '1'
 
-      - uses: actions/checkout@v4
+      - name: Set up Julia caches
+        uses: julia-actions/cache@v2
+        with:
+          cache-name: ${{ github.repository }}-${{ github.workflow }}-${{ github.job }}-julia-${{ hashFiles('.github/workflows/PkgEval.yml') }}
+
+      - name: Check out PkgEval
+        uses: actions/checkout@v4
         with:
           repository: 'JuliaCI/PkgEval.jl'
 
-      - name: Instantiate PkgEval
+      - name: Install PkgEval
         run: julia --project=. -e 'import Pkg; Pkg.instantiate()'
 
       - name: Run PkgEval
@@ -55,7 +65,7 @@ jobs:
           @show package
 
           println(horizontal_rule)
-          result = PkgEval.evaluate_compiled_test(config, package; echo=true)
+          result = PkgEval.evaluate_package(config, package; echo=true)
 
           println(horizontal_rule)
           if !ismissing(result.version)
@@ -66,4 +76,4 @@ jobs:
           if !ismissing(result.reason)
             println("Failure reason: $(result.reason)")
           end
-          exit(result.status == :ok ? 0 : 1)
+          exit(result.status == :test && ismissing(result.reason) ? 0 : 1)
