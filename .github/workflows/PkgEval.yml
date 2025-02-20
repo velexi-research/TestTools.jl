@@ -44,41 +44,41 @@ jobs:
       - name: Install PkgEval
         run: julia --project=. -e 'import Pkg; Pkg.instantiate()'
 
-#      - name: Run PkgEval
-#        shell: julia --project=. {0}
-#        env:
-#          DISPLAY: :1
-#        run: |
-#          PKG_NAME = "TestTools"
-#
-#          if !isempty(ENV["GITHUB_HEAD_REF"])
-#            BRANCH = ENV["GITHUB_HEAD_REF"]
-#          else
-#            BRANCH = ENV["GITHUB_REF_NAME"]
-#          end
-#
-#          using PkgEval
-#          config = Configuration(; julia="nightly");
-#          package = Package(; name=PKG_NAME, rev=BRANCH)
-#
-#          horizontal_rule = "#"^80
-#
-#          println(horizontal_rule)
-#          println("PkgEval Configuration")
-#
-#          @show config
-#          @show package
-#
-#          println(horizontal_rule)
-#          result = PkgEval.evaluate_compiled_test(config, package; echo=true)
-#
-#          println(horizontal_rule)
-#          if !ismissing(result.version)
-#            println("$(PKG_NAME) Version: v$(result.version)")
-#          end
-#          println("PkgEval runtime: $(round(result.duration; digits=2))s")
-#          println("PkgEval status: $(result.status)")
-#          if !ismissing(result.reason)
-#            println("Failure reason: $(result.reason)")
-#          end
-#          exit(result.status == :ok ? 0 : 1)
+      - name: Run PkgEval
+        shell: julia --project=. {0}
+        env:
+          DISPLAY: :1
+        run: |
+          PKG_NAME = "TestTools"
+
+          if !isempty(ENV["GITHUB_HEAD_REF"])
+            BRANCH = ENV["GITHUB_HEAD_REF"]
+          else
+            BRANCH = ENV["GITHUB_REF_NAME"]
+          end
+
+          using PkgEval
+          config = Configuration(; julia="nightly");
+          package = Package(; name=PKG_NAME, rev=BRANCH)
+
+          horizontal_rule = "#"^80
+
+          println(horizontal_rule)
+          println("PkgEval Configuration")
+
+          @show config
+          @show package
+
+          println(horizontal_rule)
+          result = PkgEval.evaluate_compiled_test(config, package; echo=true)
+
+          println(horizontal_rule)
+          if !ismissing(result.version)
+            println("$(PKG_NAME) Version: v$(result.version)")
+          end
+          println("PkgEval runtime: $(round(result.duration; digits=2))s")
+          println("PkgEval status: $(result.status)")
+          if !ismissing(result.reason)
+            println("Failure reason: $(result.reason)")
+          end
+          exit(result.status == :ok ? 0 : 1)
