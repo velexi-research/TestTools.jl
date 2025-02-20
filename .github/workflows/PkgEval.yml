@@ -23,6 +23,12 @@ jobs:
       - name: Debugging
         run: ls /usr/bin
 
+    - name: Start Xvfb
+      run: Xvfb :19 -screen 0 1024x768x16 &
+
+    - name: set display
+      run: export DISPLAY=:19
+
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1'
