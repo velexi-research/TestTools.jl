@@ -24,6 +24,7 @@
     <td colspan=2 align="center">
       <a href="https://github.com/velexi-research/TestTools.jl/issues"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"/></a>
       <a href="https://github.com/invenia/BlueStyle"><img style="vertical-align: bottom;" src="https://img.shields.io/badge/code%20style-blue-4495d1.svg"/></a>
+      <a href="https://github.com/JuliaTesting/Aqua.jl"><img style="vertical-align: bottom;" src="https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg"/></a>
     </td>
   </tr>
 </table>
