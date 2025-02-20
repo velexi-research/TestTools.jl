@@ -2,14 +2,15 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
-v0.6.4 (2025-02-19)
+v0.6.4 (2025-02-20)
 -------------------
 **Enhancements:**
 - Improved robustness of Julia environment used by tests.
 
 **Developer Updates:**
 - Added Aqua.jl checks to unit tests.
-- Updated unit tests to fixed PkgEval failures for Julia v1.12 and greater.
+- Updated unit tests to fixed failures for Julia v1.12 and greater.
+- Fixed permissions bug in PkgEval GitHub Actions workflow.
 
 --------------------------------------------------------------------------------------------
 v0.6.3 (2024-06-29)
