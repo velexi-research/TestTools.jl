@@ -76,4 +76,4 @@ jobs:
           if !ismissing(result.reason)
             println("Failure reason: $(result.reason)")
           end
-          exit(result.status == :test & ismissing(result.reason) ? 0 : 1)
+          exit(result.status == :test && ismissing(result.reason) ? 0 : 1)
