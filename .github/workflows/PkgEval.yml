@@ -23,7 +23,7 @@ jobs:
       - name: Debugging
         run: |
           ls /usr/bin
-          /usr/bin/Xvfb :1 -screen 0 1024x768x16
+          /usr/bin/Xvfb :1 -screen 0 1024x768x16 &
 
 #      - name: Start Xvfb
 #        run: Xvfb :1 -screen 0 1024x768x16 &
