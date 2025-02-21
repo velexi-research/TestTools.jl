@@ -4,12 +4,14 @@ repos:
     - id: jlcodestyle
       name: jlcodestyle
       entry: jlcodestyle
-      language: system
+      language: julia
       args: [--overwrite]
-      files: .jl
+      types: [julia]
       exclude: "examples/jlcodestyle/default-style.jl|test/jlcodestyle/data/default-style.jl"
+      additional_dependencies:
+      - 'TestTools'
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
     - id: check-added-large-files
     - id: detect-aws-credentials

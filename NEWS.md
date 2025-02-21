@@ -7,6 +7,9 @@ v0.6.5 (2025-02-21)
 **Bug Fixes:**
 - Fixed inconsistency of version numbers in Project.toml and pyproject.toml.
 
+**Developer Updates:**
+- Update pre-commit version and configuration.
+
 --------------------------------------------------------------------------------------------
 v0.6.4 (2025-02-20)
 -------------------
