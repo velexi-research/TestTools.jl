@@ -5,7 +5,7 @@ TestTools Release Notes
 v0.6.5 (2025-02-21)
 -------------------
 **Bug Fixes:**
-- Fixed version number in pyproject.toml.
+- Fixed consistency of version numbers in Project.toml and pyproject.toml.
 
 --------------------------------------------------------------------------------------------
 v0.6.4 (2025-02-20)
