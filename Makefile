@@ -44,17 +44,26 @@ docs:
 
 # --- Utility rules
 
-.PHONY: clean
+.PHONY: clean-coverage clean spotless
 
-## Remove files and directories automatically generated during development (e.g., coverage
-## files).
-clean:
-	@echo Removing coverage files
-	find . -name "*.jl.*.cov" -exec rm -f {} \;
+## Remove automatically generated coverage files
+clean-coverage:
+	find . -name "*.jl.*.cov" -exec rm -f {} \;  # Julia coverage
+	find . -name "*.coverage.*" -exec rm -f {} \;  # Python coverage
+	rm -rf coverage htmlcov coverage.xml  # Python coverage
+
+## Remove files and directories automatically generated during development and testing
+## (e.g., compiled python code).
+clean: clean-coverage
+	find . -type d -name "__pycache__" -delete  # compiled python
+	find . -type f -name "*.py[co]" -delete  # compiled python
+	rm -rf .cache .pytest_cache  # pytest
 
 ## Remove files and directories automatically generated during development (e.g., coverage
 ## files) and project setup (e.g., `Manifest.toml` files).
 spotless: clean
+	@echo Removing auto-generated package documentatoin
+	rm -rf docs/build/
 	@echo Removing Manifest.toml files
 	find . -name "Manifest.toml" -exec rm -rf {} \;
 
