@@ -1,6 +1,6 @@
 name = "TestTools"
 uuid = "a8cb73c1-6ac8-4a70-8c57-09fe1bc7c59b"
-version = "0.6.5"
+version = "0.6.6"
 authors = ["Kevin Chu <kevin@velexi.com> and contributors"]
 
 [deps]
