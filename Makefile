@@ -13,7 +13,7 @@ export JULIA_PROJECT = @.
 
 .PHONY: test
 
-## Run all tests
+## Run all tests.
 test:
 	@echo Removing old coverage files
 	find . -name "*.jl.*.cov" -exec rm -f {} \;
@@ -28,7 +28,7 @@ test:
 
 .PHONY: codestyle
 
-## Check codestyle
+## Check codestyle.
 codestyle:
 	@echo Checking code style
 	@jlcodestyle -v $(PKG_DIR)
@@ -46,8 +46,9 @@ docs:
 
 .PHONY: clean-coverage clean spotless
 
-## Remove automatically generated coverage files
+## Remove automatically generated coverage files.
 clean-coverage:
+	@echo Removing coverage files
 	find . -name "*.jl.*.cov" -exec rm -f {} \;  # Julia coverage
 	find . -name "*.coverage.*" -exec rm -f {} \;  # Python coverage
 	rm -rf coverage htmlcov coverage.xml  # Python coverage
@@ -55,6 +56,7 @@ clean-coverage:
 ## Remove files and directories automatically generated during development and testing
 ## (e.g., compiled python code).
 clean: clean-coverage
+	@echo Removing compiled code
 	find . -type d -name "__pycache__" -delete  # compiled python
 	find . -type f -name "*.py[co]" -delete  # compiled python
 	rm -rf .cache .pytest_cache  # pytest
