@@ -34,7 +34,7 @@ jobs:
           cache-name: ${{ github.repository }}-${{ github.workflow }}-${{ github.job }}-julia-${{ hashFiles('.github/workflows/PkgEval.yml') }}
 
       - name: Check out PkgEval
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: 'JuliaCI/PkgEval.jl'
 
