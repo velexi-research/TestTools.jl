@@ -2,7 +2,7 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
-v0.6.6 (2026-03-22)
+v0.6.6 (2026-03-23)
 -------------------
 **Enhancements:**
 - Add support for including Aqua.jl checks in tests.
@@ -12,6 +12,7 @@ v0.6.6 (2026-03-22)
 - Update CI testing matrix.
 - Migrate to GitHub dependabot (instead of CompatHelper GitHub Action).
 - Update GitHub Action dependencies.
+- Add [compat] section to test/Project.toml.
 
 --------------------------------------------------------------------------------------------
 v0.6.5 (2025-02-21)
