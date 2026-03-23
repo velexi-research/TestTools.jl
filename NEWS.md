@@ -10,7 +10,8 @@ v0.6.6 (2026-03-22)
 
 **Developer Updates:**
 - Update CI testing matrix.
-- Migrate to Dependabot GitHub Actions workflow (from CompatHelper).
+- Migrate to GitHub dependabot (instead of CompatHelper GitHub Action).
+- Update GitHub Action dependencies.
 
 --------------------------------------------------------------------------------------------
 v0.6.5 (2025-02-21)
