@@ -55,12 +55,20 @@ using TestTools.jltest
     @test error_type == EnhancedTestSetException
     @test error_message == "FallbackTestSetException occurred"
 
-    expected_prefix = strip("""
-                            =====================================================
-                            Test Failed at $(@__FILE__):45
-                              Expression: 1 == 2
-                               Evaluated: 1 == 2
-                            """)
+    if VERSION < v"1.13-"
+        expected_prefix = strip("""
+                                =====================================================
+                                Test Failed at $(@__FILE__):45
+                                  Expression: 1 == 2
+                                   Evaluated: 1 == 2
+                                """)
+    else
+        expected_prefix = strip("""
+                                =====================================================
+                                Test Failed at $(@__FILE__):45
+                                  Expression: 1 == 2
+                                """)
+    end
     @test startswith(output, expected_prefix)
 
     # Nested test sets with a failing test
@@ -87,12 +95,20 @@ using TestTools.jltest
     @test error_type == EnhancedTestSetException
     @test error_message == "FallbackTestSetException occurred"
 
-    expected_prefix = strip("""
-                            =====================================================
-                            Test Failed at $(@__FILE__):73
-                              Expression: 1 == 2
-                               Evaluated: 1 == 2
-                            """)
+    if VERSION < v"1.13-"
+        expected_prefix = strip("""
+                                =====================================================
+                                Test Failed at $(@__FILE__):81
+                                  Expression: 1 == 2
+                                   Evaluated: 1 == 2
+                                """)
+    else
+        expected_prefix = strip("""
+                                =====================================================
+                                Test Failed at $(@__FILE__):81
+                                  Expression: 1 == 2
+                                """)
+    end
     @test startswith(output, expected_prefix)
 
     # --- Nested DefaultTestSet tests
@@ -127,11 +143,19 @@ using TestTools.jltest
 
     @test error_type == FallbackTestSetException
 
-    expected_prefix = strip("""
-                            Failing test: Test Failed at $(@__FILE__):114
-                              Expression: 1 == 2
-                               Evaluated: 1 == 2
-                            """)
+    if VERSION < v"1.13-"
+        expected_prefix = strip("""
+                                Failing test: Test Failed at $(@__FILE__):130
+                                  Expression: 1 == 2
+                                   Evaluated: 1 == 2
+                                """)
+    else
+        expected_prefix = strip("""
+                                Failing test: Test Failed at $(@__FILE__):130
+                                  Expression: 1 == 2
+                                """)
+        expected_prefix = "\n$expected_prefix"
+    end
     @test startswith(output, expected_prefix)
 
     # With no failing tests

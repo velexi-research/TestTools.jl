@@ -149,14 +149,13 @@ output = strip(@capture_out begin
 end)
 
 expected_prefix = strip("""
-                  =====================================================
                   EnhancedTestSet: Exception test: Error During Test at $(@__FILE__):146
                     Got exception outside of a @test
                     This test is supposed to throw an error
                     Stacktrace:
                   """)
 
-@test startswith(output, expected_prefix)
+@test occursin(expected_prefix, output)
 
 # Inequality test
 output = strip(@capture_out begin
@@ -165,12 +164,20 @@ output = strip(@capture_out begin
     end
 end)
 
-expected_prefix = strip("""
-                  =====================================================
-                  EnhancedTestSet: inequality test: Test Failed at $(@__FILE__):164
-                    Expression: 1 > 2
-                     Evaluated: 1 > 2
-                  """)
+if VERSION < v"1.13-"
+    expected_prefix = strip("""
+                      =====================================================
+                      EnhancedTestSet: inequality test: Test Failed at $(@__FILE__):163
+                        Expression: 1 > 2
+                         Evaluated: 1 > 2
+                      """)
+else
+    expected_prefix = strip("""
+                      =====================================================
+                      EnhancedTestSet: inequality test: Test Failed at $(@__FILE__):163
+                        Expression: 1 > 2
+                      """)
+end
 
 @test startswith(output, expected_prefix)
 

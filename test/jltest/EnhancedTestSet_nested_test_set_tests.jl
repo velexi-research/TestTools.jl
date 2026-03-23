@@ -68,13 +68,22 @@ output = strip(@capture_out begin
     end
 end)
 
-expected_prefix = strip(
-    """
-    DefaultTestSet Nested in EnhancedTestSet: Test Failed at $(@__FILE__):66
-      Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
-       Evaluated: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
-    """
-)
+if VERSION < v"1.13-"
+    expected_prefix = strip(
+        """
+        DefaultTestSet Nested in EnhancedTestSet: Test Failed at $(@__FILE__):66
+          Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
+           Evaluated: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
+        """
+    )
+else
+    expected_prefix = strip(
+        """
+        DefaultTestSet Nested in EnhancedTestSet: Test Failed at $(@__FILE__):66
+          Expression: [3, 5, 6, 1, 6, 8] == [3, 5, 6, 1, 9, 8]
+        """
+    )
+end
 @test startswith(output, expected_prefix)
 
 # --- Emit message about expected failures and errors

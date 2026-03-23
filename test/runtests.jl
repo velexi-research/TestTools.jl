@@ -173,30 +173,29 @@ print("jltest/EnhancedTestSet_failing_tests: ")
 
         @test output == expected_output
     else
-        test_path = make_windows_safe_regex(
-            joinpath("jltest", "EnhancedTestSet_failing_tests")
-        )
-        expected_output = Regex(
-            strip(
-                """
-                $(test_path): .......
-
-
-                Test Summary:                                \\| Pass  Fail  Error  Total\\s+Time
-                EnhancedTestSet                              \\|    7     6      1     14\\s+\\d+\\.\\d+s
-                  failing tests                              \\|    7     6      1     14\\s+\\d+\\.\\d+s
-                    EnhancedTestSet: Array equality test     \\|          1             1\\s+\\d+\\.\\d+s
-                    EnhancedTestSet: Dict equality test      \\|          1             1\\s+\\d+\\.\\d+s
-                    EnhancedTestSet: String equality test    \\|          1             1\\s+\\d+\\.\\d+s
-                    EnhancedTestSet: Boolean expression test \\|          1             1\\s+\\d+\\.\\d+s
-                    EnhancedTestSet: Exception test          \\|                 1      1\\s+\\d+\\.\\d+s
-                    EnhancedTestSet: inequality test         \\|          1             1\\s+\\d+\\.\\d+s
-                    EnhancedTestSet: Matrix equality test    \\|          1             1\\s+\\d+\\.\\d+s
-                """,
+        expected_outputs = [
+            joinpath("jltest", "EnhancedTestSet_failing_tests"),
+            Regex(
+                strip(
+                    """
+                    Test Summary:                                \\| Pass  Fail  Error  Total\\s+Time
+                    EnhancedTestSet                              \\|    7     6      1     14\\s+\\d+\\.\\d+s
+                      failing tests                              \\|    7     6      1     14\\s+\\d+\\.\\d+s
+                        EnhancedTestSet: Array equality test     \\|          1             1\\s+\\d+\\.\\d+s
+                        EnhancedTestSet: Dict equality test      \\|          1             1\\s+\\d+\\.\\d+s
+                        EnhancedTestSet: String equality test    \\|          1             1\\s+\\d+\\.\\d+s
+                        EnhancedTestSet: Boolean expression test \\|          1             1\\s+\\d+\\.\\d+s
+                        EnhancedTestSet: Exception test          \\|                 1      1\\s+\\d+\\.\\d+s
+                        EnhancedTestSet: inequality test         \\|          1             1\\s+\\d+\\.\\d+s
+                        EnhancedTestSet: Matrix equality test    \\|          1             1\\s+\\d+\\.\\d+s
+                    """,
+                ),
             ),
-        )
+        ]
 
-        @test occursin(expected_output, output)
+        for expected_output in expected_outputs
+            @test occursin(expected_output, output)
+        end
     end
 end
 

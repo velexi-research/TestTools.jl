@@ -62,28 +62,54 @@ end
     expected_output_some_tests_no_testset = "$(joinpath(test_dir_relpath, "some_tests_no_testset")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
-    expected_output_failing_tests = Regex(
-        make_windows_safe_regex(strip("""
-                            $(joinpath(test_dir_relpath, "failing_tests")): .
-                            =====================================================
-                            failing tests: Test Failed at $(failing_tests_file):[0-9]+
-                              Expression: 2 == 1
-                               Evaluated: 2 == 1
-                            """))
-    )
+
+    if VERSION < v"1.13-"
+        expected_output_failing_tests = Regex(
+            make_windows_safe_regex(strip("""
+                                $(joinpath(test_dir_relpath, "failing_tests")): .
+                                =====================================================
+                                failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                                  Expression: 2 == 1
+                                   Evaluated: 2 == 1
+                                """))
+        )
+    else
+        expected_output_failing_tests = Regex(
+            make_windows_safe_regex(strip("""
+                                $(joinpath(test_dir_relpath, "failing_tests")): .
+                                =====================================================
+                                failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                                  Expression: 2 == 1
+                                """))
+        )
+    end
 
     failing_tests_no_testset_file = joinpath(test_dir, "failing_tests_no_testset.jl")
-    expected_output_failing_tests_no_testset = Regex(
-        make_windows_safe_regex(
-            strip("""
-                  $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
-                  =====================================================
-                  test set: Test Failed at $(failing_tests_no_testset_file):[0-9]+
-                    Expression: 2 == 1
-                     Evaluated: 2 == 1
-                  """)
-        ),
-    )
+
+    if VERSION < v"1.13-"
+        expected_output_failing_tests_no_testset = Regex(
+            make_windows_safe_regex(
+                strip("""
+                      $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
+                      =====================================================
+                      test set: Test Failed at $(failing_tests_no_testset_file):[0-9]+
+                        Expression: 2 == 1
+                         Evaluated: 2 == 1
+                      """)
+            ),
+        )
+    else
+        expected_output_failing_tests_no_testset = Regex(
+            make_windows_safe_regex(
+                strip("""
+                      $(joinpath(test_dir_relpath, "failing_tests_no_testset")): .
+                      =====================================================
+                      test set: Test Failed at $(failing_tests_no_testset_file):[0-9]+
+                        Expression: 2 == 1
+                      """)
+            ),
+        )
+    end
 
     more_tests_file = joinpath(test_dir, "subdir", "more_tests.jl")
     expected_output_more_tests = "$(joinpath(test_dir_relpath, "subdir", "more_tests")): .."
@@ -206,7 +232,7 @@ end
     expected_prefix = Regex(
         make_windows_safe_regex(
             strip(
-                "$(joinpath(test_dir_relpath, "failing_tests")): failing tests" *
+                "$(joinpath(test_dir_relpath, "failing_tests")): \n*failing tests" *
                 ": Test Failed at $(joinpath(test_dir, "failing_tests.jl")):[0-9]+",
             ),
         ),
@@ -469,25 +495,47 @@ end
     expected_output_some_tests = "$(joinpath(test_dir_relpath, "some_tests")): .."
 
     failing_tests_file = joinpath(test_dir, "failing_tests.jl")
-    expected_output_failing_tests = Regex(
-        make_windows_safe_regex(strip("""
-                            $(joinpath(test_dir_relpath, "failing_tests")): .
-                            =====================================================
-                            failing tests: Test Failed at $(failing_tests_file):[0-9]+
-                              Expression: 2 == 1
-                               Evaluated: 2 == 1
-                            """))
-    )
+    if VERSION < v"1.13-"
+        expected_output_failing_tests = Regex(
+            make_windows_safe_regex(strip("""
+                                $(joinpath(test_dir_relpath, "failing_tests")): .
+                                =====================================================
+                                failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                                  Expression: 2 == 1
+                                   Evaluated: 2 == 1
+                                """))
+        )
+    else
+        expected_output_failing_tests = Regex(
+            make_windows_safe_regex(strip("""
+                                $(joinpath(test_dir_relpath, "failing_tests")): .
+                                =====================================================
+                                failing tests: Test Failed at $(failing_tests_file):[0-9]+
+                                  Expression: 2 == 1
+                                """))
+        )
+    end
 
-    expected_output_failing_tests_fail_fast_prefix = Regex(
-        make_windows_safe_regex(strip("""
-                            $(joinpath(test_dir_relpath, "failing_tests")): .
-                            =====================================================
-                            Test Failed at $(failing_tests_file):[0-9]+
-                              Expression: 2 == 1
-                               Evaluated: 2 == 1
-                            """))
-    )
+    if VERSION < v"1.13-"
+        expected_output_failing_tests_fail_fast_prefix = Regex(
+            make_windows_safe_regex(strip("""
+                                $(joinpath(test_dir_relpath, "failing_tests")): .
+                                =====================================================
+                                Test Failed at $(failing_tests_file):[0-9]+
+                                  Expression: 2 == 1
+                                   Evaluated: 2 == 1
+                                """))
+        )
+    else
+        expected_output_failing_tests_fail_fast_prefix = Regex(
+            make_windows_safe_regex(strip("""
+                                $(joinpath(test_dir_relpath, "failing_tests")): .
+                                =====================================================
+                                Test Failed at $(failing_tests_file):[0-9]+
+                                  Expression: 2 == 1
+                                """))
+        )
+    end
 
     expected_output_failing_tests_fail_fast_interior = Regex(
         make_windows_safe_regex(strip("""
@@ -644,7 +692,7 @@ end
                 """
                 missing_dependency_tests: 
                 =====================================================
-                test set: [^\\s]*Error During Test[^\\s]* at [^\\s]*$(src_error_file):[0-9]+[^\\s]*
+                \n*test set: [^\\s]*Error During Test[^\\s]* at [^\\s]*$(src_error_file):[0-9]+[^\\s]*
                   Got exception outside of a @test
                   LoadError: ArgumentError: Package InteractiveUtils not found in current path.
                 """,
