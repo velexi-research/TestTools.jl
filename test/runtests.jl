@@ -174,7 +174,7 @@ print("jltest/EnhancedTestSet_failing_tests: ")
         @test output == expected_output
     else
         expected_outputs = [
-            make_windows_safe_regex(joinpath("jltest", "EnhancedTestSet_failing_tests")),
+            joinpath("jltest", "EnhancedTestSet_failing_tests"),
             Regex(
                 strip(
                     """
