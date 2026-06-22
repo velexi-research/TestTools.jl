@@ -2,6 +2,17 @@ TestTools Release Notes
 =======================
 
 --------------------------------------------------------------------------------------------
+v0.6.7 (2026-MM-DD)
+-------------------
+**Enhancements:**
+- TODO
+
+**Developer Updates:**
+- Update paths in jlcodestyle unit tests.
+- Update CI testing matrix.
+- Update GitHub Actions dependencies.
+
+--------------------------------------------------------------------------------------------
 v0.6.6 (2026-03-23)
 -------------------
 **Enhancements:**
