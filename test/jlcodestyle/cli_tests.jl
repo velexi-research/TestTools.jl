@@ -312,9 +312,15 @@ end
                      """
     @test error == expected_error
 
-    expected_output = """
-        Formatting $(realpath(yasstyle_fail_file))
-        """
+    if VERSION < v"1.10-"
+        expected_output = """
+            Formatting $(realpath(yasstyle_fail_file))
+            """
+    else
+        expected_output = """
+            Formatting $yasstyle_fail_file
+            """
+    end
     @test output == expected_output
 
     cd(cwd)  # Restore current directory
