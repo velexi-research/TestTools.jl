@@ -34,7 +34,7 @@ jobs:
         arch:
           - x64
           - aarch64
-        julia-version:
+        version:
           - '1.6'
           - '1.7'
           - '1.8'
@@ -50,15 +50,15 @@ jobs:
           - os: macos-latest
             arch: 'x64'
           - os: macos-latest
-            julia-version:
+            version:
               - '1.6'
               - '1.7'
           - os: macos-latest
-            julia-version: 'nightly'
+            version: 'nightly'
           - os: windows-latest
             arch: 'aarch64'
           - os: windows-latest
-            julia-version: 'nightly'
+            version: 'nightly'
 
     runs-on: ${{ matrix.os }}
 
